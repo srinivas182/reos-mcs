@@ -5125,6 +5125,90 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/organisation/roster": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * The brokerage's roster from TREC
+         * @description Every agent TREC lists under the brokerage's licence today: in the brokerage, invited, on REOS, with a contact added, or still needing an email or phone.
+         */
+        get: operations["brokerage.roster"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organisation/roster/contacts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Add emails or phones
+         * @description One line per agent: the TREC licence number, then an email or phone. Lines for agents TREC doesn't list under the brokerage are refused.
+         */
+        post: operations["brokerage.roster.contacts"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organisation/roster/invite": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Invite all
+         * @description Invites every sponsored agent who isn't in the brokerage or invited yet: at their REOS account, or the email or phone added. Invitations last 14 days with one reminder; seats are checked.
+         */
+        post: operations["brokerage.roster.invite"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organisation/seats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Seats and who pays
+         * @description The plan's seats and how many are used or invited, who pays, AI credits per seat and whether they're pooled, the candidate sponsorship pool and teams. Seat counts are bought on reos.com.
+         */
+        get: operations["brokerage.seats"];
+        /**
+         * Choose who pays
+         * @description The brokerage, each agent, or split (the brokerage pays the seat, agents their own extras), and whether AI credits are pooled across seats.
+         */
+        put: operations["brokerage.seats.update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/sessions": {
         parameters: {
             query?: never;
@@ -7850,6 +7934,13 @@ export interface components {
          */
         Role: "candidate" | "agent" | "broker" | "mentor" | "instructor" | "school_admin" | "provider" | "association_admin" | "super_admin";
         /**
+         * RosterContactsRequest
+         * @description Emails or phones for sponsored agents not on REOS: one line each, the TREC licence number then the contact (A15.1b).
+         */
+        RosterContactsRequest: {
+            lines: string;
+        };
+        /**
          * SaveCalendarEventRequest
          * @description An appointment made or changed in REOS ("New appointment" sheet). Timed
          *     events send `starts_at` and `ends_at`; all-day events send `start_date`
@@ -8007,6 +8098,15 @@ export interface components {
             minutes: "15" | "30" | "45" | "60" | "90" | "120";
             /** @description People to invite (from the people you work with). */
             guests: number[];
+        };
+        /**
+         * SeatsRequest
+         * @description Who pays for agents' seats, and whether AI credits are pooled (A15.1b).
+         */
+        SeatsRequest: {
+            /** @enum {string} */
+            payer: "organisation" | "member" | "split";
+            credits_pooled: boolean;
         };
         /**
          * SendForSignatureRequest
@@ -8440,6 +8540,7 @@ export type SchemaRenewalRequest = components['schemas']['RenewalRequest'];
 export type SchemaReportRequest = components['schemas']['ReportRequest'];
 export type SchemaReviewVideoRequest = components['schemas']['ReviewVideoRequest'];
 export type SchemaRole = components['schemas']['Role'];
+export type SchemaRosterContactsRequest = components['schemas']['RosterContactsRequest'];
 export type SchemaSaveCalendarEventRequest = components['schemas']['SaveCalendarEventRequest'];
 export type SchemaSaveCertificateRequest = components['schemas']['SaveCertificateRequest'];
 export type SchemaSaveFlashcardRequest = components['schemas']['SaveFlashcardRequest'];
@@ -8447,6 +8548,7 @@ export type SchemaSaveTodoRequest = components['schemas']['SaveTodoRequest'];
 export type SchemaSayRequest = components['schemas']['SayRequest'];
 export type SchemaScheduleClassRequest = components['schemas']['ScheduleClassRequest'];
 export type SchemaScheduleSessionRequest = components['schemas']['ScheduleSessionRequest'];
+export type SchemaSeatsRequest = components['schemas']['SeatsRequest'];
 export type SchemaSendForSignatureRequest = components['schemas']['SendForSignatureRequest'];
 export type SchemaSendMessageRequest = components['schemas']['SendMessageRequest'];
 export type SchemaSessionNotesRequest = components['schemas']['SessionNotesRequest'];
@@ -24795,6 +24897,254 @@ export interface operations {
                 };
             };
             401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "brokerage.roster": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            trec_number: string | null;
+                            counts: {
+                                sponsored: number;
+                                member: number;
+                                invited: number;
+                                on_reos: number;
+                                contact: number;
+                                needs_contact: number;
+                            };
+                            agents: {
+                                licence: string;
+                                name: string;
+                                type: string;
+                                expires_on: string | null;
+                                /** @enum {string} */
+                                state: "member" | "invited" | "on_reos" | "contact" | "needs_contact";
+                                contact: string | null;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "brokerage.roster.contacts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RosterContactsRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            saved: number;
+                            refused: string[];
+                            roster: {
+                                trec_number: string | null;
+                                counts: {
+                                    sponsored: number;
+                                    member: number;
+                                    invited: number;
+                                    on_reos: number;
+                                    contact: number;
+                                    needs_contact: number;
+                                };
+                                agents: {
+                                    licence: string;
+                                    name: string;
+                                    type: string;
+                                    expires_on: string | null;
+                                    /** @enum {string} */
+                                    state: "member" | "invited" | "on_reos" | "contact" | "needs_contact";
+                                    contact: string | null;
+                                }[];
+                            };
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "brokerage.roster.invite": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            sent: number;
+                            skipped: number;
+                            needs_contact: number;
+                            roster: {
+                                trec_number: string | null;
+                                counts: {
+                                    sponsored: number;
+                                    member: number;
+                                    invited: number;
+                                    on_reos: number;
+                                    contact: number;
+                                    needs_contact: number;
+                                };
+                                agents: {
+                                    licence: string;
+                                    name: string;
+                                    type: string;
+                                    expires_on: string | null;
+                                    /** @enum {string} */
+                                    state: "member" | "invited" | "on_reos" | "contact" | "needs_contact";
+                                    contact: string | null;
+                                }[];
+                            };
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "brokerage.seats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            seats: number | null;
+                            used: number;
+                            pending: number;
+                            left: number | null;
+                            /** @enum {string} */
+                            payer: "organisation" | "member" | "split";
+                            credits_per_seat: number;
+                            credits_pooled: boolean;
+                            pool: number | null;
+                            candidate_pool: number;
+                            teams: number;
+                            chosen: boolean;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "brokerage.seats.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SeatsRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            seats: number | null;
+                            used: number;
+                            pending: number;
+                            left: number | null;
+                            /** @enum {string} */
+                            payer: "organisation" | "member" | "split";
+                            credits_per_seat: number;
+                            credits_pooled: boolean;
+                            pool: number | null;
+                            candidate_pool: number;
+                            teams: number;
+                            chosen: boolean;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
             /** @description Too many requests */
             429: {
                 headers: {

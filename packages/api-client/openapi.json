@@ -48706,6 +48706,688 @@
                 }
             }
         },
+        "/organisation/roster": {
+            "get": {
+                "operationId": "brokerage.roster",
+                "description": "Every agent TREC lists under the brokerage's licence today: in the brokerage, invited, on REOS, with a contact added, or still needing an email or phone.",
+                "summary": "The brokerage's roster from TREC",
+                "tags": [
+                    "Roster"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "trec_number": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "counts": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "sponsored": {
+                                                            "type": "integer"
+                                                        },
+                                                        "member": {
+                                                            "type": "integer"
+                                                        },
+                                                        "invited": {
+                                                            "type": "integer"
+                                                        },
+                                                        "on_reos": {
+                                                            "type": "integer"
+                                                        },
+                                                        "contact": {
+                                                            "type": "integer"
+                                                        },
+                                                        "needs_contact": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "sponsored",
+                                                        "member",
+                                                        "invited",
+                                                        "on_reos",
+                                                        "contact",
+                                                        "needs_contact"
+                                                    ]
+                                                },
+                                                "agents": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "licence": {
+                                                                "type": "string"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "type": {
+                                                                "type": "string"
+                                                            },
+                                                            "expires_on": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "state": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "member",
+                                                                    "invited",
+                                                                    "on_reos",
+                                                                    "contact",
+                                                                    "needs_contact"
+                                                                ]
+                                                            },
+                                                            "contact": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "licence",
+                                                            "name",
+                                                            "type",
+                                                            "expires_on",
+                                                            "state",
+                                                            "contact"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "trec_number",
+                                                "counts",
+                                                "agents"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/organisation/roster/contacts": {
+            "post": {
+                "operationId": "brokerage.roster.contacts",
+                "description": "One line per agent: the TREC licence number, then an email or phone. Lines for agents TREC doesn't list under the brokerage are refused.",
+                "summary": "Add emails or phones",
+                "tags": [
+                    "Roster"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RosterContactsRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "saved": {
+                                                    "type": "integer"
+                                                },
+                                                "refused": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "roster": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "trec_number": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "counts": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "sponsored": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "member": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "invited": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "on_reos": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "contact": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "needs_contact": {
+                                                                    "type": "integer"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "sponsored",
+                                                                "member",
+                                                                "invited",
+                                                                "on_reos",
+                                                                "contact",
+                                                                "needs_contact"
+                                                            ]
+                                                        },
+                                                        "agents": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "licence": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "type": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "expires_on": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "state": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "member",
+                                                                            "invited",
+                                                                            "on_reos",
+                                                                            "contact",
+                                                                            "needs_contact"
+                                                                        ]
+                                                                    },
+                                                                    "contact": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "licence",
+                                                                    "name",
+                                                                    "type",
+                                                                    "expires_on",
+                                                                    "state",
+                                                                    "contact"
+                                                                ]
+                                                            }
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "trec_number",
+                                                        "counts",
+                                                        "agents"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "saved",
+                                                "refused",
+                                                "roster"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/organisation/roster/invite": {
+            "post": {
+                "operationId": "brokerage.roster.invite",
+                "description": "Invites every sponsored agent who isn't in the brokerage or invited yet: at their REOS account, or the email or phone added. Invitations last 14 days with one reminder; seats are checked.",
+                "summary": "Invite all",
+                "tags": [
+                    "Roster"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "sent": {
+                                                    "type": "integer"
+                                                },
+                                                "skipped": {
+                                                    "type": "integer"
+                                                },
+                                                "needs_contact": {
+                                                    "type": "integer"
+                                                },
+                                                "roster": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "trec_number": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "counts": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "sponsored": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "member": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "invited": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "on_reos": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "contact": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "needs_contact": {
+                                                                    "type": "integer"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "sponsored",
+                                                                "member",
+                                                                "invited",
+                                                                "on_reos",
+                                                                "contact",
+                                                                "needs_contact"
+                                                            ]
+                                                        },
+                                                        "agents": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "licence": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "type": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "expires_on": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "state": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "member",
+                                                                            "invited",
+                                                                            "on_reos",
+                                                                            "contact",
+                                                                            "needs_contact"
+                                                                        ]
+                                                                    },
+                                                                    "contact": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "licence",
+                                                                    "name",
+                                                                    "type",
+                                                                    "expires_on",
+                                                                    "state",
+                                                                    "contact"
+                                                                ]
+                                                            }
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "trec_number",
+                                                        "counts",
+                                                        "agents"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "sent",
+                                                "skipped",
+                                                "needs_contact",
+                                                "roster"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/organisation/seats": {
+            "get": {
+                "operationId": "brokerage.seats",
+                "description": "The plan's seats and how many are used or invited, who pays, AI credits per seat and whether they're pooled, the candidate sponsorship pool and teams. Seat counts are bought on reos.com.",
+                "summary": "Seats and who pays",
+                "tags": [
+                    "Seats"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "seats": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "used": {
+                                                    "type": "integer"
+                                                },
+                                                "pending": {
+                                                    "type": "integer"
+                                                },
+                                                "left": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "payer": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "organisation",
+                                                        "member",
+                                                        "split"
+                                                    ]
+                                                },
+                                                "credits_per_seat": {
+                                                    "type": "integer"
+                                                },
+                                                "credits_pooled": {
+                                                    "type": "boolean"
+                                                },
+                                                "pool": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "candidate_pool": {
+                                                    "type": "integer"
+                                                },
+                                                "teams": {
+                                                    "type": "integer"
+                                                },
+                                                "chosen": {
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "required": [
+                                                "seats",
+                                                "used",
+                                                "pending",
+                                                "left",
+                                                "payer",
+                                                "credits_per_seat",
+                                                "credits_pooled",
+                                                "pool",
+                                                "candidate_pool",
+                                                "teams",
+                                                "chosen"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "brokerage.seats.update",
+                "description": "The brokerage, each agent, or split (the brokerage pays the seat, agents their own extras), and whether AI credits are pooled across seats.",
+                "summary": "Choose who pays",
+                "tags": [
+                    "Seats"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SeatsRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "seats": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "used": {
+                                                    "type": "integer"
+                                                },
+                                                "pending": {
+                                                    "type": "integer"
+                                                },
+                                                "left": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "payer": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "organisation",
+                                                        "member",
+                                                        "split"
+                                                    ]
+                                                },
+                                                "credits_per_seat": {
+                                                    "type": "integer"
+                                                },
+                                                "credits_pooled": {
+                                                    "type": "boolean"
+                                                },
+                                                "pool": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "candidate_pool": {
+                                                    "type": "integer"
+                                                },
+                                                "teams": {
+                                                    "type": "integer"
+                                                },
+                                                "chosen": {
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "required": [
+                                                "seats",
+                                                "used",
+                                                "pending",
+                                                "left",
+                                                "payer",
+                                                "credits_per_seat",
+                                                "credits_pooled",
+                                                "pool",
+                                                "candidate_pool",
+                                                "teams",
+                                                "chosen"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
         "/sessions": {
             "get": {
                 "operationId": "sessions.index",
@@ -66896,6 +67578,20 @@
                 ],
                 "title": "Role"
             },
+            "RosterContactsRequest": {
+                "type": "object",
+                "description": "Emails or phones for sponsored agents not on REOS: one line each, the TREC licence number then the contact (A15.1b).",
+                "properties": {
+                    "lines": {
+                        "type": "string",
+                        "maxLength": 200000
+                    }
+                },
+                "required": [
+                    "lines"
+                ],
+                "title": "RosterContactsRequest"
+            },
             "SaveCalendarEventRequest": {
                 "type": "object",
                 "description": "An appointment made or changed in REOS (\"New appointment\" sheet). Timed\nevents send `starts_at` and `ends_at`; all-day events send `start_date`\nand `end_date` (the last day, inclusive).",
@@ -67275,6 +67971,28 @@
                     "guests"
                 ],
                 "title": "ScheduleSessionRequest"
+            },
+            "SeatsRequest": {
+                "type": "object",
+                "description": "Who pays for agents' seats, and whether AI credits are pooled (A15.1b).",
+                "properties": {
+                    "payer": {
+                        "type": "string",
+                        "enum": [
+                            "organisation",
+                            "member",
+                            "split"
+                        ]
+                    },
+                    "credits_pooled": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "payer",
+                    "credits_pooled"
+                ],
+                "title": "SeatsRequest"
             },
             "SendForSignatureRequest": {
                 "type": "object",

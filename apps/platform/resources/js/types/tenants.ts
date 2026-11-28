@@ -35,7 +35,7 @@ export type TenantRow = {
 
 export type TenantLimits = {
     seats: number | null;
-    payer: 'organisation' | 'member';
+    payer: 'organisation' | 'member' | 'split';
     credits_per_seat: number;
     credits_pooled: boolean;
     candidate_pool: number;
@@ -204,7 +204,7 @@ export type InviteOptions = {
         used: number;
         pending: number;
         left: number | null;
-        payer: 'organisation' | 'member';
+        payer: 'organisation' | 'member' | 'split';
     };
     locale: 'en' | 'es';
 };

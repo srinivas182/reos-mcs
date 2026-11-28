@@ -73,6 +73,23 @@
 - **Bring in your agents (screen 3):** every agent TREC lists under the brokerage's licence: already on REOS (linked to the brokerage when they accept), to invite, and teams found in the CRM. Invite all (email and text with the brokerage's link) or one at a time. Invitations expire in 14 days with one reminder.
 - **Seats and plan (screen 4):** who pays (agents, the brokerage, or split), pooled AI credits per seat (monthly, no roll-over), the candidate sponsorship pool and team seats. Changes are confirmed on reos.com; nothing is sold in the app.
 - **Done when:** a broker invites every sponsored agent in one step and chooses who pays.
+- **As built, A15.1b** (ADR 0070):
+  - **Data:** `brokerage_roster_contacts` (an email or phone per TREC licence number, with row-level security), and the payer `split` in tenant limits.
+  - **Services:**
+    - `App\Brokerage\Roster`:
+      - for: sponsored agents (SALE and BRK, active, sponsored by the brokerage's TREC number) with state and counts, never showing an agent's account details;
+      - contacts: "licence, email or phone" lines, refusing agents not on the roster;
+      - inviteAll: through `Invitations::invite`, in batches of 500.
+    - `App\Brokerage\BrokerageSeats`: show (seats used and invited, payer, credits per seat, pooled, the pool, the candidate pool, teams) and choose (audited).
+    - `App\Brokerage\BrokerageAccess`: the broker role at the brokerage itself.
+  - **Routes:**
+    - API: `GET /api/v1/organisation/roster`, `POST /api/v1/organisation/roster/contacts`, `POST /api/v1/organisation/roster/invite`, and `GET` and `PUT /api/v1/organisation/seats`.
+    - Web: the same actions under `organisation/`.
+  - **Web:**
+    - Agents (screen 32) shows Bring in your agents (`trec-roster`) for a verified brokerage.
+    - Brokerage settings (screen 41) shows Seats and who pays (`seats-card`).
+  - **Phone:** Me → Your brokerage (`brokerage/index`: the checklist, roster and seats), `brokerage/roster` (Invite all), `brokerage/seats`, and `brokerage/verify` for anyone setting one up.
+  - **Done when:** a Pest test has Grace's brokerage find Maria Lopez (needs a contact) and Omar Haddad (on REOS) on TREC. Maria's email is added, and James's line is refused because Bayou City Homes doesn't sponsor him. One Invite all sends both invitations, and a second sends none. When Omar accepts he's in the brokerage. Grace then chooses split with credits not pooled, which completes the seats step.
 
 ### A15.2 People, permissions and policies (Team A)
 

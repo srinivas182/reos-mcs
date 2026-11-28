@@ -17,6 +17,8 @@ use App\Http\Controllers\Api\Billing\MembershipController;
 use App\Http\Controllers\Api\Bookings\BookingController;
 use App\Http\Controllers\Api\Brokerage\BrokerageSetupController;
 use App\Http\Controllers\Api\Brokerage\BrokerVerificationController;
+use App\Http\Controllers\Api\Brokerage\RosterController;
+use App\Http\Controllers\Api\Brokerage\SeatsController;
 use App\Http\Controllers\Api\Calendar\CalendarController;
 use App\Http\Controllers\Api\Catalogue\CatalogueController;
 use App\Http\Controllers\Api\Ce\CeWalletController;
@@ -569,6 +571,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('open-houses/{openHouse}/visits', [OpenHouseController::class, 'sync'])->whereUuid('openHouse')->middleware('throttle:30,1,api-open-houses-sync')->name('api.open-houses.sync');
     // The brokerage's setup checklist (A15.1a).
     Route::get('organisation/setup', BrokerageSetupController::class)->name('api.brokerage.setup');
+    // Bring in your agents, and seats and who pays (A15.1b).
+    Route::get('organisation/roster', [RosterController::class, 'index'])->name('api.brokerage.roster');
+    Route::post('organisation/roster/contacts', [RosterController::class, 'contacts'])->middleware('throttle:10,1,api-roster-contacts')->name('api.brokerage.roster.contacts');
+    Route::post('organisation/roster/invite', [RosterController::class, 'invite'])->middleware('throttle:5,1,api-roster-invite')->name('api.brokerage.roster.invite');
+    Route::get('organisation/seats', [SeatsController::class, 'show'])->name('api.brokerage.seats');
+    Route::put('organisation/seats', [SeatsController::class, 'update'])->middleware('throttle:20,1,api-seats')->name('api.brokerage.seats.update');
     // Verify your brokerage (A15.1a): the designated broker's TREC check before the brokerage is created.
     Route::middleware('throttle:20,1,api-broker-verify')->group(function () {
         Route::post('brokerage/verify/lookup', [BrokerVerificationController::class, 'lookup'])->name('api.brokerage.verify.lookup');

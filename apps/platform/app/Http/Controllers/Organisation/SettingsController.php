@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Organisation;
 
 use App\Authorization\Role;
+use App\Brokerage\BrokerageSeats;
 use App\Enums\OrganisationType;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Tenancy\TenantDomainResource;
@@ -52,6 +53,8 @@ final class SettingsController extends Controller
             'people' => self::people($tenant),
             // "Invite admins" (A4.3a).
             'invite' => $invitations->options($tenant),
+            // Seats and who pays (A15.1b, broker journey screen 4): brokerages only.
+            'seatsPlan' => $tenant->type === OrganisationType::Brokerage ? app(BrokerageSeats::class)->show($tenant) : null,
         ]);
     }
 

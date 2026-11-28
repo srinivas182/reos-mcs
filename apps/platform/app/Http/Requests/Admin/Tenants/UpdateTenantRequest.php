@@ -30,7 +30,7 @@ final class UpdateTenantRequest extends FormRequest
             'features' => ['sometimes', 'array:'.implode(',', $switchable)],
             'limits' => ['sometimes', 'array:seats,payer,credits_per_seat,credits_pooled,candidate_pool,rate_limit,queue_weight,log_retention_years,deleted_user_days'],
             'limits.seats' => ['nullable', 'integer', 'min:1', 'max:100000'],
-            'limits.payer' => ['sometimes', Rule::in([TenantLimits::PAYER_ORGANISATION, TenantLimits::PAYER_MEMBER])],
+            'limits.payer' => ['sometimes', Rule::in(TenantLimits::PAYERS)],
             'limits.credits_per_seat' => ['sometimes', 'integer', 'min:0', 'max:100000'],
             'limits.credits_pooled' => ['sometimes', 'boolean'],
             'limits.candidate_pool' => ['sometimes', 'integer', 'min:0', 'max:10000000'],

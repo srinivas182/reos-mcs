@@ -44,3 +44,46 @@ export type BrokerageSetupData = {
     total: number;
     steps: { key: SetupStepKey; done: boolean; href: string }[];
 };
+
+export type RosterState =
+    | 'member'
+    | 'invited'
+    | 'on_reos'
+    | 'contact'
+    | 'needs_contact';
+
+export type TrecRosterData = {
+    trec_number: string | null;
+    counts: {
+        sponsored: number;
+        member: number;
+        invited: number;
+        on_reos: number;
+        contact: number;
+        needs_contact: number;
+    };
+    agents: {
+        licence: string;
+        name: string;
+        type: string;
+        expires_on: string | null;
+        state: RosterState;
+        contact: string | null;
+    }[];
+};
+
+export type Payer = 'organisation' | 'member' | 'split';
+
+export type SeatsPlan = {
+    seats: number | null;
+    used: number;
+    pending: number;
+    left: number | null;
+    payer: Payer;
+    credits_per_seat: number;
+    credits_pooled: boolean;
+    pool: number | null;
+    candidate_pool: number;
+    teams: number;
+    chosen: boolean;
+};

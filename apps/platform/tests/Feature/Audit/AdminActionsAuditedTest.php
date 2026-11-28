@@ -1055,6 +1055,21 @@ function adminActions(): array
 
             return auditCase($linda, 'POST', '/organisation/seats/request', tenant: $lone->id);
         },
+        'roster.contacts' => function () {
+            [$lone, $linda] = auditBrokerage();
+
+            return auditCase($linda, 'POST', '/organisation/roster/contacts', ['lines' => '0722222, maria@example.com'], $lone->id);
+        },
+        'roster.invite' => function () {
+            [$lone, $linda] = auditBrokerage();
+
+            return auditCase($linda, 'POST', '/organisation/roster/invite', tenant: $lone->id);
+        },
+        'seats.update' => function () {
+            [$lone, $linda] = auditBrokerage();
+
+            return auditCase($linda, 'PUT', '/organisation/seats', ['payer' => 'split', 'credits_pooled' => true], $lone->id);
+        },
     ];
 }
 
