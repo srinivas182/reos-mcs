@@ -90,7 +90,7 @@ export function SharePanel({
 
     const load = () =>
         getJson<{ data: DealCoordinators }>(routes.list)
-            .then((r) => setView(r.data))
+            .then((r) => setView(r.data ?? { coordinators: [], shares: [] }))
             .catch(() => setView({ coordinators: [], shares: [] }));
 
     useEffect(() => {
