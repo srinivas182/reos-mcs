@@ -165,6 +165,42 @@
 - **Network rules:** five rules (flat fee only, no payments or gifts to agents for business, client contact only with consent, advertising follows Texas and licence rules, no spam), accepted with the date and version, asked again when they change.
 - **Monthly re-checks:** an expired or inactive licence hides the profile until it's fixed.
 - **Done when:** a loan officer goes live in 10 minutes.
+- **As built, B15.2** (ADR 0074):
+  - **Data:**
+    - `provider_profiles` gains status, hidden reason, welcome, business details, state, tier, provider business, rules version and acceptance date, and the live and checked times.
+    - `provider_service_areas`.
+    - `provider_licences.document_path`: the photo ID for a `business_id` check.
+  - **Services:**
+    - `App\ProviderNetwork\ProviderOnboarding`: status, welcome, business, add and remove area, checkout, planBought, acceptRules and refresh (joining, waiting, live or hidden).
+    - `ServiceAreas`: agents from MLS listing agents in the last 12 months, and providers in the category.
+    - `ProviderPlans`: Listed, Pro and Partner as checkout products in step with the admin's price.
+    - `NetworkRules` (`VERSION`, five rules).
+    - `ProviderLicences::recheck` and `reos:providers:recheck`, monthly on the 2nd.
+    - The `provider_network` flag, off by default (decision 5).
+    - `TenantSignups` gains the `provider` type, and its public start page stays brokerages and schools.
+  - **Routes:**
+    - API: `GET /api/v1/provider/join`, and `POST` to `welcome`, `business`, `areas`, `plan` and `rules` under `/api/v1/provider/join`, plus `DELETE /api/v1/provider/join/areas/{area}`.
+    - Web: the same, plus `provider/join/status`.
+    - Admin: `admin/people/provider-licences/{licence}/document`, where the reviewer views the photo ID.
+  - **Web:** Join the provider network (`join-wizard`): the steps with their progress, the status at the top, the category step from B15.1, the licence or business details with the ID, the areas with counts and Undo, Listed, Pro and Partner, and the rules. The admin's review queue links to the photo ID.
+  - **Phone:**
+    - Me → Join the provider network (`provider/join`, with the welcome and the steps);
+    - What you do (`provider/category`);
+    - License (`provider/licence`, with the photo ID from the files);
+    - Service areas (`provider/areas`);
+    - Plan (`provider/plan`, opening reos.com);
+    - Network rules (`provider/rules`).
+  - **Done when:** a Pest test takes Maya Chen, a loan officer, through every step:
+    - welcome, the loan officer category and her NMLS ID;
+    - Katy (3 agents) and 15 miles around 77494 (4 agents);
+    - Listed refused for two areas, Pro paid through checkout (the Provider role on her business);
+    - an old rules version refused, then the current one accepted.
+
+    A reviewer approves the NMLS ID, and her profile is live within 10 minutes. Other tests cover:
+    - waiting until the network opens;
+    - an expired TREC inspector licence hidden at the re-check and shown again once renewed;
+    - a photographer's photo ID reviewed;
+    - the 10-area limit.
 
 ### B15.3 Provider profile (Team B)
 

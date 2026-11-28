@@ -92,3 +92,5 @@ Schedule::command('reos:agents:briefs')->everyFiveMinutes()->withoutOverlapping(
 Schedule::command('reos:certificates:prune')->dailyAt('04:25')->onOneServer();
 // Approvals waiting past the brokerage's working hours go to the office admins (A15.3).
 Schedule::command('reos:approvals:fallback')->everyFifteenMinutes()->withoutOverlapping()->onOneServer();
+// Providers' licences, monthly after the regulators' imports (B15.2): an expired licence hides the profile.
+Schedule::command('reos:providers:recheck')->monthlyOn(2, '05:10')->withoutOverlapping()->onOneServer();

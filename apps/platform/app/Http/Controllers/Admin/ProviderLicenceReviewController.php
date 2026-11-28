@@ -9,12 +9,16 @@ use App\Http\Requests\Admin\RejectLicenceRequest;
 use App\Licences\ProviderLicences;
 use App\Models\ProviderLicence;
 use App\Models\User;
+use App\Services\Audit\AuditLogger;
 use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * Provider licence reviews (B10.3): NMLS IDs (checked on NMLS Consumer
- * Access), and TREC or TDI numbers with no record or another name.
+ * Access), TREC or TDI numbers with no record or another name, and photo
+ * IDs for categories without a licence (B15.2).
  */
 final class ProviderLicenceReviewController extends Controller
 {
@@ -32,5 +36,14 @@ final class ProviderLicenceReviewController extends Controller
         $licences->reject($licence, $reviewer, $request->note());
 
         return back();
+    }
+
+    /** The photo ID behind a business_id check (B15.2), for the reviewer only. */
+    public function document(ProviderLicence $licence, #[CurrentUser] User $reviewer, AuditLogger $audit): StreamedResponse
+    {
+        abort_unless($licence->kind === 'business_id' && $licence->document_path !== null, 404);
+        $audit->record('provider_licence.document_viewed', 'provider_licence', (string) $licence->id, ['person' => $licence->user_id], $reviewer);
+
+        return Storage::disk(config()->string('reos.content.disk'))->response($licence->document_path, null, ['Cache-Control' => 'private, no-store']);
     }
 }

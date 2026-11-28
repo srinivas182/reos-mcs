@@ -101,6 +101,7 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:people.ma
             // Providers' professional licences (B10.3): NMLS IDs and numbers with no regulator match.
             Route::post('provider-licences/{licence}/approve', [ProviderLicenceReviewController::class, 'approve'])->whereNumber('licence')->name('provider-licences.approve');
             Route::post('provider-licences/{licence}/reject', [ProviderLicenceReviewController::class, 'reject'])->whereNumber('licence')->name('provider-licences.reject');
+            Route::get('provider-licences/{licence}/document', [ProviderLicenceReviewController::class, 'document'])->whereNumber('licence')->name('provider-licences.document');
         });
     });
 

@@ -55,10 +55,13 @@ export function CategoryStep({
     categories,
     joining: initial,
     routes,
+    onChanged,
 }: {
     categories: CategoryCard[];
     joining: Joining;
     routes: JoinRoutes;
+    /** Told after a choice or saved answers (the joining steps refresh). */
+    onChanged?: (joining: Joining) => void;
 }) {
     const { t, i18n } = useTranslation();
     const ids = useId();
@@ -72,13 +75,13 @@ export function CategoryStep({
         setErrors({});
 
         try {
-            setJoining(
-                (
-                    await putJson<{ data: Joining }>(routes.category, {
-                        category: key,
-                    })
-                ).data,
-            );
+            const next = (
+                await putJson<{ data: Joining }>(routes.category, {
+                    category: key,
+                })
+            ).data;
+            setJoining(next);
+            onChanged?.(next);
         } catch (e) {
             setErrors(errorsOf(e));
         } finally {
@@ -180,7 +183,10 @@ export function CategoryStep({
                     key={joining.category.key}
                     joining={joining}
                     route={routes.fields}
-                    onSaved={setJoining}
+                    onSaved={(next) => {
+                        setJoining(next);
+                        onChanged?.(next);
+                    }}
                 />
             ) : null}
 

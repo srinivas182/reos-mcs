@@ -78,6 +78,7 @@ use App\Http\Controllers\Api\Practice\TopicPlanController;
 use App\Http\Controllers\Api\Privacy\ConsentController;
 use App\Http\Controllers\Api\Providers\JoiningController;
 use App\Http\Controllers\Api\Providers\ProviderLicenceController;
+use App\Http\Controllers\Api\Providers\ProviderOnboardingController;
 use App\Http\Controllers\Api\Releases\WhatsNewController;
 use App\Http\Controllers\Api\Rewards\RewardsController;
 use App\Http\Controllers\Api\RolePlay\RolePlayController;
@@ -475,6 +476,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('provider/profile', [JoiningController::class, 'show'])->name('api.provider.profile');
     Route::put('provider/profile/category', [JoiningController::class, 'choose'])->middleware('throttle:30,1,api-provider-profile')->name('api.provider.profile.category');
     Route::put('provider/profile/fields', [JoiningController::class, 'fields'])->middleware('throttle:30,1,api-provider-profile')->name('api.provider.profile.fields');
+    // Joining as a provider (B15.2): the steps, business details, areas, plan and network rules.
+    Route::get('provider/join', [ProviderOnboardingController::class, 'show'])->name('api.provider.join');
+    Route::post('provider/join/welcome', [ProviderOnboardingController::class, 'welcome'])->middleware('throttle:30,1,api-provider-join')->name('api.provider.join.welcome');
+    Route::post('provider/join/business', [ProviderOnboardingController::class, 'business'])->middleware('throttle:10,1,api-provider-business')->name('api.provider.join.business');
+    Route::post('provider/join/areas', [ProviderOnboardingController::class, 'addArea'])->middleware('throttle:30,1,api-provider-join')->name('api.provider.join.areas.store');
+    Route::delete('provider/join/areas/{area}', [ProviderOnboardingController::class, 'removeArea'])->whereNumber('area')->middleware('throttle:30,1,api-provider-join')->name('api.provider.join.areas.destroy');
+    Route::post('provider/join/plan', [ProviderOnboardingController::class, 'plan'])->middleware('throttle:10,1,api-provider-plan')->name('api.provider.join.plan');
+    Route::post('provider/join/rules', [ProviderOnboardingController::class, 'rules'])->middleware('throttle:10,1,api-provider-join')->name('api.provider.join.rules');
     // CMAs for my listings and my public page (B10.2b).
     Route::get('listings/{listing}/cma', [CmaController::class, 'show'])->whereUuid('listing')->middleware('throttle:30,1,api-listing-cma')->name('api.listings.cma');
     Route::get('listings/page', [CmaController::class, 'page'])->name('api.listings.page');

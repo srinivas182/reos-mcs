@@ -42,6 +42,7 @@ use App\Http\Controllers\Api\Practice\ReportController;
 use App\Http\Controllers\Api\Practice\SpeedRoundController;
 use App\Http\Controllers\Api\Practice\StudyGroupController;
 use App\Http\Controllers\Api\Providers\JoiningController;
+use App\Http\Controllers\Api\Providers\ProviderOnboardingController;
 use App\Http\Controllers\Api\Social\ContentCalendarController;
 use App\Http\Controllers\Api\Social\SocialController;
 use App\Http\Controllers\Api\Studio\CandidateStudioController;
@@ -164,7 +165,7 @@ Route::middleware(['auth', 'verified', 'throttle:20,1,broker-verify'])->prefix('
     Route::post('lookup', [BrokerVerificationController::class, 'lookup'])->name('lookup');
     Route::post('confirm', [BrokerVerificationController::class, 'confirm'])->name('confirm');
 });
-Route::middleware(['auth', 'verified'])->prefix('start/{kind}')->whereIn('kind', array_keys(TenantSignups::TYPES))->name('start.')->group(function () {
+Route::middleware(['auth', 'verified'])->prefix('start/{kind}')->whereIn('kind', TenantSignups::PUBLIC)->name('start.')->group(function () {
     Route::get('/', [TenantSignupController::class, 'show'])->name('show');
     Route::post('/', [TenantSignupController::class, 'store'])->middleware('throttle:10,1,tenant-signup')->name('store');
 });
@@ -516,6 +517,14 @@ Route::middleware(['auth', 'verified'])->prefix('provider')->name('provider-join
     Route::post('categories/requests', [JoiningController::class, 'request'])->middleware('throttle:5,1,provider-category-request')->name('categories.request');
     Route::put('profile/category', [JoiningController::class, 'choose'])->middleware('throttle:30,1,provider-profile')->name('category');
     Route::put('profile/fields', [JoiningController::class, 'fields'])->middleware('throttle:30,1,provider-profile')->name('fields');
+    // The rest of joining (B15.2): welcome, business details, areas, plan and rules; the licence step uses settings/provider-licences.
+    Route::get('join/status', [ProviderOnboardingController::class, 'show'])->name('status');
+    Route::post('join/welcome', [ProviderOnboardingController::class, 'welcome'])->middleware('throttle:30,1,provider-join')->name('welcome');
+    Route::post('join/business', [ProviderOnboardingController::class, 'business'])->middleware('throttle:10,1,provider-business')->name('business');
+    Route::post('join/areas', [ProviderOnboardingController::class, 'addArea'])->middleware('throttle:30,1,provider-join')->name('areas.store');
+    Route::delete('join/areas/{area}', [ProviderOnboardingController::class, 'removeArea'])->whereNumber('area')->middleware('throttle:30,1,provider-join')->name('areas.destroy');
+    Route::post('join/plan', [ProviderOnboardingController::class, 'plan'])->middleware('throttle:10,1,provider-plan')->name('plan');
+    Route::post('join/rules', [ProviderOnboardingController::class, 'rules'])->middleware('throttle:10,1,provider-join')->name('rules');
 });
 // Branding and domain (A4.2a, screen 57): the organisation managed in the active role.
 Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisation.manage'])->prefix('organisation/branding')->name('branding.')->group(function () {
