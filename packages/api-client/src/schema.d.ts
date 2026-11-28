@@ -4950,6 +4950,140 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/provider/join": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Where I am in joining
+         * @description Each step and whether it's done, my status (joining, waiting, live or hidden), and what each step needs.
+         */
+        get: operations["provider.join"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/provider/join/welcome": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** I've read the welcome */
+        post: operations["provider.join.welcome"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/provider/join/business": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * My business details and photo ID
+         * @description For categories without a licence. A REOS reviewer checks the ID.
+         */
+        post: operations["provider.join.business"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/provider/join/areas": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Add a service area
+         * @description A city, a ZIP code, or a radius in miles around a ZIP code; up to 10. Each shows the active agents there and the providers in my category who serve it.
+         */
+        post: operations["provider.join.areas.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/provider/join/areas/{area}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Remove a service area */
+        delete: operations["provider.join.areas.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/provider/join/plan": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Buy a plan on reos.com
+         * @description Listed, Pro or Partner at the category's flat monthly price in my state. Returns the checkout page to open in the browser.
+         */
+        post: operations["provider.join.plan"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/provider/join/rules": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Accept the network rules
+         * @description The five rules at their current version; asked again when they change.
+         */
+        post: operations["provider.join.rules"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/me/push-devices": {
         parameters: {
             query?: never;
@@ -7137,6 +7271,19 @@ export interface components {
             topic: string;
             text: string;
         };
+        /**
+         * BusinessDetailsRequest
+         * @description Business details and a photo ID, for a category without a licence (B15.2).
+         */
+        BusinessDetailsRequest: {
+            name: string;
+            address: string;
+            /**
+             * Format: binary
+             * @description A photo of a driver's license or passport: JPEG, PNG or PDF, up to 10 MB. Needed the first time.
+             */
+            id_photo?: string | null;
+        };
         /** CalendarEventResource */
         CalendarEventResource: {
             id: number;
@@ -8093,6 +8240,14 @@ export interface components {
             };
         };
         /**
+         * PlanRequest
+         * @description The plan to buy: basic (Listed), pro or premium (Partner) (B15.2).
+         */
+        PlanRequest: {
+            /** @enum {string} */
+            tier: "basic" | "pro" | "premium";
+        };
+        /**
          * PlanTaskRequest
          * @description A plan task ticked or unticked, for its week (A11.1b).
          */
@@ -8301,6 +8456,15 @@ export interface components {
             lines: string;
         };
         /**
+         * RulesRequest
+         * @description Accepting the network rules: the version the provider read (B15.2).
+         */
+        RulesRequest: {
+            version: string;
+            /** @enum {unknown} */
+            accept: "yes" | "on" | "1" | 1 | "true" | true;
+        };
+        /**
          * SaveCalendarEventRequest
          * @description An appointment made or changed in REOS ("New appointment" sheet). Timed
          *     events send `starts_at` and `ends_at`; all-day events send `start_date`
@@ -8495,6 +8659,17 @@ export interface components {
             files?: string[] | null;
             /** Format: uuid */
             reply_to?: string | null;
+        };
+        /**
+         * ServiceAreaRequest
+         * @description A service area: a city, a ZIP code, or a radius in miles around a ZIP code (B15.2).
+         */
+        ServiceAreaRequest: {
+            /** @enum {string} */
+            kind: "city" | "zip" | "radius";
+            city?: string | null;
+            postal_code?: string | null;
+            radius_miles?: number | null;
         };
         /**
          * SessionNotesRequest
@@ -8828,6 +9003,7 @@ export type SchemaBriefSettingsRequest = components['schemas']['BriefSettingsReq
 export type SchemaBrokerLicenceRequest = components['schemas']['BrokerLicenceRequest'];
 export type SchemaBrokerRole = components['schemas']['BrokerRole'];
 export type SchemaBrokerageRuleRequest = components['schemas']['BrokerageRuleRequest'];
+export type SchemaBusinessDetailsRequest = components['schemas']['BusinessDetailsRequest'];
 export type SchemaCalendarEventResource = components['schemas']['CalendarEventResource'];
 export type SchemaCalendarMode = components['schemas']['CalendarMode'];
 export type SchemaCatalogueItemResource = components['schemas']['CatalogueItemResource'];
@@ -8890,6 +9066,7 @@ export type SchemaParseVoiceRequest = components['schemas']['ParseVoiceRequest']
 export type SchemaPhoneContactsRequest = components['schemas']['PhoneContactsRequest'];
 export type SchemaPhoneStartRequest = components['schemas']['PhoneStartRequest'];
 export type SchemaPhoneVerifyRequest = components['schemas']['PhoneVerifyRequest'];
+export type SchemaPlanRequest = components['schemas']['PlanRequest'];
 export type SchemaPlanTaskRequest = components['schemas']['PlanTaskRequest'];
 export type SchemaPolicyCheckRequest = components['schemas']['PolicyCheckRequest'];
 export type SchemaPostRequest = components['schemas']['PostRequest'];
@@ -8909,6 +9086,7 @@ export type SchemaReportRequest = components['schemas']['ReportRequest'];
 export type SchemaReviewVideoRequest = components['schemas']['ReviewVideoRequest'];
 export type SchemaRole = components['schemas']['Role'];
 export type SchemaRosterContactsRequest = components['schemas']['RosterContactsRequest'];
+export type SchemaRulesRequest = components['schemas']['RulesRequest'];
 export type SchemaSaveCalendarEventRequest = components['schemas']['SaveCalendarEventRequest'];
 export type SchemaSaveCertificateRequest = components['schemas']['SaveCertificateRequest'];
 export type SchemaSaveFlashcardRequest = components['schemas']['SaveFlashcardRequest'];
@@ -8919,6 +9097,7 @@ export type SchemaScheduleSessionRequest = components['schemas']['ScheduleSessio
 export type SchemaSeatsRequest = components['schemas']['SeatsRequest'];
 export type SchemaSendForSignatureRequest = components['schemas']['SendForSignatureRequest'];
 export type SchemaSendMessageRequest = components['schemas']['SendMessageRequest'];
+export type SchemaServiceAreaRequest = components['schemas']['ServiceAreaRequest'];
 export type SchemaSessionNotesRequest = components['schemas']['SessionNotesRequest'];
 export type SchemaSessionOfferRequest = components['schemas']['SessionOfferRequest'];
 export type SchemaShareRequest = components['schemas']['ShareRequest'];
@@ -24643,6 +24822,742 @@ export interface operations {
                             checked_via: string | null;
                             review_note: string | null;
                             consumer_url: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "provider.join": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            status: string;
+                            hidden_reason: string | null;
+                            steps: {
+                                /** @enum {string} */
+                                key: "welcome" | "category" | "licence" | "areas" | "plan" | "rules";
+                                done: boolean;
+                            }[];
+                            done: number;
+                            joining: {
+                                category: {
+                                    key: string;
+                                    name: string;
+                                    description: string | null;
+                                    licence: {
+                                        /** @enum {string} */
+                                        kind: "nmls" | "trec_inspector" | "tdi" | "business";
+                                        label: string | null;
+                                    };
+                                    fields: {
+                                        key: string;
+                                        label: string;
+                                        /** @enum {string} */
+                                        type: "text" | "list" | "yes_no";
+                                        options: string[];
+                                    }[];
+                                    areas_on_pro: number;
+                                    prices: {
+                                        basic: number | null;
+                                        pro: number | null;
+                                        premium: number | null;
+                                    };
+                                } | null;
+                                fields: {
+                                    [key: string]: string | boolean | string[];
+                                };
+                                missing: string[];
+                            };
+                            licence: {
+                                kind: string;
+                                licences: {
+                                    id: number;
+                                    kind: string;
+                                    number: string;
+                                    status: string;
+                                    name_on_record: string | null;
+                                    licence_type: string | null;
+                                    expires_on: string | null;
+                                    checked_via: string | null;
+                                    review_note: string | null;
+                                    consumer_url: string | null;
+                                }[];
+                                business: {
+                                    name: string | null;
+                                    address: string | null;
+                                } | null;
+                                verified: boolean;
+                            };
+                            areas: {
+                                id: number;
+                                /** @enum {string} */
+                                kind: "city" | "zip" | "radius";
+                                city: string | null;
+                                postal_code: string | null;
+                                radius_miles: number | null;
+                                agents: number;
+                                providers: number;
+                            }[];
+                            plans: {
+                                /** @enum {string} */
+                                tier: "basic" | "pro" | "premium";
+                                monthly: number;
+                                areas: number;
+                            }[];
+                            tier: string | null;
+                            rules: {
+                                version: string;
+                                keys: string[];
+                                accepted_at: string | null;
+                                current: boolean;
+                            };
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "provider.join.welcome": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            status: string;
+                            hidden_reason: string | null;
+                            steps: {
+                                /** @enum {string} */
+                                key: "welcome" | "category" | "licence" | "areas" | "plan" | "rules";
+                                done: boolean;
+                            }[];
+                            done: number;
+                            joining: {
+                                category: {
+                                    key: string;
+                                    name: string;
+                                    description: string | null;
+                                    licence: {
+                                        /** @enum {string} */
+                                        kind: "nmls" | "trec_inspector" | "tdi" | "business";
+                                        label: string | null;
+                                    };
+                                    fields: {
+                                        key: string;
+                                        label: string;
+                                        /** @enum {string} */
+                                        type: "text" | "list" | "yes_no";
+                                        options: string[];
+                                    }[];
+                                    areas_on_pro: number;
+                                    prices: {
+                                        basic: number | null;
+                                        pro: number | null;
+                                        premium: number | null;
+                                    };
+                                } | null;
+                                fields: {
+                                    [key: string]: string | boolean | string[];
+                                };
+                                missing: string[];
+                            };
+                            licence: {
+                                kind: string;
+                                licences: {
+                                    id: number;
+                                    kind: string;
+                                    number: string;
+                                    status: string;
+                                    name_on_record: string | null;
+                                    licence_type: string | null;
+                                    expires_on: string | null;
+                                    checked_via: string | null;
+                                    review_note: string | null;
+                                    consumer_url: string | null;
+                                }[];
+                                business: {
+                                    name: string | null;
+                                    address: string | null;
+                                } | null;
+                                verified: boolean;
+                            };
+                            areas: {
+                                id: number;
+                                /** @enum {string} */
+                                kind: "city" | "zip" | "radius";
+                                city: string | null;
+                                postal_code: string | null;
+                                radius_miles: number | null;
+                                agents: number;
+                                providers: number;
+                            }[];
+                            plans: {
+                                /** @enum {string} */
+                                tier: "basic" | "pro" | "premium";
+                                monthly: number;
+                                areas: number;
+                            }[];
+                            tier: string | null;
+                            rules: {
+                                version: string;
+                                keys: string[];
+                                accepted_at: string | null;
+                                current: boolean;
+                            };
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "provider.join.business": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["BusinessDetailsRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            status: string;
+                            hidden_reason: string | null;
+                            steps: {
+                                /** @enum {string} */
+                                key: "welcome" | "category" | "licence" | "areas" | "plan" | "rules";
+                                done: boolean;
+                            }[];
+                            done: number;
+                            joining: {
+                                category: {
+                                    key: string;
+                                    name: string;
+                                    description: string | null;
+                                    licence: {
+                                        /** @enum {string} */
+                                        kind: "nmls" | "trec_inspector" | "tdi" | "business";
+                                        label: string | null;
+                                    };
+                                    fields: {
+                                        key: string;
+                                        label: string;
+                                        /** @enum {string} */
+                                        type: "text" | "list" | "yes_no";
+                                        options: string[];
+                                    }[];
+                                    areas_on_pro: number;
+                                    prices: {
+                                        basic: number | null;
+                                        pro: number | null;
+                                        premium: number | null;
+                                    };
+                                } | null;
+                                fields: {
+                                    [key: string]: string | boolean | string[];
+                                };
+                                missing: string[];
+                            };
+                            licence: {
+                                kind: string;
+                                licences: {
+                                    id: number;
+                                    kind: string;
+                                    number: string;
+                                    status: string;
+                                    name_on_record: string | null;
+                                    licence_type: string | null;
+                                    expires_on: string | null;
+                                    checked_via: string | null;
+                                    review_note: string | null;
+                                    consumer_url: string | null;
+                                }[];
+                                business: {
+                                    name: string | null;
+                                    address: string | null;
+                                } | null;
+                                verified: boolean;
+                            };
+                            areas: {
+                                id: number;
+                                /** @enum {string} */
+                                kind: "city" | "zip" | "radius";
+                                city: string | null;
+                                postal_code: string | null;
+                                radius_miles: number | null;
+                                agents: number;
+                                providers: number;
+                            }[];
+                            plans: {
+                                /** @enum {string} */
+                                tier: "basic" | "pro" | "premium";
+                                monthly: number;
+                                areas: number;
+                            }[];
+                            tier: string | null;
+                            rules: {
+                                version: string;
+                                keys: string[];
+                                accepted_at: string | null;
+                                current: boolean;
+                            };
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "provider.join.areas.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ServiceAreaRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            status: string;
+                            hidden_reason: string | null;
+                            steps: {
+                                /** @enum {string} */
+                                key: "welcome" | "category" | "licence" | "areas" | "plan" | "rules";
+                                done: boolean;
+                            }[];
+                            done: number;
+                            joining: {
+                                category: {
+                                    key: string;
+                                    name: string;
+                                    description: string | null;
+                                    licence: {
+                                        /** @enum {string} */
+                                        kind: "nmls" | "trec_inspector" | "tdi" | "business";
+                                        label: string | null;
+                                    };
+                                    fields: {
+                                        key: string;
+                                        label: string;
+                                        /** @enum {string} */
+                                        type: "text" | "list" | "yes_no";
+                                        options: string[];
+                                    }[];
+                                    areas_on_pro: number;
+                                    prices: {
+                                        basic: number | null;
+                                        pro: number | null;
+                                        premium: number | null;
+                                    };
+                                } | null;
+                                fields: {
+                                    [key: string]: string | boolean | string[];
+                                };
+                                missing: string[];
+                            };
+                            licence: {
+                                kind: string;
+                                licences: {
+                                    id: number;
+                                    kind: string;
+                                    number: string;
+                                    status: string;
+                                    name_on_record: string | null;
+                                    licence_type: string | null;
+                                    expires_on: string | null;
+                                    checked_via: string | null;
+                                    review_note: string | null;
+                                    consumer_url: string | null;
+                                }[];
+                                business: {
+                                    name: string | null;
+                                    address: string | null;
+                                } | null;
+                                verified: boolean;
+                            };
+                            areas: {
+                                id: number;
+                                /** @enum {string} */
+                                kind: "city" | "zip" | "radius";
+                                city: string | null;
+                                postal_code: string | null;
+                                radius_miles: number | null;
+                                agents: number;
+                                providers: number;
+                            }[];
+                            plans: {
+                                /** @enum {string} */
+                                tier: "basic" | "pro" | "premium";
+                                monthly: number;
+                                areas: number;
+                            }[];
+                            tier: string | null;
+                            rules: {
+                                version: string;
+                                keys: string[];
+                                accepted_at: string | null;
+                                current: boolean;
+                            };
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "provider.join.areas.destroy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                area: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            status: string;
+                            hidden_reason: string | null;
+                            steps: {
+                                /** @enum {string} */
+                                key: "welcome" | "category" | "licence" | "areas" | "plan" | "rules";
+                                done: boolean;
+                            }[];
+                            done: number;
+                            joining: {
+                                category: {
+                                    key: string;
+                                    name: string;
+                                    description: string | null;
+                                    licence: {
+                                        /** @enum {string} */
+                                        kind: "nmls" | "trec_inspector" | "tdi" | "business";
+                                        label: string | null;
+                                    };
+                                    fields: {
+                                        key: string;
+                                        label: string;
+                                        /** @enum {string} */
+                                        type: "text" | "list" | "yes_no";
+                                        options: string[];
+                                    }[];
+                                    areas_on_pro: number;
+                                    prices: {
+                                        basic: number | null;
+                                        pro: number | null;
+                                        premium: number | null;
+                                    };
+                                } | null;
+                                fields: {
+                                    [key: string]: string | boolean | string[];
+                                };
+                                missing: string[];
+                            };
+                            licence: {
+                                kind: string;
+                                licences: {
+                                    id: number;
+                                    kind: string;
+                                    number: string;
+                                    status: string;
+                                    name_on_record: string | null;
+                                    licence_type: string | null;
+                                    expires_on: string | null;
+                                    checked_via: string | null;
+                                    review_note: string | null;
+                                    consumer_url: string | null;
+                                }[];
+                                business: {
+                                    name: string | null;
+                                    address: string | null;
+                                } | null;
+                                verified: boolean;
+                            };
+                            areas: {
+                                id: number;
+                                /** @enum {string} */
+                                kind: "city" | "zip" | "radius";
+                                city: string | null;
+                                postal_code: string | null;
+                                radius_miles: number | null;
+                                agents: number;
+                                providers: number;
+                            }[];
+                            plans: {
+                                /** @enum {string} */
+                                tier: "basic" | "pro" | "premium";
+                                monthly: number;
+                                areas: number;
+                            }[];
+                            tier: string | null;
+                            rules: {
+                                version: string;
+                                keys: string[];
+                                accepted_at: string | null;
+                                current: boolean;
+                            };
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "provider.join.plan": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlanRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            checkout_url: string;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "provider.join.rules": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RulesRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            status: string;
+                            hidden_reason: string | null;
+                            steps: {
+                                /** @enum {string} */
+                                key: "welcome" | "category" | "licence" | "areas" | "plan" | "rules";
+                                done: boolean;
+                            }[];
+                            done: number;
+                            joining: {
+                                category: {
+                                    key: string;
+                                    name: string;
+                                    description: string | null;
+                                    licence: {
+                                        /** @enum {string} */
+                                        kind: "nmls" | "trec_inspector" | "tdi" | "business";
+                                        label: string | null;
+                                    };
+                                    fields: {
+                                        key: string;
+                                        label: string;
+                                        /** @enum {string} */
+                                        type: "text" | "list" | "yes_no";
+                                        options: string[];
+                                    }[];
+                                    areas_on_pro: number;
+                                    prices: {
+                                        basic: number | null;
+                                        pro: number | null;
+                                        premium: number | null;
+                                    };
+                                } | null;
+                                fields: {
+                                    [key: string]: string | boolean | string[];
+                                };
+                                missing: string[];
+                            };
+                            licence: {
+                                kind: string;
+                                licences: {
+                                    id: number;
+                                    kind: string;
+                                    number: string;
+                                    status: string;
+                                    name_on_record: string | null;
+                                    licence_type: string | null;
+                                    expires_on: string | null;
+                                    checked_via: string | null;
+                                    review_note: string | null;
+                                    consumer_url: string | null;
+                                }[];
+                                business: {
+                                    name: string | null;
+                                    address: string | null;
+                                } | null;
+                                verified: boolean;
+                            };
+                            areas: {
+                                id: number;
+                                /** @enum {string} */
+                                kind: "city" | "zip" | "radius";
+                                city: string | null;
+                                postal_code: string | null;
+                                radius_miles: number | null;
+                                agents: number;
+                                providers: number;
+                            }[];
+                            plans: {
+                                /** @enum {string} */
+                                tier: "basic" | "pro" | "premium";
+                                monthly: number;
+                                areas: number;
+                            }[];
+                            tier: string | null;
+                            rules: {
+                                version: string;
+                                keys: string[];
+                                accepted_at: string | null;
+                                current: boolean;
+                            };
                         };
                     };
                 };

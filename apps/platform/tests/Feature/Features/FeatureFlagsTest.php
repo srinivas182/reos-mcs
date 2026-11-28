@@ -228,11 +228,11 @@ describe('features and releases (screen 70)', function () {
 
         $this->actingAs($this->ops)->get('/admin/features')->assertOk()->assertInertia(fn (Assert $page) => $page
             ->component('admin/features/index')
-            ->has('flags', 9)
-            ->where('flags.6.key', 'messages')
-            ->where('flags.6.stage', 'tenants')
-            ->where('flags.6.tenants.0.name', 'Summit Realty')
-            ->where('flags.6.roles', ['agent', 'broker'])
+            ->has('flags', 10)
+            ->where('flags.7.key', 'messages')
+            ->where('flags.7.stage', 'tenants')
+            ->where('flags.7.tenants.0.name', 'Summit Realty')
+            ->where('flags.7.roles', ['agent', 'broker'])
             ->where('flags.0.tenant_feature', true)
             ->has('options.tenants', 2)
             ->where('options.window_minutes', 10));

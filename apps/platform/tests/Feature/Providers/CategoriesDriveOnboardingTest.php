@@ -56,7 +56,7 @@ describe('categories drive onboarding (B15.1)', function () {
         expect($done['missing'])->toBe([])
             ->and(ProviderProfile::query()->sole()->fields)->toBe(['rooms_per_month' => '12', 'styles' => ['Modern', 'Farmhouse'], 'owns_furniture_inventory' => true]);
 
-        $this->get('/provider/join')->assertOk()->assertInertia(fn (Assert $page) => $page->component('provider/join')->where('joining.category.key', 'home-stager'));
+        $this->get('/provider/join')->assertOk()->assertInertia(fn (Assert $page) => $page->component('provider/join')->where('onboarding.joining.category.key', 'home-stager'));
         $this->actingAs($this->ops)->get('/admin/provider-categories')->assertInertia(fn (Assert $page) => $page->where('categories', fn ($rows) => collect($rows)->firstWhere('key', 'home-stager')['providers'] === 1));
     });
 

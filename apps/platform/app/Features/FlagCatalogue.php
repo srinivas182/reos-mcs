@@ -21,6 +21,8 @@ final class FlagCatalogue
         'virtual_broker' => ['name' => 'Virtual broker', 'description' => 'Answers agents\' questions with the brokerage\'s policies.', 'owner' => 'Team A', 'stage' => RolloutStage::Everyone, 'tenant' => true],
         'contract_review' => ['name' => 'Contract review', 'description' => 'Checks contracts against the state forms before the broker sees them.', 'owner' => 'Team A', 'stage' => RolloutStage::Everyone, 'tenant' => true],
         'provider_marketplace' => ['name' => 'Provider marketplace', 'description' => 'Agents find and invite verified providers.', 'owner' => 'Team B', 'stage' => RolloutStage::Everyone, 'tenant' => true],
+        // Decision 5 (Sprint 15): providers go live only where the RESPA counsel review is signed off; per tenant or state.
+        'provider_network' => ['name' => 'Provider network', 'description' => 'Provider profiles go live once every step is done (B15.2).', 'owner' => 'Team B', 'stage' => RolloutStage::Off, 'tenant' => false],
         'recruiting_agents' => ['name' => 'Recruiting agents', 'description' => 'Brokerages see candidates who chose to be found.', 'owner' => 'Team A', 'stage' => RolloutStage::Off, 'tenant' => true],
         'ai_video_lessons' => ['name' => 'AI video lessons', 'description' => 'Lessons as narrated videos (paid add-on).', 'owner' => 'Team B', 'stage' => RolloutStage::Everyone, 'tenant' => true],
         'spanish_ui' => ['name' => 'Spanish', 'description' => 'The web app and the phone in Spanish.', 'owner' => 'Team A', 'stage' => RolloutStage::Everyone, 'tenant' => true],

@@ -60,6 +60,8 @@ final class PeopleController extends Controller
                 'name_on_record' => $licence->name_on_record,
                 'note' => $licence->review_note,
                 'consumer_url' => ProviderLicences::consumerUrl($licence->kind, $licence->number),
+                // The photo ID for a category without a licence (B15.2).
+                'document_url' => $licence->document_path === null ? null : route('people.provider-licences.document', $licence),
                 'created_at' => $licence->created_at?->toIso8601String(),
             ])->all(),
         ]);

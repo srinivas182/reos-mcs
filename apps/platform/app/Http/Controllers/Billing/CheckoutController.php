@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Billing;
 
-use App\Authorization\Role;
 use App\Billing\Checkout;
 use App\Billing\Gateways\Gateways;
 use App\Billing\Gateways\SimulatedGateway;
 use App\Billing\OrderStatus;
 use App\Billing\ProductKind;
 use App\Billing\ProductStatus;
-use App\Enums\OrganisationType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Billing\StartCheckoutRequest;
 use App\Models\Entitlement;
@@ -112,7 +110,7 @@ final class CheckoutController extends Controller
 
         // A new brokerage or school: its owner works there from now on.
         if ($signup?->organisation !== null && $signup->status === 'completed') {
-            $roles->choose($user, $signup->type === OrganisationType::School ? Role::SchoolAdmin : Role::Broker, $signup->organisation->id);
+            $roles->choose($user, TenantSignups::roleFor($signup->type), $signup->organisation->id);
         }
 
         return Inertia::render('billing/complete', [

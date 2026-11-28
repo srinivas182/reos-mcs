@@ -64,3 +64,84 @@ export function lowestPrice(category: ProviderCategory): number | null {
 
   return prices.length === 0 ? null : Math.min(...prices);
 }
+
+export type Onboarding = Got<'/provider/join'>['data'];
+export type StepKey = Onboarding['steps'][number]['key'];
+export type ServiceArea = Onboarding['areas'][number];
+export type Plan = Onboarding['plans'][number];
+
+/** The step screens, in order (provider screens 1–6). */
+export const STEP_SCREENS: Record<StepKey, string> = {
+  welcome: '/provider/join',
+  category: '/provider/category',
+  licence: '/provider/licence',
+  areas: '/provider/areas',
+  plan: '/provider/plan',
+  rules: '/provider/rules',
+};
+
+export async function loadOnboarding(): Promise<Onboarding | null> {
+  const { data } = await api().GET('/provider/join');
+
+  return data ? data.data : null;
+}
+
+export async function welcomeDone(): Promise<Onboarding> {
+  const { data, error } = await api().POST('/provider/join/welcome');
+
+  return data ? data.data : fail(error);
+}
+
+export async function addLicence(kind: 'nmls' | 'trec_inspector' | 'tdi', number: string): Promise<void> {
+  const { error } = await api().POST('/provider/licences', { body: { kind, number: number.trim() } });
+
+  if (error) fail(error);
+}
+
+/** Business details and a photo ID (a file from the camera or library), for categories without a licence. */
+export async function saveBusiness(name: string, address: string, photo: { uri: string; name: string; type: string } | null): Promise<Onboarding> {
+  const body = new FormData();
+  body.append('name', name.trim());
+  body.append('address', address.trim());
+
+  if (photo) body.append('id_photo', photo as unknown as Blob);
+
+  const { data, error } = await api().POST('/provider/join/business', { body: { name, address }, bodySerializer: () => body });
+
+  return data ? data.data : fail(error);
+}
+
+export async function addArea(area: { kind: 'city' | 'zip' | 'radius'; city?: string; postal_code?: string; radius_miles?: number }): Promise<Onboarding> {
+  const { data, error } = await api().POST('/provider/join/areas', { body: { kind: area.kind, city: area.city ?? null, postal_code: area.postal_code ?? null, radius_miles: area.radius_miles ?? null } });
+
+  return data ? data.data : fail(error);
+}
+
+export async function removeArea(id: number): Promise<Onboarding> {
+  const { data, error } = await api().DELETE('/provider/join/areas/{area}', { params: { path: { area: id } } });
+
+  return data ? data.data : fail(error);
+}
+
+/** Starts the plan's checkout; the phone opens it on reos.com. */
+export async function startPlan(tier: Plan['tier']): Promise<string> {
+  const { data, error } = await api().POST('/provider/join/plan', { body: { tier } });
+
+  return data ? data.data.checkout_url : fail(error);
+}
+
+export async function acceptRules(version: string): Promise<Onboarding> {
+  const { data, error } = await api().POST('/provider/join/rules', { body: { version, accept: true } });
+
+  return data ? data.data : fail(error);
+}
+
+/** The first step still to do. */
+export function nextStep(o: Onboarding): StepKey | null {
+  return o.steps.find((s) => !s.done)?.key ?? null;
+}
+
+/** How an area reads: "Katy", "77494", or "15 miles around 77494". */
+export function areaParts(a: ServiceArea): { kind: ServiceArea['kind']; value: string; miles: number | null } {
+  return { kind: a.kind, value: a.kind === 'city' ? (a.city ?? '') : (a.postal_code ?? ''), miles: a.radius_miles };
+}

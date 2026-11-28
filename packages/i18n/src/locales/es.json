@@ -2358,7 +2358,14 @@
         "policy_rule.restored": "Se restauró una regla de la agencia",
         "approvals.settings": "Se cambió el respaldo de aprobaciones",
         "approvals.fallback": "Se pasó un elemento pendiente a los administradores de oficina",
-        "provider_category.requested": "Se solicitó una categoría de proveedores"
+        "provider_category.requested": "Se solicitó una categoría de proveedores",
+        "provider.rules_accepted": "Se aceptaron las reglas de la red de proveedores",
+        "provider.live": "El perfil del proveedor se publicó",
+        "provider.waiting": "El perfil del proveedor está listo",
+        "provider.hidden": "Se ocultó el perfil del proveedor",
+        "provider.joining": "El perfil del proveedor volvió a la inscripción",
+        "provider_licence.rechecked": "Se volvió a verificar la licencia del proveedor",
+        "provider_licence.document_viewed": "Se vio la identificación con foto de un proveedor"
       }
     }
   },
@@ -5111,9 +5118,9 @@
       "retired": "Retirada"
     },
     "tiers": {
-      "basic": "Básico, por mes",
-      "pro": "Pro, por mes",
-      "premium": "Premium, por mes"
+      "basic": "Listado, al mes",
+      "pro": "Pro, al mes",
+      "premium": "Socio, al mes"
     },
     "fields": {
       "name": "Nombre",
@@ -8592,7 +8599,8 @@
       "kinds": {
         "trec_inspector": "Licencia de inspector de TREC",
         "tdi": "Licencia del Departamento de Seguros de Texas",
-        "nmls": "NMLS ID"
+        "nmls": "NMLS ID",
+        "business_id": "Identificación con foto y datos del negocio"
       },
       "number": "Número de licencia",
       "check": "Verificar licencia",
@@ -8621,7 +8629,8 @@
         "open": "Abrir en NMLS Consumer Access",
         "approve": "Aprobar",
         "reject": "Rechazar",
-        "why": "Por qué no se aprueba"
+        "why": "Por qué no se aprueba",
+        "document": "Ver la identificación con foto"
       }
     },
     "join": {
@@ -8666,6 +8675,129 @@
         "text": "Responda \"{{field}}\" en un máximo de 500 caracteres.",
         "list": "Elija al menos un valor para \"{{field}}\".",
         "yes_no": "Responda sí o no para \"{{field}}\"."
+      }
+    },
+    "onboarding": {
+      "title": "Únase a la red de proveedores de REOS",
+      "purpose": "Seis pasos, unos diez minutos. Su perfil se publica cuando los termine y se verifique su licencia.",
+      "progress": "{{done}} de {{total}} listos",
+      "steps": {
+        "welcome": "Bienvenida",
+        "category": "A qué se dedica",
+        "licence": "Licencia",
+        "areas": "Áreas de servicio",
+        "plan": "Plan",
+        "rules": "Reglas de la red"
+      },
+      "status": {
+        "joining": "Termine los pasos para publicar su perfil.",
+        "waiting": "Todo está listo. Su perfil se publicará en cuanto la red abra en su estado.",
+        "live": "Su perfil está publicado. Los agentes pueden encontrarlo.",
+        "hidden": "Su perfil está oculto por ahora: {{reason}}"
+      },
+      "hidden": {
+        "licence_expired": "su licencia venció. Renuévela y agréguela de nuevo.",
+        "licence_inactive": "su licencia no está activa en los registros del regulador.",
+        "licence_rejected": "nuestro equipo no pudo aprobar su licencia.",
+        "licence_review": "nuestro equipo está revisando su licencia de nuevo.",
+        "licence_missing": "agregue su licencia de nuevo."
+      },
+      "welcome": {
+        "title": "Bienvenido",
+        "body": "Los agentes de Texas usan REOS todos los días. Únase para que los agentes de su zona lo encuentren, con un perfil verificado y una tarifa mensual fija. REOS nunca cobra por cliente potencial, referido o cierre.",
+        "points": {
+          "verified": "Una insignia de verificación por su licencia",
+          "areas": "Aparece en las ciudades y códigos postales que atiende",
+          "flat": "Una tarifa mensual fija, sin cobros por cliente potencial"
+        },
+        "start": "Comenzar"
+      },
+      "licence": {
+        "title": "Su licencia",
+        "nmls": "Su ID de NMLS. Un revisor de REOS lo verifica en NMLS Consumer Access, normalmente en un día hábil.",
+        "trec_inspector": "Su número de licencia de inspector de TREC. Lo verificamos con los registros de TREC en segundos.",
+        "tdi": "Su número de licencia del Departamento de Seguros de Texas. Lo verificamos con los registros del TDI en segundos.",
+        "number": "Número de licencia",
+        "check": "Verificar licencia",
+        "checking": "Nuestro equipo lo está revisando",
+        "verified": "Verificada"
+      },
+      "business": {
+        "title": "Su negocio",
+        "hint": "Su categoría no tiene licencia estatal, así que verificamos los datos de su negocio y una identificación con foto.",
+        "name": "Nombre del negocio",
+        "address": "Dirección del negocio",
+        "id": "Identificación con foto (licencia de conducir o pasaporte)",
+        "idHint": "JPEG, PNG o PDF, de hasta 10 MB. Solo el equipo de revisión de REOS la ve.",
+        "idOnFile": "Recibimos su identificación. Elija un archivo nuevo solo para reemplazarla.",
+        "save": "Enviar a revisión",
+        "reviewNote": "Verifique que la identificación coincida con el nombre de la cuenta y los datos del negocio."
+      },
+      "areas": {
+        "title": "Dónde trabaja",
+        "hint": "Agregue ciudades, códigos postales o un radio alrededor de un código postal. Su plan define cuántas áreas puede tener.",
+        "kind": "Tipo de área",
+        "kinds": {
+          "city": "Ciudad",
+          "zip": "Código postal",
+          "radius": "Radio alrededor de un código postal"
+        },
+        "city": "Ciudad",
+        "zip": "Código postal",
+        "radius": "Millas",
+        "add": "Agregar área",
+        "remove": "Quitar {{area}}",
+        "removed": "Se quitó {{area}}.",
+        "radiusLabel": "{{miles}} millas alrededor de {{zip}}",
+        "stats": "{{agents}} agentes activos · {{providers}} proveedores de su categoría",
+        "emptyTitle": "Aún no hay áreas",
+        "empty": "Agregue la primera ciudad o código postal que atiende.",
+        "errors": {
+          "max": "Puede tener hasta {{count}} áreas.",
+          "city": "Escriba una ciudad.",
+          "zip": "Escriba un código postal de 5 dígitos.",
+          "duplicate": "Ya agregó esa área.",
+          "missing": "Esa área ya se quitó."
+        }
+      },
+      "plan": {
+        "title": "Elija su plan",
+        "hint": "Una tarifa mensual fija por su perfil y publicidad en REOS. Se paga en reos.com.",
+        "areas_one": "{{count}} área de servicio",
+        "areas_other": "{{count}} áreas de servicio",
+        "monthly": "{{price}} al mes",
+        "current": "Su plan",
+        "buy": "Continuar al pago en reos.com",
+        "none": "Los planes de su categoría aún no tienen precio en su estado.",
+        "errors": {
+          "areasFirst": "Primero agregue un área de servicio.",
+          "tooManyAreas": "Este plan incluye {{count}} áreas. Quite áreas o elija un plan mayor.",
+          "notPriced": "Ese plan aún no está disponible en su estado."
+        },
+        "names": {
+          "basic": "Listado",
+          "pro": "Pro",
+          "premium": "Socio"
+        }
+      },
+      "rules": {
+        "title": "Reglas de la red",
+        "hint": "Todos los proveedores siguen estas reglas. Le preguntaremos de nuevo cuando cambien.",
+        "items": {
+          "flat_fee": "Usted paga a REOS una tarifa fija por su perfil y publicidad, nunca por cliente potencial, referido o cierre.",
+          "no_payments": "Nunca paga ni da regalos a agentes o brókeres por enviarle clientes.",
+          "consent": "Se comunica con el cliente de un agente solo cuando el cliente lo autorizó.",
+          "advertising": "Su perfil y sus mensajes cumplen las reglas de publicidad de Texas y las de su licencia.",
+          "no_spam": "Nada de spam: no envía mensajes masivos a agentes o clientes que no los pidieron."
+        },
+        "accept": "Leí las reglas y las cumpliré",
+        "save": "Aceptar las reglas",
+        "accepted": "Aceptadas el {{date}}",
+        "changed": "Las reglas cambiaron desde que las abrió. Léalas de nuevo."
+      },
+      "errors": {
+        "licenceNeeded": "Su categoría requiere una licencia estatal. Agréguela en el paso de licencia.",
+        "idPhoto": "Agregue una foto de su identificación."
       }
     }
   },

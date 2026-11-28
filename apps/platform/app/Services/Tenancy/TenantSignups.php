@@ -16,6 +16,7 @@ use App\Models\Organisation;
 use App\Models\Price;
 use App\Models\TenantSignup;
 use App\Models\User;
+use App\ProviderNetwork\ProviderOnboarding;
 use App\Services\Audit\AuditLogger;
 use App\Services\Authorization\Memberships;
 use App\Tenancy\Tenancy;
@@ -43,7 +44,24 @@ final readonly class TenantSignups
     public const TYPES = [
         'brokerage' => ['type' => OrganisationType::Brokerage, 'buyer' => Buyer::Broker, 'role' => Role::Broker],
         'school' => ['type' => OrganisationType::School, 'buyer' => Buyer::School, 'role' => Role::SchoolAdmin],
+        // A provider's plan (B15.2): started from joining, never from the public start page.
+        'provider' => ['type' => OrganisationType::ProviderBusiness, 'buyer' => Buyer::Provider, 'role' => Role::Provider],
     ];
+
+    /** Who signs up from the public start page (providers start from joining). */
+    public const PUBLIC = ['brokerage', 'school'];
+
+    /** The role a new tenant's owner gets. */
+    public static function roleFor(OrganisationType $type): Role
+    {
+        foreach (self::TYPES as $kind) {
+            if ($kind['type'] === $type) {
+                return $kind['role'];
+            }
+        }
+
+        return Role::Broker;
+    }
 
     public function __construct(private Tenants $tenants, private Memberships $memberships, private AuditLogger $audit, private Tenancy $tenancy) {}
 
@@ -122,7 +140,6 @@ final readonly class TenantSignups
             }
 
             $owner = $signup->user;
-            $kind = $signup->type === OrganisationType::School ? 'school' : 'brokerage';
             $seats = $order->product->seats;
             $tenant = $this->tenants->create([
                 'type' => $signup->type,
@@ -131,7 +148,12 @@ final readonly class TenantSignups
                 'plan' => TenantPlan::defaultFor($signup->type)->value,
                 ...($seats === null ? [] : ['seats' => $seats]),
             ], $owner);
-            $this->memberships->grant($owner, self::TYPES[$kind]['role'], $tenant, $owner);
+            $this->memberships->grant($owner, self::roleFor($signup->type), $tenant, $owner);
+
+            // A provider's plan (B15.2): their profile gets its business and tier.
+            if ($signup->type === OrganisationType::ProviderBusiness) {
+                app(ProviderOnboarding::class)->planBought($owner, $tenant, $order->product);
+            }
 
             // The TREC brokerage this tenant stands for (A15.1a): claimed once.
             $verification = $signup->broker_verification_id === null ? null : BrokerVerification::query()->find($signup->broker_verification_id);

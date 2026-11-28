@@ -2358,7 +2358,14 @@
         "policy_rule.restored": "Brokerage rule restored",
         "approvals.settings": "Changed the approvals fallback",
         "approvals.fallback": "Passed a waiting item to office admins",
-        "provider_category.requested": "Asked for a provider category"
+        "provider_category.requested": "Asked for a provider category",
+        "provider.rules_accepted": "Accepted the provider network rules",
+        "provider.live": "Provider profile went live",
+        "provider.waiting": "Provider profile is ready",
+        "provider.hidden": "Provider profile was hidden",
+        "provider.joining": "Provider profile is back to joining",
+        "provider_licence.rechecked": "Provider license re-checked",
+        "provider_licence.document_viewed": "Viewed a provider's photo ID"
       }
     }
   },
@@ -5111,9 +5118,9 @@
       "retired": "Retired"
     },
     "tiers": {
-      "basic": "Basic, per month",
+      "basic": "Listed, per month",
       "pro": "Pro, per month",
-      "premium": "Premium, per month"
+      "premium": "Partner, per month"
     },
     "fields": {
       "name": "Name",
@@ -8592,7 +8599,8 @@
       "kinds": {
         "trec_inspector": "TREC inspector license",
         "tdi": "Texas Department of Insurance license",
-        "nmls": "NMLS ID"
+        "nmls": "NMLS ID",
+        "business_id": "Photo ID and business details"
       },
       "number": "License number",
       "check": "Check license",
@@ -8621,7 +8629,8 @@
         "open": "Open on NMLS Consumer Access",
         "approve": "Approve",
         "reject": "Reject",
-        "why": "Why it's not approved"
+        "why": "Why it's not approved",
+        "document": "View the photo ID"
       }
     },
     "join": {
@@ -8666,6 +8675,129 @@
         "text": "Answer \"{{field}}\" in up to 500 characters.",
         "list": "Choose at least one value for \"{{field}}\".",
         "yes_no": "Answer yes or no for \"{{field}}\"."
+      }
+    },
+    "onboarding": {
+      "title": "Join the REOS provider network",
+      "purpose": "Six steps, about ten minutes. Your profile goes live when they're done and your license is checked.",
+      "progress": "{{done}} of {{total}} done",
+      "steps": {
+        "welcome": "Welcome",
+        "category": "What you do",
+        "licence": "License",
+        "areas": "Service areas",
+        "plan": "Plan",
+        "rules": "Network rules"
+      },
+      "status": {
+        "joining": "Finish the steps to go live.",
+        "waiting": "Everything's done. Your profile goes live as soon as the network opens in your state.",
+        "live": "Your profile is live. Agents can find you.",
+        "hidden": "Your profile is hidden for now: {{reason}}"
+      },
+      "hidden": {
+        "licence_expired": "your license has expired. Renew it and add it again.",
+        "licence_inactive": "your license isn't active on the regulator's records.",
+        "licence_rejected": "our team couldn't approve your license.",
+        "licence_review": "our team is checking your license again.",
+        "licence_missing": "add your license again."
+      },
+      "welcome": {
+        "title": "Welcome",
+        "body": "Agents in Texas use REOS every day. Join to be found by the agents in your area, with a verified profile and a flat monthly fee. REOS never charges per lead, referral or closing.",
+        "points": {
+          "verified": "A verified badge from your license check",
+          "areas": "Found in the cities and ZIP codes you serve",
+          "flat": "One flat monthly fee, no per-lead charges"
+        },
+        "start": "Start"
+      },
+      "licence": {
+        "title": "Your license",
+        "nmls": "Your NMLS ID. A REOS reviewer checks it on NMLS Consumer Access, usually within one business day.",
+        "trec_inspector": "Your TREC inspector license number. We check it against TREC's records in seconds.",
+        "tdi": "Your Texas Department of Insurance license number. We check it against TDI's records in seconds.",
+        "number": "License number",
+        "check": "Check license",
+        "checking": "Our team is checking",
+        "verified": "Verified"
+      },
+      "business": {
+        "title": "Your business",
+        "hint": "Your category has no state license, so we check your business details and a photo ID instead.",
+        "name": "Business name",
+        "address": "Business address",
+        "id": "Photo ID (driver's license or passport)",
+        "idHint": "JPEG, PNG or PDF, up to 10 MB. Only the REOS review team sees it.",
+        "idOnFile": "Photo ID received. Choose a new file only to replace it.",
+        "save": "Send for review",
+        "reviewNote": "Check the photo ID matches the account name, and the business details."
+      },
+      "areas": {
+        "title": "Where you work",
+        "hint": "Add cities, ZIP codes, or a radius around a ZIP code. Your plan sets how many areas you can have.",
+        "kind": "Area type",
+        "kinds": {
+          "city": "City",
+          "zip": "ZIP code",
+          "radius": "Radius around a ZIP code"
+        },
+        "city": "City",
+        "zip": "ZIP code",
+        "radius": "Miles",
+        "add": "Add area",
+        "remove": "Remove {{area}}",
+        "removed": "Removed {{area}}.",
+        "radiusLabel": "{{miles}} miles around {{zip}}",
+        "stats": "{{agents}} active agents · {{providers}} providers in your category",
+        "emptyTitle": "No areas yet",
+        "empty": "Add the first city or ZIP code you serve.",
+        "errors": {
+          "max": "You can have up to {{count}} areas.",
+          "city": "Enter a city.",
+          "zip": "Enter a 5-digit ZIP code.",
+          "duplicate": "You've already added that area.",
+          "missing": "That area was already removed."
+        }
+      },
+      "plan": {
+        "title": "Choose your plan",
+        "hint": "A flat monthly fee for your listing and advertising in REOS. You pay on reos.com.",
+        "areas_one": "{{count}} service area",
+        "areas_other": "{{count}} service areas",
+        "monthly": "{{price}} a month",
+        "current": "Your plan",
+        "buy": "Continue to payment on reos.com",
+        "none": "Plans for your category aren't priced in your state yet.",
+        "errors": {
+          "areasFirst": "Add a service area first.",
+          "tooManyAreas": "This plan includes {{count}} areas. Remove areas or choose a bigger plan.",
+          "notPriced": "That plan isn't available in your state yet."
+        },
+        "names": {
+          "basic": "Listed",
+          "pro": "Pro",
+          "premium": "Partner"
+        }
+      },
+      "rules": {
+        "title": "Network rules",
+        "hint": "Every provider follows these rules. We ask again when they change.",
+        "items": {
+          "flat_fee": "You pay REOS a flat fee for listing and advertising, never per lead, referral or closing.",
+          "no_payments": "You never pay or give gifts to agents or brokers for sending you business.",
+          "consent": "You contact an agent's client only when the client has agreed to it.",
+          "advertising": "Your profile and messages follow Texas advertising rules and your license's rules.",
+          "no_spam": "No spam: no bulk messages to agents or clients who didn't ask for them."
+        },
+        "accept": "I've read the rules and I'll follow them",
+        "save": "Accept the rules",
+        "accepted": "Accepted on {{date}}",
+        "changed": "The rules changed since you opened them. Read them again."
+      },
+      "errors": {
+        "licenceNeeded": "Your category needs a state license. Add it on the license step.",
+        "idPhoto": "Add a photo of your ID."
       }
     }
   },

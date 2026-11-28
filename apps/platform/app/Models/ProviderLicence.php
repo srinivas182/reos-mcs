@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  *
  * @property int $id
  * @property int $user_id
- * @property string $kind trec_inspector, tdi or nmls
+ * @property string $kind trec_inspector, tdi, nmls, or business_id (a photo ID, B15.2)
  * @property string $number
  * @property string $status verified, inactive, review or rejected
  * @property string|null $name_on_record
@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property CarbonImmutable|null $expires_on
  * @property string|null $checked_via
  * @property string|null $review_note
+ * @property string|null $document_path The photo ID for business_id
  * @property int|null $reviewed_by
  * @property CarbonImmutable|null $reviewed_at
  * @property CarbonImmutable|null $created_at
@@ -37,7 +38,7 @@ final class ProviderLicence extends Model
 
     public const REJECTED = 'rejected';
 
-    protected $fillable = ['user_id', 'kind', 'number', 'status', 'name_on_record', 'licence_type', 'expires_on', 'checked_via', 'review_note', 'reviewed_by', 'reviewed_at'];
+    protected $fillable = ['user_id', 'kind', 'number', 'status', 'name_on_record', 'licence_type', 'expires_on', 'checked_via', 'review_note', 'reviewed_by', 'reviewed_at', 'document_path'];
 
     protected function casts(): array
     {
