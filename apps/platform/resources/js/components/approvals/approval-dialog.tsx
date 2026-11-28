@@ -48,6 +48,7 @@ type Draft = {
     status: ApprovalStatus;
     note: string;
     records_live: boolean;
+    audio_allowed: boolean;
 } & Record<(typeof SEAT_FIELDS)[number], string>;
 
 const text = (value: number | string | null | undefined): string =>
@@ -139,6 +140,7 @@ function ApprovalForm({
         status: approval?.status ?? 'approved',
         note: approval?.note ?? '',
         records_live: approval?.records_live ?? false,
+        audio_allowed: approval?.audio_allowed ?? false,
         ...seat(approval ?? options.defaults.TX),
     }));
     const [errors, setErrors] = useState<Record<string, string>>({});
@@ -179,6 +181,7 @@ function ApprovalForm({
             status: draft.status,
             note: draft.note,
             records_live: draft.records_live,
+            audio_allowed: draft.audio_allowed,
             ...numbers,
         };
         const callbacks = {
@@ -206,7 +209,7 @@ function ApprovalForm({
     };
 
     const input = (
-        key: Exclude<keyof Draft, 'records_live'>,
+        key: Exclude<keyof Draft, 'records_live' | 'audio_allowed'>,
         label: string,
         type: 'text' | 'number' | 'date' = 'text',
     ) => (
@@ -392,6 +395,26 @@ function ApprovalForm({
                         </span>
                     </label>
                 ) : null}
+                {/* Audio-only study (A14.2): the school confirms the regulator accepts it as seat time. */}
+                <label
+                    htmlFor="approval-audio-allowed"
+                    className="flex min-h-12 items-start gap-3 text-base"
+                >
+                    <Checkbox
+                        id="approval-audio-allowed"
+                        className="mt-1"
+                        checked={draft.audio_allowed}
+                        onCheckedChange={(on) =>
+                            set({ audio_allowed: on === true })
+                        }
+                    />
+                    <span>
+                        {t('approvals.form.audioAllowed')}
+                        <span className="block text-sm text-muted-foreground">
+                            {t('approvals.form.audioAllowedHint')}
+                        </span>
+                    </span>
+                </label>
             </fieldset>
 
             <div className="grid gap-2">

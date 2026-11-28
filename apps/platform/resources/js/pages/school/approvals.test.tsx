@@ -15,6 +15,16 @@ const router = vi.hoisted(() => ({
     on: vi.fn(() => () => {}),
 }));
 
+// The audio-only checkbox (Radix, A14.2) measures itself; jsdom has no ResizeObserver.
+vi.stubGlobal(
+    'ResizeObserver',
+    class {
+        observe() {}
+        unobserve() {}
+        disconnect() {}
+    },
+);
+
 vi.mock('@inertiajs/react', async (original) => ({
     ...(await original<typeof import('@inertiajs/react')>()),
     Head: () => null,

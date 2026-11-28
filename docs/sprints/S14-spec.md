@@ -105,6 +105,28 @@
 - **Recommendations by mode** and from role-play results, with CE first when renewal is near.
 - **Audio-only lessons:** the lesson is read aloud, check-ins are asked and answered by voice, and seat time counts while it plays.
 - **Done when:** a CE lesson plays in audio-only mode.
+- **As built, A14.2** (ADR 0062):
+  - **Data:**
+    - `course_approvals.audio_allowed`: the school confirms audio-only study counts; off by default.
+    - `courses.skills` and `courses.modes`: what a course teaches (role-play lesson codes) and who it suits.
+  - **Services:**
+    - `App\Content\Learning\CoursePicks`: up to six picks. CE comes first when renewal is within 120 days and hours are owed, then the latest practice's fixes and the assessment's weakest skills (a `topic` first), then the agent's mode.
+    - `Learning::listen`: sections, words and seconds at 150 wpm.
+    - `SeatTime::audioAllowed`, and `beat` with `mode: audio`: the "in front" rule doesn't apply, and stretches are logged as `app-audio`. The reason is `audio_not_allowed` when the course doesn't allow it.
+    - `RolePlays::latestFixes`.
+  - **API:**
+    - `GET /api/v1/learn/picks?topic=`
+    - `GET /api/v1/learn/lessons/{id}/listen`
+    - The heartbeat takes `mode` (`screen` or `audio`).
+  - **Web:**
+    - Learn shows "Picked for you": why each course was chosen, and "Can listen on your phone". `?topic=` comes from fix links.
+    - The course builder has "What it teaches" and "Who it suits".
+    - The approval form has "Audio-only study counts as seat time".
+  - **Phone:**
+    - Learn shows "Picked for you" with Start or Continue and Listen.
+    - The lesson screen has "Listen (audio-only)".
+    - `learn/listen/[id]` reads the sections aloud (expo-speech) and sends heartbeats every 15 s with `mode: audio`. A check-in is asked aloud and answered by voice (on-device, `choiceFromSpeech`) or a tap, and REOS says whether the answer was right.
+  - **Done when:** a Pest test plays a CE lesson whose approval allows audio-only. Five audio beats with the screen off count 60 seconds, logged as `app-audio`. Without the school's confirmation they count nothing (`audio_not_allowed`).
 
 ### A14.3 Several licences and organisations (Team A)
 

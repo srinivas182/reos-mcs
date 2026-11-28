@@ -43,6 +43,14 @@ import {
 
 type Approval = { number: string; expires_on: string | null };
 
+type SkillCode =
+    | 'listing_presentation'
+    | 'discovery_questions'
+    | 'objection_handling'
+    | 'clear_speaking'
+    | 'asking_for_business';
+type ModeCode = 'launch' | 'grow' | 'lead' | 'own';
+
 type Props = {
     course: {
         id: number;
@@ -51,6 +59,8 @@ type Props = {
         description: string | null;
         states: string[] | null;
         hours: number | null;
+        skills: SkillCode[];
+        modes: ModeCode[];
         approvals: Record<string, Approval>;
         status: CourseStatus;
         status_note: string | null;
@@ -73,6 +83,8 @@ type Props = {
     }[];
     checks: Checks;
     types: CourseType[];
+    skills: SkillCode[];
+    modes: ModeCode[];
     states: StateOption[];
 };
 
@@ -90,6 +102,8 @@ export default function CoursePage({
     checks,
     types,
     states,
+    skills,
+    modes,
 }: Props) {
     const { t } = useTranslation();
     const [chosen, setChosen] = useState<string[]>(course.states ?? []);
@@ -269,6 +283,87 @@ export default function CoursePage({
                                             />
                                         </div>
                                     </div>
+
+                                    {/* What it teaches and who it suits, for agents' course picks (A14.2). */}
+                                    <fieldset className="grid gap-2">
+                                        <legend className="mb-1 text-sm font-medium">
+                                            {t('content.courses.fields.skills')}
+                                        </legend>
+                                        <p className="text-sm text-muted-foreground">
+                                            {t(
+                                                'content.courses.fields.skillsHint',
+                                            )}
+                                        </p>
+                                        <input
+                                            type="hidden"
+                                            name="skills"
+                                            value=""
+                                        />
+                                        <div className="grid gap-2 sm:grid-cols-2">
+                                            {skills.map((skill) => (
+                                                <label
+                                                    key={skill}
+                                                    className="flex min-h-12 items-center gap-3 text-base"
+                                                >
+                                                    <input
+                                                        type="checkbox"
+                                                        name="skills[]"
+                                                        value={skill}
+                                                        defaultChecked={course.skills.includes(
+                                                            skill,
+                                                        )}
+                                                        className="size-5"
+                                                    />
+                                                    {t(
+                                                        `roleplay.lessons.${skill}`,
+                                                    )}
+                                                </label>
+                                            ))}
+                                        </div>
+                                        <InputError
+                                            message={
+                                                errors.skills ??
+                                                errors['skills.0']
+                                            }
+                                        />
+                                    </fieldset>
+                                    <fieldset className="grid gap-2">
+                                        <legend className="mb-1 text-sm font-medium">
+                                            {t('content.courses.fields.modes')}
+                                        </legend>
+                                        <input
+                                            type="hidden"
+                                            name="modes"
+                                            value=""
+                                        />
+                                        <div className="flex flex-wrap gap-4">
+                                            {modes.map((mode) => (
+                                                <label
+                                                    key={mode}
+                                                    className="flex min-h-12 items-center gap-3 text-base"
+                                                >
+                                                    <input
+                                                        type="checkbox"
+                                                        name="modes[]"
+                                                        value={mode}
+                                                        defaultChecked={course.modes.includes(
+                                                            mode,
+                                                        )}
+                                                        className="size-5"
+                                                    />
+                                                    {t(
+                                                        `agents.modes.goals.${mode}.name`,
+                                                    )}
+                                                </label>
+                                            ))}
+                                        </div>
+                                        <InputError
+                                            message={
+                                                errors.modes ??
+                                                errors['modes.0']
+                                            }
+                                        />
+                                    </fieldset>
 
                                     <StatePicker
                                         states={states}

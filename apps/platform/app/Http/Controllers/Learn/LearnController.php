@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Learn;
 
 use App\Content\Knowledge\SearchHit;
+use App\Content\Learning\CoursePicks;
 use App\Content\Learning\Learning;
 use App\Content\Player\SeatTime;
 use App\Http\Controllers\Controller;
 use App\Models\Lesson;
 use App\Models\User;
+use App\RolePlay\RolePlayScorer;
 use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -24,17 +26,22 @@ use Inertia\Response;
  */
 final class LearnController extends Controller
 {
-    public function index(Request $request, #[CurrentUser] User $user, Learning $learning): Response
+    public function index(Request $request, #[CurrentUser] User $user, Learning $learning, CoursePicks $picks): Response
     {
         $filters = $request->validate([
             'q' => ['nullable', 'string', 'max:300'],
             'language' => ['nullable', Rule::in(Lesson::LANGUAGES)],
+            // A fix's lesson link from role-play or video practice (A14.2).
+            'topic' => ['nullable', 'string', Rule::in(array_values(RolePlayScorer::LESSONS))],
         ]);
+        $topic = is_string($filters['topic'] ?? null) ? $filters['topic'] : null;
         $q = is_string($filters['q'] ?? null) ? trim($filters['q']) : '';
         $language = is_string($filters['language'] ?? null) ? $filters['language'] : null;
 
         return Inertia::render('learn/index', [
             'courses' => $learning->courses($user),
+            'picks' => $picks->for($user, $topic),
+            'topic' => $topic,
             'search' => [
                 'q' => $q,
                 'language' => $language,

@@ -8,7 +8,8 @@ export type SeatReason =
     | 'paused'
     | 'hidden'
     | 'checkin_due'
-    | 'daily_max';
+    | 'daily_max'
+    | 'audio_not_allowed';
 
 export type Checkpoint = {
     key: string;

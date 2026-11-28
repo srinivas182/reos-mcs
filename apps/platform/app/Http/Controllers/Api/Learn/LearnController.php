@@ -4,15 +4,19 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\Learn;
 
+use App\Content\Learning\CoursePicks;
 use App\Content\Learning\Learning;
 use App\Content\Player\SeatTime;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Learn\SearchRequest;
 use App\Http\Resources\Learn\KnowledgeHitResource;
 use App\Models\User;
+use App\RolePlay\RolePlayScorer;
 use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Validation\Rule;
 
 /**
  * Learn on the phone (A5.3b; candidate screen 8): courses for the person's
@@ -21,6 +25,20 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
  */
 final class LearnController extends Controller
 {
+    /**
+     * Courses picked for me.
+     *
+     * For agents (A14.2): CE first when my license renews within 120 days and I still owe hours, then courses for the skills role-play found weakest (or the `topic` asked for, from a fix's lesson link), then for my mode. Each says why and whether I can listen to it (audio-only). Empty for other roles.
+     *
+     * @response array{data: list<array{id: int, title: string, type: string, hours: float|null, reason: 'renewal'|'skill'|'mode', skill: 'listing_presentation'|'discovery_questions'|'objection_handling'|'clear_speaking'|'asking_for_business'|null, audio: bool, first_lesson: int|null, percent: int}>}
+     */
+    public function picks(Request $request, #[CurrentUser] User $user, CoursePicks $picks): JsonResponse
+    {
+        $data = $request->validate(['topic' => ['nullable', 'string', Rule::in(array_values(RolePlayScorer::LESSONS))]]);
+
+        return response()->json(['data' => $picks->for($user, is_string($data['topic'] ?? null) ? $data['topic'] : null)]);
+    }
+
     /**
      * Courses I can learn.
      *
@@ -58,7 +76,7 @@ final class LearnController extends Controller
      * (`membership_required`) when it needs a plan I don't have yet (each
      * course's first lesson is free).
      *
-     * @response array{data: array{id: int, title: string, language: 'en'|'es', minutes: int|null, course: array{id: int, title: string}, sections: list<array{heading: string|null, text: string}>, documents: list<array{id: int, kind: 'slides'|'document', name: string, url: string, pages: list<array{page: int, text: string}>}>, video: array{type: 'hls'|'file', url: string, duration: int|null, poster: string|null, qualities: array<string, string>}|null, transcript: list<array{seconds: int, text: string}>, captions: array{en?: list<array{seconds: int, text: string}>, es?: list<array{seconds: int, text: string}>}|null, previous: int|null, next: int|null, player: array{counted: int, required: int, percent: int, reason: 'gap'|'paused'|'hidden'|'checkin_due'|'daily_max'|null, checkin: array{key: string, at: int, kind: 'question'|'presence', question: array{id: int, prompt: string, options: list<string>}|null}|null, completed: bool, today_left: int|null}}}
+     * @response array{data: array{id: int, title: string, language: 'en'|'es', minutes: int|null, course: array{id: int, title: string}, sections: list<array{heading: string|null, text: string}>, documents: list<array{id: int, kind: 'slides'|'document', name: string, url: string, pages: list<array{page: int, text: string}>}>, video: array{type: 'hls'|'file', url: string, duration: int|null, poster: string|null, qualities: array<string, string>}|null, transcript: list<array{seconds: int, text: string}>, captions: array{en?: list<array{seconds: int, text: string}>, es?: list<array{seconds: int, text: string}>}|null, previous: int|null, next: int|null, player: array{counted: int, required: int, percent: int, reason: 'gap'|'paused'|'hidden'|'checkin_due'|'daily_max'|'audio_not_allowed'|null, checkin: array{key: string, at: int, kind: 'question'|'presence', question: array{id: int, prompt: string, options: list<string>}|null}|null, completed: bool, today_left: int|null}}}
      */
     public function lesson(int $lesson, #[CurrentUser] User $user, Learning $learning, SeatTime $seatTime): JsonResponse
     {

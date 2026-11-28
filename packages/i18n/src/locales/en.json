@@ -4102,7 +4102,10 @@
         "type": "Type",
         "states": "States",
         "hours": "Hours",
-        "description": "Description"
+        "description": "Description",
+        "skills": "What it teaches",
+        "skillsHint": "Agents who need these skills see this course in Picked for you.",
+        "modes": "Who it suits"
       },
       "statesHelp": "Leave every state unticked for a course any state can use.",
       "description": "{{type}} · {{states}}",
@@ -4373,7 +4376,40 @@
       "demo": "Demo answer: AI isn't connected yet, so this is the course's own words.",
       "notCovered": "Not covered in this course"
     },
-    "liveClasses": "Live classes for this course"
+    "liveClasses": "Live classes for this course",
+    "picks": {
+      "title": "Picked for you",
+      "purpose": "Chosen from your renewal date, your practice and your stage.",
+      "renewal": "Your license renews soon and you still need CE hours.",
+      "skill": "To work on {{skill}}, from your practice.",
+      "mode": "Suits your stage.",
+      "audio": "Can listen on your phone",
+      "start": "Start",
+      "continue": "Continue ({{percent}}%)"
+    },
+    "listen": {
+      "title": "Listen",
+      "purpose": "The lesson is read aloud and check-ins are asked out loud, so you can study with the screen off.",
+      "open": "Listen (audio-only)",
+      "start": "Start listening",
+      "pause": "Pause",
+      "resume": "Resume",
+      "reading": "Section {{n}} of {{total}}",
+      "length": "About {{minutes}} minutes",
+      "notAllowed": "Listening doesn't count as seat time for this course yet. Your school has to confirm it with the regulator first. You can still listen; it just won't count.",
+      "counted": "{{counted}} of {{required}} counted",
+      "done": "Lesson complete. Your seat time is saved.",
+      "checkin": "Check-in",
+      "say": "Say the number of your answer, or tap it.",
+      "presence": "Still with you? Say “I'm here”, or tap the button.",
+      "here": "I'm here",
+      "heard": "I heard “{{words}}”.",
+      "again": "I didn't catch that. Please say it again.",
+      "option": "Option {{n}}: {{text}}",
+      "correct": "That's right.",
+      "wrong": "Not quite.",
+      "noText": "This lesson has no text to read aloud. Watch it on screen instead."
+    }
   },
   "billing": {
     "errors": {
@@ -5939,7 +5975,9 @@
       "save": "Save approval",
       "cancel": "Cancel",
       "recordsLive": "Live classes may be recorded",
-      "recordsLiveHint": "The recording goes to the course for its students after class."
+      "recordsLiveHint": "The recording goes to the course for its students after class.",
+      "audioAllowed": "Audio-only study counts as seat time",
+      "audioAllowedHint": "Tick this only when the regulator has confirmed it. Learners can then listen on their phone with spoken check-ins and the screen off."
     },
     "dashboard": {
       "title": "Course approvals",
@@ -6726,7 +6764,8 @@
       "hidden": "This tab isn't in front, so time isn't counting. Come back to keep going.",
       "checkin_due": "Answer the check-in to keep counting time.",
       "daily_max": "You've reached today's limit for this course. Time counts again tomorrow.",
-      "hiddenApp": "REOS isn't on screen, so time isn't counting. Come back to keep going."
+      "hiddenApp": "REOS isn't on screen, so time isn't counting. Come back to keep going.",
+      "audio_not_allowed": "Listening doesn't count for this course yet. Your school has to confirm audio-only study first."
     },
     "errors": {
       "heartbeat": "We couldn't reach REOS, so time isn't counting. Check your connection.",

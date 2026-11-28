@@ -29,7 +29,7 @@ final readonly class Courses
     public const AUDIT_SUBJECT = 'course';
 
     /** Fields whose before and after go in the audit log. */
-    private const AUDITED = ['title', 'type', 'description', 'states', 'hours', 'approvals'];
+    private const AUDITED = ['title', 'type', 'description', 'states', 'hours', 'skills', 'modes', 'approvals'];
 
     public function __construct(private AuditLogger $audit, private ContentChecks $checks) {}
 
@@ -68,6 +68,14 @@ final readonly class Courses
         $numbers = array_key_exists('approvals', $data) ? self::approvals($data['approvals'], $course->states ?? []) : null;
 
         $course->fill(array_intersect_key($data, array_flip(['title', 'description', 'hours'])));
+
+        // What it teaches and who it suits, for course picks (A14.2).
+        foreach (['skills', 'modes'] as $key) {
+            if (array_key_exists($key, $data)) {
+                $list = is_array($data[$key]) ? array_values(array_unique(array_filter($data[$key], 'is_string'))) : [];
+                $course->{$key} = $list === [] ? null : $list;
+            }
+        }
 
         if ($numbers !== null) {
             $course->setRelation('approvals', $this->withNumbers($course, $numbers));
@@ -235,6 +243,8 @@ final readonly class Courses
             'description' => $course->description,
             'states' => $course->states,
             'hours' => $course->hours === null ? null : (string) (float) $course->hours,
+            'skills' => $course->skills,
+            'modes' => $course->modes,
             'approvals' => $course->approvalNumbers(),
         ];
 

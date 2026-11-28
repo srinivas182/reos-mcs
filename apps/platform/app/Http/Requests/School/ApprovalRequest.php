@@ -49,6 +49,7 @@ final class ApprovalRequest extends FormRequest
             'note' => ['sometimes', 'nullable', 'string', 'max:500'],
             // Live classes of the course may be recorded for the course (A10.2c).
             'records_live' => ['sometimes', 'boolean'],
+            'audio_allowed' => ['sometimes', 'boolean'],
         ];
     }
 }

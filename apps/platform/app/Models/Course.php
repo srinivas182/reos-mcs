@@ -33,6 +33,8 @@ use Illuminate\Support\Carbon;
  * @property string|null $description
  * @property list<string>|null $states Null: every state
  * @property string|null $hours
+ * @property list<string>|null $skills What it teaches: role-play lesson codes (A14.2)
+ * @property list<string>|null $modes The agent modes it suits: launch, grow, lead, own (A14.2)
  * @property list<array{key: string, by: int, at: string}>|null $cleared_flags Legal flags a reviewer checked
  * @property array{language?: string, lesson_minutes?: int, presenter?: string, vendor?: string}|null $builder Course builder settings (A7.2; vendor A7.3)
  * @property CourseStatus $status
@@ -55,7 +57,7 @@ final class Course extends Model
     use SoftDeletes;
     use StateTagged;
 
-    protected $fillable = ['organisation_id', 'title', 'slug', 'type', 'delivery', 'description', 'states', 'hours', 'cleared_flags', 'status', 'status_note', 'reviewed_by', 'reviewed_at', 'created_by', 'published_at'];
+    protected $fillable = ['organisation_id', 'title', 'slug', 'type', 'delivery', 'description', 'states', 'hours', 'skills', 'modes', 'cleared_flags', 'status', 'status_note', 'reviewed_by', 'reviewed_at', 'created_by', 'published_at'];
 
     protected $attributes = ['status' => 'draft', 'delivery' => 'self_paced'];
 
@@ -65,6 +67,8 @@ final class Course extends Model
             'type' => CourseType::class,
             'status' => CourseStatus::class,
             'states' => 'array',
+            'skills' => 'array',
+            'modes' => 'array',
             'delivery' => Delivery::class,
             'cleared_flags' => 'array',
             'builder' => 'array',
