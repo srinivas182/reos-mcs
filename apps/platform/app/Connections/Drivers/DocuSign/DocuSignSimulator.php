@@ -110,7 +110,7 @@ final class DocuSignSimulator implements ConnectorDriver, SendsForSignature
             'connection_id' => $connection->id, 'stream' => 'envelopes', 'container' => self::CONTAINER, 'external_id' => $id, 'etag' => substr(sha1($id), 0, 12), 'deleted' => false,
             'data' => [
                 'status' => 'created', 'emailSubject' => $subject, 'documents' => array_map(static fn (array $d): array => ['name' => $d['name'], 'bytes' => strlen($d['contents'])], $documents),
-                'signers' => array_map(static fn (array $s): array => ['email' => $s['email'], 'name' => $s['name'], 'routingOrder' => $s['routing_order'], 'status' => 'created'], $signers),
+                'signers' => array_map(static fn (array $s): array => ['email' => $s['email'], 'name' => $s['name'], 'routingOrder' => $s['routing_order'], 'status' => 'created', 'clientUserId' => $s['client_user_id'] ?? null], $signers),
             ],
         ]);
 
@@ -120,6 +120,58 @@ final class DocuSignSimulator implements ConnectorDriver, SendsForSignature
     public function senderView(Connection $connection, string $accessToken, string $envelopeId, string $returnUrl): string
     {
         return URL::temporarySignedRoute('connections.simulator.docusign', now()->addMinutes(10), ['connection' => $connection->id, 'envelope' => $envelopeId, 'return' => $returnUrl]);
+    }
+
+    public function recipientView(Connection $connection, string $accessToken, string $envelopeId, array $signer, string $returnUrl): string
+    {
+        return URL::temporarySignedRoute('portal.simulator.sign', now()->addMinutes(5), ['connection' => $connection->id, 'envelope' => $envelopeId, 'client' => $signer['client_user_id'], 'return' => $returnUrl]);
+    }
+
+    /** The client signs in the demo signing view (B14.2): their turn completes, and the next signer gets it. */
+    public static function signAs(Connection $connection, string $envelopeId, string $clientUserId): void
+    {
+        $row = self::row($connection, $envelopeId);
+
+        if ($row === null || ! in_array($row->data['status'] ?? null, ['sent', 'delivered'], true)) {
+            return;
+        }
+
+        $raw = is_array($row->data['signers'] ?? null) ? array_values($row->data['signers']) : [];
+
+        $mine = array_find_key($raw, static fn (mixed $s): bool => is_array($s) && ($s['clientUserId'] ?? null) === $clientUserId && in_array($s['status'] ?? null, ['sent', 'delivered'], true));
+
+        if ($mine === null) {
+            return;
+        }
+
+        $now = CarbonImmutable::now()->toIso8601ZuluString();
+        $statuses = [];
+        $orders = [];
+
+        foreach ($raw as $i => $s) {
+            $status = is_array($s) && is_string($s['status'] ?? null) ? ($i === $mine ? 'completed' : $s['status']) : 'completed';
+            $statuses[$i] = $status;
+
+            if ($status === 'created' && is_array($s) && is_numeric($s['routingOrder'] ?? null)) {
+                $orders[] = (int) $s['routingOrder'];
+            }
+        }
+
+        $next = $orders === [] ? null : min($orders);
+        $signers = [];
+
+        foreach ($raw as $i => $s) {
+            $s = is_array($s) ? $s : [];
+            $order = is_numeric($s['routingOrder'] ?? null) ? (int) $s['routingOrder'] : 0;
+            $signers[] = match (true) {
+                $i === $mine => [...$s, 'status' => 'completed', 'signedDateTime' => $now],
+                $statuses[$i] === 'created' && $order === $next => [...$s, 'status' => 'sent', 'sentDateTime' => $now],
+                default => $s,
+            };
+        }
+
+        $left = array_any($signers, static fn (array $o): bool => ($o['status'] ?? 'completed') !== 'completed');
+        $row->forceFill(['data' => [...$row->data, 'status' => $left ? 'sent' : 'completed', 'signers' => $signers]])->save();
     }
 
     public function envelope(Connection $connection, string $accessToken, string $envelopeId): array

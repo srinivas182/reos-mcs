@@ -130,7 +130,9 @@ final class AgentCards
             'knowsLanguage' => $page['language'] === 'es' ? ['es', 'en'] : ['en'],
             'parentOrganization' => $page['brokerage'] === null ? null : ['@type' => 'RealEstateAgent', 'name' => $page['brokerage']],
             'hasCredential' => $page['licences'] === [] ? null : array_map(static fn (array $l): array => ['@type' => 'EducationalOccupationalCredential', 'credentialCategory' => 'license', 'name' => $l['state'].' real estate license '.$l['number'], 'recognizedBy' => ['@type' => 'GovernmentOrganization', 'name' => $l['state'] === 'TX' ? 'Texas Real Estate Commission' : $l['state']]], $page['licences']),
-            'aggregateRating' => $page['peer_rating'] === null ? null : ['@type' => 'AggregateRating', 'ratingValue' => $page['peer_rating']['average'], 'ratingCount' => $page['peer_rating']['count'], 'bestRating' => 5],
+            // Clients' reviews (B14.2) when there are any.
+            'aggregateRating' => $page['client_reviews'] === null ? null : ['@type' => 'AggregateRating', 'ratingValue' => $page['client_reviews']['average'], 'reviewCount' => $page['client_reviews']['count'], 'bestRating' => 5],
+            'review' => $page['client_reviews'] === null ? null : array_map(static fn (array $r): array => array_filter(['@type' => 'Review', 'author' => ['@type' => 'Person', 'name' => $r['name']], 'datePublished' => $r['date'], 'reviewRating' => ['@type' => 'Rating', 'ratingValue' => $r['rating'], 'bestRating' => 5], 'reviewBody' => $r['comment']], static fn (mixed $v): bool => $v !== null), $page['client_reviews']['latest']),
         ], static fn (mixed $v): bool => $v !== null);
 
         return [$agent, [

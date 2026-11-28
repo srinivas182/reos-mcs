@@ -9,6 +9,7 @@ use App\Connections\ConnectionStatus;
 use App\Connections\ConnectorRegistry;
 use App\Connections\Drivers\DocuSign\DocuSignDriver;
 use App\Connections\SendsForSignature;
+use App\Models\ClientPortal;
 use App\Models\Connection;
 use App\Models\Deal;
 use App\Models\DealFile;
@@ -71,6 +72,15 @@ final readonly class Signatures
             throw ValidationException::withMessages(['files' => __('deals.signatures.errors.files')]);
         }
 
+        // A signer with an open client portal on this deal signs there (B14.2), not from DocuSign's email.
+        $portals = ClientPortal::query()->where('deal_id', $deal->id)->whereNull('revoked_at')->where('expires_at', '>', now())->whereNotNull('email')->get()
+            ->mapWithKeys(static fn (ClientPortal $p): array => [mb_strtolower((string) $p->email) => 'portal-'.$p->uuid]);
+        $input['signers'] = array_map(static function (array $s) use ($portals): array {
+            $client = $portals->get(mb_strtolower($s['email']));
+
+            return is_string($client) ? [...$s, 'client_user_id' => $client] : $s;
+        }, $input['signers']);
+
         [$driver, $token] = $this->driver($connection);
         $documents = array_values($files->map(static fn (DealFile $f): array => ['name' => $f->name, 'contents' => DealFiles::contents($f)])->all());
         $webhook = url('webhooks/'.DocuSignDriver::INTEGRATION);
@@ -96,6 +106,24 @@ final readonly class Signatures
         [$driver, $token] = $this->driver($request->connection);
 
         return $driver->senderView($request->connection, $token, $request->envelope_id, route('deals.signatures.returned', $request->uuid));
+    }
+
+    /**
+     * A one-time signing link for a client signing from their portal (B14.2).
+     *
+     * @throws ValidationException when it isn't their turn or they don't sign in the portal
+     */
+    public function signingUrl(SignatureRequest $request, string $clientUserId, string $returnUrl): string
+    {
+        $signer = array_find($request->signers, static fn (array $s): bool => ($s['client_user_id'] ?? null) === $clientUserId);
+
+        if ($signer === null || $request->connection === null || $request->envelope_id === null || ! in_array($request->status, ['sent', 'delivered'], true) || ! in_array($signer['status'], ['sent', 'delivered'], true)) {
+            throw ValidationException::withMessages(['request' => __('portal.errors.notYourTurn')]);
+        }
+
+        [$driver, $token] = $this->driver($request->connection);
+
+        return $driver->recipientView($request->connection, $token, $request->envelope_id, ['name' => $signer['name'], 'email' => $signer['email'], 'client_user_id' => $clientUserId], $returnUrl);
     }
 
     /** Back from the sender view: what DocuSign now says about the envelope. */

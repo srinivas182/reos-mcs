@@ -65,9 +65,18 @@ describe('Deals board (screen 14, B9.1)', () => {
 
     it('keeps a deal from a tool read-only, and moves a REOS deal from its panel', async () => {
         const user = userEvent.setup();
-        fetchMock.mockImplementation(() =>
-            Promise.resolve(reply({ ...elmStreet, stage: 'closed' })),
+        // The deal panel also reads the deal's client links (B14.2): none here.
+        fetchMock.mockImplementation((url: string) =>
+            Promise.resolve(
+                url.endsWith('/portals')
+                    ? reply([])
+                    : reply({ ...elmStreet, stage: 'closed' }),
+            ),
         );
+        const sent = () =>
+            fetchMock.mock.calls.filter(
+                (call) => !String(call[0]).endsWith('/portals'),
+            );
         const { unmount } = render(
             <DealsPage board={dealBoard} selected={oakCourt} />,
         );
@@ -84,10 +93,8 @@ describe('Deals board (screen 14, B9.1)', () => {
 
         render(<DealsPage board={dealBoard} selected={elmStreet} />);
         await user.selectOptions(screen.getByLabelText('Stage'), 'closed');
-        expect(fetchMock.mock.calls[0]?.[0]).toBe(
-            `/deals/${elmStreet.uuid}/stage`,
-        );
-        expect(JSON.parse(String(fetchMock.mock.calls[0]?.[1]?.body))).toEqual({
+        expect(sent()[0]?.[0]).toBe(`/deals/${elmStreet.uuid}/stage`);
+        expect(JSON.parse(String(sent()[0]?.[1]?.body))).toEqual({
             stage: 'closed',
         });
     });

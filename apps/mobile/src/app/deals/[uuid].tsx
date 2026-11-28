@@ -1,12 +1,14 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
-import { CalendarClock, CheckCircle2, Circle, CircleAlert, CircleX, Clock, ExternalLink, FileText, Lock, Mail, MailOpen } from 'lucide-react-native';
-import { ActivityIndicator, View } from 'react-native';
+import { CalendarClock, CheckCircle2, Circle, CircleAlert, CircleX, Clock, ExternalLink, FileText, Lock, Mail, MailOpen, Share2 } from 'lucide-react-native';
+import { useEffect, useState } from 'react';
+import { ActivityIndicator, Share, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
 import { loadDeal, money, TOOL_NAMES, useLoaded } from '@/lib/deals';
-import { Button, Callout, Card, Icon, Screen, SectionTitle, Text, TitleBar } from '@/ui';
+import { createPortal, emailPortal, loadPortals, type PortalLink, revokePortal, unshared } from '@/lib/portals';
+import { Button, Callout, Card, EmptyState, Icon, Screen, SectionTitle, SwitchRow, Text, TextField, TitleBar, useUndoToast } from '@/ui';
 
 const SIGNER_ICONS = { waiting: Circle, sent: Mail, delivered: MailOpen, signed: CheckCircle2, declined: CircleX } as const;
 
@@ -99,9 +101,68 @@ export default function DealScreen() {
               onPress={() => (file.url ? void WebBrowser.openBrowserAsync(file.url) : undefined)}
             />
           ))}
+          {/* The client portal (B14.2): share the deal with a client through their own link. */}
+          <PortalsCard deal={deal.uuid} parties={deal.parties} />
         </>
       )}
     </Screen>
+  );
+}
+
+/** Share with your client (B14.2): a private link each; share, email or turn off. */
+function PortalsCard({ deal, parties }: { deal: string; parties: { name: string; email: string | null }[] }) {
+  const { t } = useTranslation();
+  const toast = useUndoToast();
+  const [links, setLinks] = useState<PortalLink[]>([]);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [spanish, setSpanish] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    void loadPortals(deal).then(setLinks);
+  }, [deal]);
+
+  const run = async (work: () => Promise<void>) => {
+    setBusy(true);
+    setError(null);
+    try {
+      await work();
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  };
+  const upsert = (link: PortalLink) => setLinks((now) => [...now.filter((l) => l.id !== link.id), link]);
+
+  return (
+    <>
+      <SectionTitle>{t('portal.panel.title')}</SectionTitle>
+      <Text tone="muted">{t('portal.panel.hint')}</Text>
+      {error ? <Callout tone="danger" title={error} /> : null}
+      {links.length === 0 ? <EmptyState icon={<Icon icon={Share2} color="action" size={32} />} title={t('portal.panel.none')} description={t('portal.panel.noneHint')} /> : null}
+      {links.map((link) => (
+        <Card key={link.id}>
+          <Text weight="semibold">{link.name}</Text>
+          <Text tone="muted">{link.opened_at ? t('portal.panel.opened') : t('portal.panel.notOpened')}</Text>
+          {link.review ? <Text>{t('portal.panel.reviewed', { rating: link.review.rating })}</Text> : null}
+          <Button icon={Share2} label={t('listings.post.share')} onPress={() => void Share.share({ message: link.url })} />
+          {link.email ? <Button variant="secondary" icon={Mail} label={t('portal.panel.send')} disabled={busy} onPress={() => void run(async () => { upsert(await emailPortal(link.id)); toast({ message: t('portal.panel.sent') }); })} /> : null}
+          <Button variant="ghost" label={t('portal.panel.revoke')} disabled={busy} onPress={() => void run(async () => { await revokePortal(link.id); setLinks((now) => now.filter((l) => l.id !== link.id)); toast({ message: t('portal.panel.revoked') }); })} />
+        </Card>
+      ))}
+      {unshared(parties, links).map((p) => (
+        <Button key={`${p.name}-${p.email}`} variant="secondary" label={p.name} onPress={() => { setName(p.name); setEmail(p.email ?? ''); }} />
+      ))}
+      <Card>
+        <TextField label={t('portal.panel.client')} value={name} maxLength={120} onChangeText={setName} />
+        <TextField label={t('portal.panel.email')} value={email} maxLength={160} keyboardType="email-address" autoCapitalize="none" onChangeText={setEmail} />
+        <SwitchRow label={t('portal.panel.es')} value={spanish} onValueChange={setSpanish} />
+        <Button label={t('portal.panel.create')} loading={busy} disabled={name.trim().length < 2} onPress={() => void run(async () => { upsert(await createPortal(deal, name.trim(), email.trim() === '' ? null : email.trim(), spanish ? 'es' : 'en')); setName(''); setEmail(''); })} />
+      </Card>
+    </>
   );
 }
 

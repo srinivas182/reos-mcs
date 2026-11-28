@@ -18,13 +18,21 @@ interface SendsForSignature
      * each signer, telling the tool to report changes to `$webhookUrl`.
      *
      * @param  list<array{name: string, contents: string}>  $documents  PDFs
-     * @param  list<array{name: string, email: string, routing_order: int}>  $signers
+     * @param  list<array{name: string, email: string, routing_order: int, client_user_id?: string|null}>  $signers  a `client_user_id` makes the signer sign inside REOS's client portal (B14.2) instead of from the tool's email
      * @return string the envelope's id
      */
     public function draft(Connection $connection, string $accessToken, string $subject, array $documents, array $signers, ?string $webhookUrl): string;
 
     /** A one-time link to the tool's sender view, coming back to `$returnUrl`. */
     public function senderView(Connection $connection, string $accessToken, string $envelopeId, string $returnUrl): string;
+
+    /**
+     * A one-time signing link for a signer added with a `client_user_id`
+     * (B14.2): the client signs from their portal, coming back to `$returnUrl`.
+     *
+     * @param  array{name: string, email: string, client_user_id: string}  $signer
+     */
+    public function recipientView(Connection $connection, string $accessToken, string $envelopeId, array $signer, string $returnUrl): string;
 
     /**
      * The envelope's status and each signer's.
