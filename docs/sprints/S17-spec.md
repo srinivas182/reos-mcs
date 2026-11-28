@@ -174,6 +174,59 @@
 
 - QuickBooks Online for brokerages: split sheets and payouts posted as journal entries, with the accounts mapped once.
 - **Done when:** a split sheet posts to QuickBooks.
+- **As built, B17.3** (ADR 0087):
+  - **Data:**
+    - `accounting_connections`: one company per brokerage, tokens encrypted, the mapped accounts;
+    - `accounting_exports`: one row per split sheet or payout, posted or failed, with the QuickBooks id. Both tables have RLS.
+  - **Services:**
+    - `App\Accounting\QuickBooksExports`: connect, with the state tied to the broker; map the six accounts from the company's chart; post a signed sheet at signing or from Export now; post payouts for the brokerage's own sales; never post twice; failures are kept and tried again; daily `reos:accounting:export`;
+    - `JournalEntry`: balanced, in cents, with QuickBooks's body;
+    - `SimulatedQuickBooks` and `IntuitQuickBooks`: OAuth, token refresh, chart of accounts, journal entries.
+  - **API:** `GET|DELETE /api/v1/organisation/accounting`, `POST …/connect`, `PUT …/accounts`, `POST …/export`.
+  - **Web:** QuickBooks at `/organisation/accounting`, a broker nav item beside Integrations:
+    - connect (and "Simulated" in development);
+    - map the accounts;
+    - what's waiting, with Export now;
+    - posted entries, and why any didn't post.
+    Intuit returns to `/organisation/accounting/quickbooks/callback`. There's no phone screen: this is brokerage admin, like Integrations.
+  - **Done when:** a Pest test has Linda Park connect Lone Star Realty's company (simulator) and map the accounts. Priya signs her 1302 Live Oak St split sheet, and the journal entry posts at once:
+    - $12,750 debited to clearing;
+    - $2,550 to the brokerage, $3,825 to the team and $6,375 to Priya;
+    - the sheet keeps the QuickBooks id;
+    - Export now doesn't post it twice.
+    Other tests:
+    - a sheet signed before connecting waits for the mapping, then posts;
+    - another brokerage's broker can't finish someone else's sign-in;
+    - the Intuit client refreshes the token and posts the journal entry.
+
+## 7. Sprint 17 wrap-up
+
+- **Built:**
+  - points sessions paid properly (A17.1, #166);
+  - sponsored AI help in offers, and agents open to a move (A17.2, #167);
+  - team lead routing and split sheets (A17.3, #168);
+  - coordinators by part until closing (B17.1, #169);
+  - provider communities and expert sessions (B17.2);
+  - QuickBooks Online journal entries (B17.3).
+- **Definition of done:**
+  - every endpoint is in `/api/v1` with Pest feature tests, and the api-client is regenerated;
+  - English and Spanish are complete (GLOSSARY: Expediente, Sesión con expertos, Asiento contable);
+  - every new shared component has stories passing axe;
+  - ADRs 0082–0087 and every As built are written.
+- **Security tests:**
+  - coordinators see only shared parts, and nothing after closing or removal (B17.1);
+  - agents open to a move are never shown to their own brokerage (A17.2);
+  - a team leader routes only their team (A17.3);
+  - only verified agents and providers join communities (B17.2);
+  - a QuickBooks sign-in can't be finished by another brokerage (B17.3).
+- **Carried forward:**
+  - bonus campaigns scoped to a team (campaigns stay brokerage-wide);
+  - billing brokerages for points redeemed with their mentors (the ledger records it; invoicing comes with B18 billing);
+  - coordinators who aren't on REOS (email-only access);
+  - sharing a deal with a coordinator from the phone (web for now);
+  - community points and leaderboards;
+  - universal links for invite QR codes in store builds;
+  - Intuit's app assessment for production QuickBooks keys (client).
 
 ## 4. Definition of done (whole sprint)
 

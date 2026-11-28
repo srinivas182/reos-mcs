@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\Accounting\QuickBooksController;
 use App\Http\Controllers\Api\ActiveRoleController;
 use App\Http\Controllers\Api\Agents\BriefController;
 use App\Http\Controllers\Api\Agents\ModeController;
@@ -684,6 +685,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('splits/{sheet}/sign', 'sign')->whereUuid('sheet')->middleware('throttle:30,1,api-team-splits')->name('splits.sign');
         Route::post('splits/{sheet}/question', 'question')->whereUuid('sheet')->middleware('throttle:10,1,api-team-splits')->name('splits.question');
     });
+    // QuickBooks Online (B17.3): connect, map the accounts, export split sheets and payouts.
+    Route::get('organisation/accounting', [QuickBooksController::class, 'show'])->name('api.brokerage.accounting.show');
+    Route::post('organisation/accounting/connect', [QuickBooksController::class, 'connect'])->middleware('throttle:10,1,api-accounting')->name('api.brokerage.accounting.connect');
+    Route::put('organisation/accounting/accounts', [QuickBooksController::class, 'accounts'])->middleware('throttle:20,1,api-accounting')->name('api.brokerage.accounting.accounts');
+    Route::post('organisation/accounting/export', [QuickBooksController::class, 'export'])->middleware('throttle:10,1,api-accounting')->name('api.brokerage.accounting.export');
+    Route::delete('organisation/accounting', [QuickBooksController::class, 'disconnect'])->middleware('throttle:10,1,api-accounting')->name('api.brokerage.accounting.disconnect');
     // Recruiting (A17.2): sponsored AI help, and licensed agents open to a move.
     Route::get('organisation/recruiting/agents', [ApiRecruitingController::class, 'agents'])->name('api.brokerage.recruiting.agents');
     Route::post('organisation/recruiting/agents/{agent}/invite', [ApiRecruitingController::class, 'invite'])->whereNumber('agent')->middleware('throttle:20,1,api-recruiting-invite')->name('api.brokerage.recruiting.invite');

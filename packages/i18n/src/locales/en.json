@@ -112,7 +112,8 @@
     "myFiles": "My files",
     "community": "Community",
     "results": "Results",
-    "communities": "Communities"
+    "communities": "Communities",
+    "accounting": "QuickBooks"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -2423,7 +2424,12 @@
         "community.post_removed": "Removed a community post",
         "community.session_scheduled": "Scheduled an expert session",
         "community.session_cancelled": "Cancelled an expert session",
-        "community.attendance": "Saved session attendance"
+        "community.attendance": "Saved session attendance",
+        "accounting.connected": "Connected QuickBooks",
+        "accounting.disconnected": "Disconnected QuickBooks",
+        "accounting.accounts_mapped": "Mapped QuickBooks accounts",
+        "accounting.exported": "Exported to QuickBooks",
+        "accounting.connect_started": "Started connecting QuickBooks"
       }
     }
   },
@@ -12059,6 +12065,56 @@
       "referralPay": "Communities can't be used to pay for referrals: remove \"{{phrase}}\".",
       "contact": "Share contacts through connections, not in posts: remove phone numbers, email addresses and links.",
       "wording": "Change \"{{phrase}}\": it breaks advertising rules."
+    }
+  },
+  "accounting": {
+    "title": "QuickBooks",
+    "purpose": "Post signed split sheets and payouts to your QuickBooks Online company. Map your accounts once.",
+    "connect": "Connect QuickBooks",
+    "connectHint": "You sign in to Intuit and choose your company. REOS only posts journal entries.",
+    "connected": "QuickBooks is connected.",
+    "company": "Connected to {{company}}",
+    "simulated": "Simulated: nothing is sent to Intuit.",
+    "needsReconnect": "QuickBooks needs you to sign in again.",
+    "disconnect": "Disconnect QuickBooks",
+    "disconnected": "QuickBooks is disconnected. Entries already posted stay in QuickBooks.",
+    "map": "Map your accounts",
+    "mapHint": "Choose the account for each part of a split sheet and payout. You do this once.",
+    "choose": "Choose an account",
+    "save": "Save accounts",
+    "saved": "Accounts saved.",
+    "roles": {
+      "clearing": "Commission received (clearing)",
+      "brokerage_income": "Brokerage share (income)",
+      "team_payable": "Team share (payable)",
+      "agent_payable": "Agent share (payable)",
+      "payouts_expense": "Mentor and instructor payouts (expense)",
+      "payouts_clearing": "Payouts paid (clearing)"
+    },
+    "pending": "Waiting to post",
+    "pendingEmpty": "Nothing waiting",
+    "pendingEmptyHint": "Signed split sheets and payouts post here, once each.",
+    "sheetRow": "{{property}} · {{agent}} · {{amount}}",
+    "payoutRow": "Payout to {{payee}} · {{amount}}",
+    "export": "Export now",
+    "exportedResult": "Posted {{posted}}. {{failed}} didn't post.",
+    "history": "Posted entries",
+    "historyEmpty": "No entries yet",
+    "historyEmptyHint": "Entries show here once they post.",
+    "kinds": {
+      "split_sheet": "Split sheet",
+      "payout": "Payout"
+    },
+    "statuses": {
+      "posted": "Posted as {{ref}}",
+      "failed": "Didn't post: {{error}}"
+    },
+    "errors": {
+      "state": "That QuickBooks sign-in expired. Please connect again.",
+      "notConnected": "Connect QuickBooks first.",
+      "notMapped": "Map your accounts first.",
+      "account": "Choose an account from your QuickBooks company.",
+      "off": "QuickBooks is switched off right now."
     }
   }
 }
