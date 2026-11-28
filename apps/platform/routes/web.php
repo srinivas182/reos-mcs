@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\Deals\ClientPortalController;
 use App\Http\Controllers\Api\Deals\DealController;
 use App\Http\Controllers\Api\Deals\SignatureController;
 use App\Http\Controllers\Api\Instructor\QuestionController as InstructorQuestionController;
+use App\Http\Controllers\Api\Leads\FarmController;
 use App\Http\Controllers\Api\Leads\OpenHouseController;
 use App\Http\Controllers\Api\Leads\ReferralController;
 use App\Http\Controllers\Api\Learn\PlayerController;
@@ -72,6 +73,8 @@ use App\Http\Controllers\Deals\DealsPageController;
 use App\Http\Controllers\Deals\SignaturePageController;
 use App\Http\Controllers\Feedback\AgentFeedbackPageController;
 use App\Http\Controllers\Instructor\QuestionsPageController;
+use App\Http\Controllers\Leads\FarmPageController;
+use App\Http\Controllers\Leads\FarmUnsubscribeController;
 use App\Http\Controllers\Leads\JoinController;
 use App\Http\Controllers\Leads\OpenHousePageController;
 use App\Http\Controllers\Leads\PublicLeadsController;
@@ -181,6 +184,11 @@ Route::middleware('throttle:60,1,open-house')->group(function () {
     Route::post('open-house/{code}', [PublicLeadsController::class, 'signIn'])->where('code', '[A-Za-z2-9]{8}')->middleware('throttle:20,1,open-house-sign-in')->name('open-house.sign-in');
 });
 Route::post('agent/{handle}/contact', [PublicLeadsController::class, 'contact'])->where('handle', '[a-z0-9-]{1,80}')->middleware('throttle:5,1,agent-page-lead')->name('agent-pages.contact');
+// Market updates (B14.3c): the signed unsubscribe link in every email.
+Route::middleware(['signed', 'throttle:30,1,farm-unsubscribe'])->group(function () {
+    Route::get('farm/unsubscribe', [FarmUnsubscribeController::class, 'show'])->name('farm.unsubscribe');
+    Route::post('farm/unsubscribe', [FarmUnsubscribeController::class, 'store'])->name('farm.unsubscribe.store');
+});
 // Invite and earn (B14.3b): the invite link remembers who invited a new person.
 Route::get('join/{code}', [JoinController::class, 'show'])->where('code', '[A-Za-z2-9]{8}')->middleware('throttle:30,1,join')->name('join.show');
 Route::get('sitemap.xml', [SitemapController::class, 'sitemap'])->middleware('throttle:30,1,sitemap')->name('sitemap');
@@ -326,6 +334,12 @@ Route::middleware(['auth', 'verified', EnsureOnboarded::class])->group(function 
         Route::post('referrals/{referral}/decline', [ReferralController::class, 'decline'])->whereUuid('referral')->name('referrals.decline');
         Route::post('referrals/{referral}/close', [ReferralController::class, 'close'])->whereUuid('referral')->name('referrals.close');
     });
+    // Farming market updates (B14.3c): the page, and the same API for its actions.
+    Route::get('farming', [FarmPageController::class, 'index'])->name('farming.index');
+    Route::post('farming', [FarmController::class, 'store'])->middleware('throttle:20,1,farming')->name('farming.store');
+    Route::delete('farming/{area}', [FarmController::class, 'destroy'])->whereUuid('area')->name('farming.destroy');
+    Route::get('farming/{area}/draft', [FarmController::class, 'draft'])->whereUuid('area')->middleware('throttle:30,1,farming-draft')->name('farming.draft');
+    Route::post('farming/{area}/send', [FarmController::class, 'send'])->whereUuid('area')->middleware('throttle:5,1,farming-send')->name('farming.send');
     // The client portal (B14.2): the deal panel shares the deal with a client.
     Route::get('deals/{deal}/portals', [ClientPortalController::class, 'index'])->whereUuid('deal')->name('deals.portals.index');
     Route::post('deals/{deal}/portals', [ClientPortalController::class, 'store'])->whereUuid('deal')->middleware('throttle:30,1,portals')->name('deals.portals.store');

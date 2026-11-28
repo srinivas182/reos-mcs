@@ -256,6 +256,21 @@
     - Me → Referrals and invites: answer and close referrals, share the invite link, enter who invited you.
     - Refer a client.
   - **Done when:** a Pest test has Maria refer Elena to Dev at another brokerage. Dev accepts, and Elena is in his CRM with the referral note (fee 25%, broker to broker) and a follow-up. An agent outside REOS gets the email. Ana joins through Maria's link and gets licensed, and Maria earns 2,500 points once.
+- **As built, B14.3c** (ADR 0068):
+  - **Data:** `farm_areas` (city or ZIP, contacts tag, mailing address), `farm_sends` and `farm_opt_outs` (SHA-256 of the address), all with row-level security.
+  - **Services:** `App\Leads\FarmUpdates`:
+    - areas, add and remove;
+    - draft: the figures from the agent's confirmed MLS over three months, the median sale price only when `soldPublic`, and the compliance check on the new `newsletter` channel;
+    - send: re-checked and logged, at most weekly, to tagged contacts less opt-outs;
+    - unsubscribe.
+  - **Mail:** `FarmUpdateMail`, with the attribution, the sender's address, a signed hash unsubscribe link and RFC 8058 headers.
+  - **Routes:**
+    - API: `GET` and `POST /api/v1/farm-areas`, `DELETE /api/v1/farm-areas/{id}`, `GET /api/v1/farm-areas/{id}/draft`, `POST /api/v1/farm-areas/{id}/send`.
+    - Web: `/farming`, with the same actions.
+    - Public: `farm/unsubscribe` (signed, exempt from CSRF for the one-click POST).
+  - **Web:** "Farming" in the agent sidebar: add an area, the areas, this month's figures, edit, check, send.
+  - **Phone:** Me → Farming (areas and adding one), and an area's update (figures, edit, check, send).
+  - **Done when:** a Pest test has James add Katy and gets figures from the HAR sample, with no sale price (Texas) and the broker named, passing the check. The update goes to the two tagged contacts with an unsubscribe link that holds no address, and is logged. A second send in the same week is refused. Ana unsubscribes in one click and doesn't get the next update. A send the compliance engine blocks never goes out.
 
 ## 4. Definition of done (whole sprint)
 

@@ -51,6 +51,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'integrations/google-sign-in/callback',
             // Connections (B3.1): some tools post the sign-in answer back.
             'integrations/*/callback',
+            // One-click unsubscribe from market updates (B14.3c, RFC 8058): mail apps post without a token; the signed link protects it.
+            'farm/unsubscribe',
         ]);
 
         $middleware->encryptCookies(except: ['appearance', 'text_size', 'locale', 'sidebar_state', 'reos_tz']);

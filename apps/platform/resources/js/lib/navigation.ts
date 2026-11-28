@@ -42,6 +42,7 @@ import {
     PartyPopper,
     DoorOpen,
     Send,
+    MapPin,
 } from 'lucide-react';
 import { dashboard } from '@/routes';
 import { show as brandingShow } from '@/routes/branding';
@@ -71,6 +72,7 @@ import { index as rolePlayIndex } from '@/routes/role-play';
 import { index as videoPracticeIndex } from '@/routes/video-practice';
 import { index as openHousesIndex } from '@/routes/open-houses';
 import { index as referralsIndex } from '@/routes/referrals';
+import { index as farmingIndex } from '@/routes/farming';
 import { index as candidateStudio } from '@/routes/candidate-studio';
 import { index as complianceLog } from '@/routes/organisation/compliance-log';
 import { index as brokerRewards } from '@/routes/organisation/rewards';
@@ -118,6 +120,7 @@ export type NavLabel =
     | 'deals'
     | 'openHouses'
     | 'referrals'
+    | 'farming'
     | 'dashboard'
     | 'overview'
     | 'account'
@@ -274,6 +277,8 @@ export function roleNavigation(
             item('openHouses', DoorOpen, openHousesIndex(), '/open-houses'),
             // Referrals and invites (B14.3b): between brokers; invite and earn.
             item('referrals', Send, referralsIndex(), '/referrals'),
+            // Farming (B14.3c): monthly market updates for an area, checked for compliance.
+            item('farming', MapPin, farmingIndex(), '/farming'),
             // Contract review (A12.2, screen 15): TREC forms with dated findings and deadlines.
             item('contractReview', FileSearch, contractReview(), '/contracts'),
             // The virtual broker (A12.1, screen 16): policy answers with sources, the broker when needed.

@@ -97,7 +97,8 @@
     "rolePlay": "Juego de roles",
     "videoPractice": "Práctica en video",
     "openHouses": "Casas abiertas",
-    "referrals": "Referencias"
+    "referrals": "Referencias",
+    "farming": "Prospección por zona"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -2342,7 +2343,8 @@
         "portal.revoked": "Enlace de cliente desactivado",
         "referral.sent": "Referencia enviada",
         "referral.accepted": "Referencia aceptada",
-        "invite.claimed": "Invitación registrada"
+        "invite.claimed": "Invitación registrada",
+        "farm.sent": "Actualización del mercado enviada"
       }
     }
   },
@@ -3341,7 +3343,8 @@
         "video": "Video",
         "page": "Página pública",
         "email": "Correo",
-        "text": "Mensaje de texto"
+        "text": "Mensaje de texto",
+        "newsletter": "Correo de actualización del mercado"
       },
       "actions": {
         "checked": "Revisado, aprobado",
@@ -10627,6 +10630,74 @@
         "signedIn": "Ya tiene una cuenta.",
         "open": "Abrir REOS"
       }
+    },
+    "farm": {
+      "blocked": "La actualización no se puede enviar hasta corregir los problemas de cumplimiento.",
+      "tooSoon": "Hace poco se envió una actualización de esta zona. La próxima puede salir el {{date}}.",
+      "nobody": "Todavía ningún contacto tiene la etiqueta “{{tag}}” y un correo electrónico.",
+      "noMls": "Primero vincule su membresía del MLS en Mis propiedades; las cifras vienen de su MLS.",
+      "attribution": "Basado en información de {{mls}} para {{area}}, del {{from}} al {{to}}. Sin garantía.",
+      "draft": {
+        "subject": "Actualización del mercado de {{area}}, {{month}}",
+        "intro": "Así se vio el mercado de vivienda de {{area}} en los últimos tres meses.",
+        "active": "{{count}} casas a la venta, con un precio de venta mediano de {{price}}.",
+        "new": "{{count}} propiedades nuevas salieron al mercado.",
+        "sold": "Se vendieron {{count}} casas.",
+        "soldPrice": "Se vendieron {{count}} casas, a un precio mediano de {{price}}.",
+        "days": "Las casas a la venta llevan una mediana de {{days}} días en el mercado.",
+        "supply": "Hay {{months}} meses de inventario al ritmo actual de ventas.",
+        "close": "¿Piensa comprar o vender en {{area}}? Responda a este correo y le explico qué significan estas cifras para su casa."
+      },
+      "mail": {
+        "sender": "Enviado por {{agent}}, {{broker}}, {{address}}.",
+        "why": "Recibe este correo porque es uno de los contactos de {{agent}}.",
+        "unsubscribe": "Cancelar la suscripción"
+      },
+      "unsubscribe": {
+        "title": "Actualizaciones del mercado de {{agent}}",
+        "purpose": "¿Dejar de recibir actualizaciones del mercado de {{agent}}?",
+        "confirm": "Cancelar la suscripción",
+        "done": "Listo. No volverá a recibir actualizaciones del mercado de {{agent}}."
+      },
+      "title": "Prospección por zona",
+      "purpose": "Envíe una actualización mensual del mercado de cada zona que trabaja, con cifras de su MLS y revisada para el cumplimiento antes de enviarla.",
+      "add": "Agregar una zona",
+      "name": "Nombre de la zona",
+      "nameHint": "Como la conocen sus contactos, por ejemplo Cinco Ranch.",
+      "city": "Ciudad",
+      "postalCode": "Código postal",
+      "placeHint": "Una ciudad o un código postal de su MLS.",
+      "tag": "Etiqueta de contactos",
+      "tagHint": "Los contactos con esta etiqueta reciben la actualización.",
+      "address": "Su dirección postal",
+      "addressHint": "Obligatoria en todo correo de mercadeo.",
+      "none": "Aún no hay zonas",
+      "noneHint": "Agregue el vecindario por el que quiere ser conocido.",
+      "recipients_one": "{{count}} contacto",
+      "recipients_other": "{{count}} contactos",
+      "lastSent": "Último envío: {{date}}",
+      "neverSent": "Aún no se ha enviado",
+      "preview": "Actualización de este mes",
+      "subject": "Asunto",
+      "body": "Mensaje",
+      "stats": {
+        "active": "A la venta",
+        "pending": "Bajo contrato",
+        "new": "Propiedades nuevas",
+        "sold": "Vendidas",
+        "medianPrice": "Precio de venta mediano",
+        "medianDays": "Días en el mercado (mediana)",
+        "medianSold": "Precio de cierre mediano",
+        "supply": "Meses de inventario"
+      },
+      "soldHidden": "No se muestran precios de cierre: su MLS no los permite en material público.",
+      "checkOk": "Cumple con la revisión.",
+      "checkIssues": "Corrija esto antes de enviar:",
+      "send": "Enviar a {{count}} contactos",
+      "sent": "Actualización del mercado enviada",
+      "remove": "Quitar zona",
+      "removed": "Zona quitada",
+      "nextSend": "La próxima actualización puede salir el {{date}}."
     }
   }
 }

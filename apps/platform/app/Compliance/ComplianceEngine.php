@@ -20,7 +20,8 @@ use Throwable;
 /**
  * The compliance engine (B13.1, ADR 0057): one set of rules for every
  * outbound channel — social posts and designs, studio videos, emails and
- * texts to contacts, and the agent's public page.
+ * texts to contacts, the agent's public page, and market update emails
+ * (B14.3c: an advertisement sent to many, so `newsletter` follows the ad rules).
  *
  * Rules are data (`TexasAdRules`): the broker's name in every ad and at
  * least half the size of the largest contact information, team names,
@@ -35,7 +36,7 @@ use Throwable;
  */
 final readonly class ComplianceEngine
 {
-    public const CHANNELS = ['post', 'video', 'page', 'email', 'text'];
+    public const CHANNELS = ['post', 'video', 'page', 'email', 'text', 'newsletter'];
 
     public function __construct(
         private AdvertisingPolicy $policy,

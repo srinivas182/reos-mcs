@@ -2447,6 +2447,84 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/farm-areas": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My farm areas */
+        get: operations["farm.index"];
+        put?: never;
+        /**
+         * Add a farm area
+         * @description A city or a ZIP code in my MLS, the tag of the contacts who get its update, and my postal address for the emails.
+         */
+        post: operations["farm.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/farm-areas/{area}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Remove a farm area */
+        delete: operations["farm.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/farm-areas/{area}/draft": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * This month's update
+         * @description The area's figures from my MLS over the last three months (sale prices only where the MLS allows them publicly), a draft in my language, and the compliance check.
+         */
+        get: operations["farm.draft"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/farm-areas/{area}/send": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Send the update
+         * @description To my contacts with the area's tag, less anyone who unsubscribed. Refused when the compliance check blocks it, or within a week of the last update.
+         */
+        post: operations["farm.send"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/practice/flashcards": {
         parameters: {
             query?: never;
@@ -7009,6 +7087,25 @@ export interface components {
             };
         };
         /**
+         * FarmAreaRequest
+         * @description An area to farm (B14.3c): a city or a ZIP code, the contacts' tag, and the sender's postal address.
+         */
+        FarmAreaRequest: {
+            name: string;
+            city?: string | null;
+            postal_code?: string | null;
+            tag: string;
+            mailing_address: string;
+        };
+        /**
+         * FarmSendRequest
+         * @description The market update as the agent approved it (B14.3c).
+         */
+        FarmSendRequest: {
+            subject: string;
+            body: string;
+        };
+        /**
          * FinishSpeedRoundRequest
          * @description The taps of a speed round (A9.2d): each statement answered, True or False.
          */
@@ -8220,6 +8317,8 @@ export type SchemaDealRequest = components['schemas']['DealRequest'];
 export type SchemaDefaultCrmRequest = components['schemas']['DefaultCrmRequest'];
 export type SchemaDeviceResource = components['schemas']['DeviceResource'];
 export type SchemaExchangeSignInRequest = components['schemas']['ExchangeSignInRequest'];
+export type SchemaFarmAreaRequest = components['schemas']['FarmAreaRequest'];
+export type SchemaFarmSendRequest = components['schemas']['FarmSendRequest'];
 export type SchemaFinishSpeedRoundRequest = components['schemas']['FinishSpeedRoundRequest'];
 export type SchemaFlagsRequest = components['schemas']['FlagsRequest'];
 export type SchemaFlashcardReviewsRequest = components['schemas']['FlashcardReviewsRequest'];
@@ -13841,7 +13940,7 @@ export interface operations {
             content: {
                 "application/json": {
                     /** @enum {string} */
-                    channel: "post" | "video" | "page" | "email" | "text";
+                    channel: "post" | "video" | "page" | "email" | "text" | "newsletter";
                     text: string;
                 };
             };
@@ -13899,7 +13998,7 @@ export interface operations {
             content: {
                 "application/json": {
                     /** @enum {string} */
-                    channel: "post" | "video" | "page" | "email" | "text";
+                    channel: "post" | "video" | "page" | "email" | "text" | "newsletter";
                     text: string;
                 };
             };
@@ -16567,6 +16666,271 @@ export interface operations {
                     "application/json": components["schemas"]["SignInResource"];
                 };
             };
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "farm.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            name: string;
+                            city: string | null;
+                            postal_code: string | null;
+                            tag: string;
+                            mailing_address: string;
+                            recipients: number;
+                            last_sent_at: string | null;
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "farm.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FarmAreaRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            name: string;
+                            city: string | null;
+                            postal_code: string | null;
+                            tag: string;
+                            mailing_address: string;
+                            recipients: number;
+                            last_sent_at: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "farm.destroy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                area: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "farm.draft": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                area: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            area: {
+                                id: string;
+                                name: string;
+                                city: string | null;
+                                postal_code: string | null;
+                                tag: string;
+                                mailing_address: string;
+                                recipients: number;
+                                last_sent_at: string | null;
+                            };
+                            stats: {
+                                active: number;
+                                pending: number;
+                                new_listings: number;
+                                sold: number;
+                                median_price: number | null;
+                                median_days: number | null;
+                                median_sold_price: number | null;
+                                months_supply: number | null;
+                                from: string;
+                                to: string;
+                            };
+                            subject: string;
+                            body: string;
+                            attribution: string;
+                            check: {
+                                ok: boolean;
+                                issues: {
+                                    /** @enum {string} */
+                                    code: "broker" | "broker_size" | "team_name" | "links" | "claims" | "title" | "fair_housing" | "unclear" | "banned" | "unlicensed";
+                                    /** @enum {string} */
+                                    severity: "block" | "warn";
+                                    phrase: string | null;
+                                    fix: string | null;
+                                    reason: string | null;
+                                    citation: string;
+                                    url: string;
+                                    /** @enum {string} */
+                                    source: "rule" | "claude";
+                                }[];
+                            };
+                            can_send: boolean;
+                            next_send_at: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "farm.send": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                area: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FarmSendRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            area: {
+                                id: string;
+                                name: string;
+                                city: string | null;
+                                postal_code: string | null;
+                                tag: string;
+                                mailing_address: string;
+                                recipients: number;
+                                last_sent_at: string | null;
+                            };
+                            stats: {
+                                active: number;
+                                pending: number;
+                                new_listings: number;
+                                sold: number;
+                                median_price: number | null;
+                                median_days: number | null;
+                                median_sold_price: number | null;
+                                months_supply: number | null;
+                                from: string;
+                                to: string;
+                            };
+                            subject: string;
+                            body: string;
+                            attribution: string;
+                            check: {
+                                ok: boolean;
+                                issues: {
+                                    /** @enum {string} */
+                                    code: "broker" | "broker_size" | "team_name" | "links" | "claims" | "title" | "fair_housing" | "unclear" | "banned" | "unlicensed";
+                                    /** @enum {string} */
+                                    severity: "block" | "warn";
+                                    phrase: string | null;
+                                    fix: string | null;
+                                    reason: string | null;
+                                    citation: string;
+                                    url: string;
+                                    /** @enum {string} */
+                                    source: "rule" | "claude";
+                                }[];
+                            };
+                            can_send: boolean;
+                            next_send_at: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
             422: components["responses"]["ValidationException"];
             /** @description Too many requests */
             429: {

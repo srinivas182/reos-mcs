@@ -35,10 +35,10 @@ final class TexasAdRules
         'join my team', 'now hiring', 'recruiting agents', 'en venta', 'casa abierta', 'llámeme', 'comprar o vender', 'compre o venda', 'únase a mi agencia',
     ];
 
-    /** Ads: posts and designs, videos, and the public page. Messages: emails and texts to contacts. */
-    private const ADS = ['post', 'video', 'page'];
+    /** Ads: posts and designs, videos, the public page and market update emails (B14.3c). Messages: emails and texts to contacts. */
+    private const ADS = ['post', 'video', 'page', 'newsletter'];
 
-    private const ALL = ['post', 'video', 'page', 'email', 'text'];
+    private const ALL = ['post', 'video', 'page', 'email', 'text', 'newsletter'];
 
     /** @return list<Rule> */
     public static function all(): array
