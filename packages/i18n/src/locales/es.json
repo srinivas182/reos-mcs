@@ -108,7 +108,8 @@
     "agentsInMyAreas": "Agentes en mis zonas",
     "providerRequests": "Solicitudes de proveedores",
     "teamsAndRouting": "Equipo y asignación",
-    "teamLeads": "Prospectos del equipo"
+    "teamLeads": "Prospectos del equipo",
+    "myFiles": "Mis expedientes"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -2407,7 +2408,12 @@
         "team.lead_leader": "Envió un prospecto del equipo al líder",
         "team.agreement_changed": "Cambió el acuerdo del equipo",
         "team.split_sent": "Envió una hoja de reparto",
-        "team.split_signed": "Firmó una hoja de reparto"
+        "team.split_signed": "Firmó una hoja de reparto",
+        "coordinator.shared": "Compartió una operación con un coordinador",
+        "coordinator.switches": "Cambió el acceso de un coordinador",
+        "coordinator.ticked": "El coordinador marcó un elemento de la lista",
+        "coordinator.messaged": "El coordinador envió un mensaje al agente",
+        "coordinator.access_ended": "Terminó el acceso del coordinador"
       }
     }
   },
@@ -11838,6 +11844,73 @@
     "leads": {
       "title": "Prospectos del equipo",
       "purpose": "Reclame los prospectos del equipo antes de que se acabe el tiempo y firme sus hojas de reparto."
+    }
+  },
+  "coordinators": {
+    "title": "Mis expedientes",
+    "purpose": "Operaciones que los agentes le compartieron, hasta el cierre. Usted ve solo las partes que cada agente activó.",
+    "counts": {
+      "active": "Expedientes activos",
+      "dueThisWeek": "Vencen esta semana",
+      "missing": "Documentos faltantes"
+    },
+    "empty": "Aún no hay expedientes",
+    "emptyHint": "Cuando un agente con quien está conectado le comparta una operación, aparecerá aquí hasta el cierre.",
+    "next": "Siguiente: {{label}}, {{date}}",
+    "noNext": "No se compartieron fechas próximas",
+    "missing_one": "Falta {{count}} documento",
+    "missing_other": "Faltan {{count}} documentos",
+    "progress": "{{done}} de {{total}} listos",
+    "open": "Abrir el expediente de {{property}}",
+    "back": "Volver a mis expedientes",
+    "sharedBy": "Compartido por {{agent}} el {{date}}",
+    "dates": "Fechas clave",
+    "documents": "Documentos",
+    "parties": "Partes",
+    "notShared": "{{agent}} no compartió esta parte.",
+    "tick": "{{name}} listo",
+    "ticked": "Guardado. {{agent}} ve su avance.",
+    "message": "Enviar mensaje a {{agent}}",
+    "messageHint": "Se envía a su chat con {{agent}}. Los coordinadores se encargan de documentos y fechas; la asesoría le corresponde al agente.",
+    "send": "Enviar mensaje",
+    "sent": "Enviado a {{agent}}.",
+    "openChat": "Abrir el chat",
+    "messagesOff": "{{agent}} no activó los mensajes para este expediente.",
+    "draft": "Hola, {{agent}}. Le escribe {{coordinator}} sobre {{property}}. Aún falta: {{missing}}. Siguiente fecha: {{next}}. Por favor, envíe lo que tenga cuando pueda.",
+    "nothingMissing": "nada",
+    "notifyTitle": "{{agent}} le compartió un expediente",
+    "notifyBody": "{{property}} estará en Mis expedientes hasta el cierre.",
+    "errors": {
+      "notConnected": "Comparta con un coordinador de transacciones con quien esté conectado.",
+      "closed": "Esta operación está cerrada, así que no se puede compartir.",
+      "messagesOff": "El agente no activó los mensajes para este expediente."
+    },
+    "share": {
+      "title": "Coordinador de transacciones",
+      "purpose": "Comparta esta operación con su coordinador. Verá solo lo que usted active, y el acceso termina al cierre.",
+      "coordinator": "Coordinador",
+      "choose": "Elija un coordinador",
+      "parts": {
+        "dates": "Fechas clave",
+        "documents": "Documentos",
+        "parties": "Partes y contactos",
+        "messages": "Mensajes para usted"
+      },
+      "partFor": "{{part}} para {{name}}",
+      "share": "Compartir operación",
+      "shared": "Compartida con {{name}}. El acceso termina al cierre.",
+      "saved": "Acceso actualizado para {{name}}.",
+      "remove": "Quitar a {{name}}",
+      "removed": "{{name}} ya no tiene acceso.",
+      "active": "Tiene acceso hasta el cierre",
+      "ended": {
+        "closed": "El acceso terminó al cierre",
+        "cancelled": "El acceso terminó: la operación se canceló",
+        "removed": "El acceso terminó: se quitó"
+      },
+      "none": "Aún no hay coordinadores",
+      "noneHint": "Conéctese con un coordinador de transacciones en Proveedores de servicios y luego comparta operaciones con él aquí.",
+      "closedNote": "Las operaciones cerradas o canceladas no se pueden compartir."
     }
   }
 }

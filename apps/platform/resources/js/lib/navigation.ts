@@ -10,6 +10,7 @@ import {
     CreditCard,
     FileBadge,
     Flag,
+    FolderOpen,
     Gauge,
     FileCheck2,
     FileSearch,
@@ -98,6 +99,7 @@ import { index as brokerVirtualBroker } from '@/routes/organisation/virtual-brok
 import { index as approvalsIndex } from '@/routes/approvals';
 import { index as ceComplianceIndex } from '@/routes/ce-compliance';
 import { index as providerAgents } from '@/routes/provider-agents';
+import { index as providerFiles } from '@/routes/provider-files';
 import { index as providerNetworkIndex } from '@/routes/provider-network';
 import { index as reportsIndex } from '@/routes/reports';
 import { index as teamIndex, leads as teamLeads } from '@/routes/team';
@@ -167,6 +169,7 @@ export type NavLabel =
     | 'providerRequests'
     | 'teamsAndRouting'
     | 'teamLeads'
+    | 'myFiles'
     | 'providerJoin'
     | 'serviceProviders'
     | 'profile'
@@ -365,6 +368,8 @@ export function roleNavigation(
                 providerAgents(),
                 '/provider/agents',
             ),
+            // Coordinators' files (B17.1, provider screens 14–15): deals shared until closing.
+            item('myFiles', FolderOpen, providerFiles(), '/provider/files'),
             messages,
             // Joining and the profile agents see (B15.2 and B15.3, provider screens 1–7).
             item('providerJoin', ListChecks, providerJoin(), '/provider/join'),

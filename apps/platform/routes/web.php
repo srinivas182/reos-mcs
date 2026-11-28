@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\Ce\CeWalletController;
 use App\Http\Controllers\Api\Classes\ClassesController;
 use App\Http\Controllers\Api\Compliance\ComplianceController;
 use App\Http\Controllers\Api\Contracts\ContractReviewController;
+use App\Http\Controllers\Api\Coordinators\CoordinatorController;
 use App\Http\Controllers\Api\Deals\ClientPortalController;
 use App\Http\Controllers\Api\Deals\DealController;
 use App\Http\Controllers\Api\Deals\SignatureController;
@@ -136,6 +137,7 @@ use App\Http\Controllers\Practice\SharedReportController;
 use App\Http\Controllers\Practice\StudyPlanController;
 use App\Http\Controllers\Practice\TopicPlanPageController;
 use App\Http\Controllers\Provider\AgentsPageController;
+use App\Http\Controllers\Provider\FilesPageController;
 use App\Http\Controllers\Provider\JoinPageController;
 use App\Http\Controllers\Provider\ProfilePagesController;
 use App\Http\Controllers\Provider\ProviderPhotoController;
@@ -548,6 +550,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('provider/profile/bio', [ProviderProfileController::class, 'draft'])->middleware('throttle:10,1,provider-bio')->name('provider-profile.bio');
     Route::post('provider/profile/photo', [ProviderProfileController::class, 'photo'])->middleware('throttle:10,1,provider-photo')->name('provider-profile.photo');
     // Agents in my areas and requests to connect (B16.1): the page, and the same actions as the API.
+    // Coordinators (B17.1, provider screens 14–15): My files, and the agent's share panel in a deal.
+    Route::get('provider/files', [FilesPageController::class, 'index'])->name('provider-files.index');
+    Route::get('provider/files/{share}', [FilesPageController::class, 'show'])->whereUuid('share')->name('provider-files.show');
+    Route::put('provider/files/{share}/checklist', [CoordinatorController::class, 'tick'])->whereUuid('share')->middleware('throttle:60,1,coordinator-files')->name('provider-files.tick');
+    Route::post('provider/files/{share}/messages', [CoordinatorController::class, 'message'])->whereUuid('share')->middleware('throttle:20,1,coordinator-files')->name('provider-files.message');
+    Route::get('deals/{deal}/coordinators', [CoordinatorController::class, 'forDeal'])->whereUuid('deal')->name('deals.coordinators.index');
+    Route::post('deals/{deal}/coordinators', [CoordinatorController::class, 'share'])->whereUuid('deal')->middleware('throttle:20,1,coordinators')->name('deals.coordinators.store');
+    Route::put('deal-shares/{share}', [CoordinatorController::class, 'switches'])->whereUuid('share')->middleware('throttle:30,1,coordinators')->name('deal-shares.update');
+    Route::delete('deal-shares/{share}', [CoordinatorController::class, 'remove'])->whereUuid('share')->middleware('throttle:30,1,coordinators')->name('deal-shares.destroy');
     Route::get('provider/agents', AgentsPageController::class)->name('provider-agents.index');
     Route::post('provider/requests', [AgentsInAreaController::class, 'send'])->middleware('throttle:20,1,provider-requests')->name('provider-agents.request');
     Route::post('provider/requests/{providerRequest}/withdraw', [AgentsInAreaController::class, 'withdraw'])->whereUuid('providerRequest')->middleware('throttle:20,1,provider-requests')->name('provider-agents.withdraw');

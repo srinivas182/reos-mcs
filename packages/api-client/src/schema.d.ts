@@ -2614,6 +2614,131 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/deals/{deal}/coordinators": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * The deal's coordinators
+         * @description The agent's connected transaction coordinators, and who this deal is (or was) shared with, with the switches and when access ended.
+         */
+        get: operations["deals.coordinators.index"];
+        put?: never;
+        /**
+         * Share a deal with a coordinator
+         * @description Only a transaction coordinator the agent is connected with. Documents and dates are on unless switched off; parties and messages are off unless switched on. Access ends at closing. 422 on a closed or cancelled deal.
+         */
+        post: operations["deals.coordinators.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/deal-shares/{share}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Change what the coordinator sees */
+        put: operations["deal-shares.update"];
+        post?: never;
+        /**
+         * Remove the coordinator
+         * @description Their access ends now.
+         */
+        delete: operations["deal-shares.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/coordinator/files": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My files
+         * @description The coordinator's active files, nearest deadline first: the next date, missing documents and progress. Only what each agent switched on.
+         */
+        get: operations["coordinator.files.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/coordinator/files/{share}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A file
+         * @description The shared parts only: a part that's switched off is null. 404 once the deal closes or the agent removes the coordinator.
+         */
+        get: operations["coordinator.files.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/coordinator/files/{share}/checklist": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Tick a checklist item
+         * @description A document as `doc:<name>` or a date's id. The agent sees the progress.
+         */
+        put: operations["coordinator.files.tick"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/coordinator/files/{share}/messages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Message the agent about the file
+         * @description Goes to a chat with the agent, so the agent always has it. Needs the messages switch (422 otherwise).
+         */
+        post: operations["coordinator.files.message"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/me/states": {
         parameters: {
             query?: never;
@@ -8698,6 +8823,13 @@ export interface components {
             body: string;
         };
         /**
+         * FileMessageRequest
+         * @description A message about a shared file to the agent (B17.1).
+         */
+        FileMessageRequest: {
+            body: string;
+        };
+        /**
          * FinishSpeedRoundRequest
          * @description The taps of a speed round (A9.2d): each statement answered, True or False.
          */
@@ -9765,6 +9897,19 @@ export interface components {
             share: boolean;
         };
         /**
+         * ShareDealRequest
+         * @description Share a deal with a connected coordinator (B17.1), with access switches.
+         */
+        ShareDealRequest: {
+            coordinator_id: number;
+            switches: {
+                dates?: boolean;
+                documents?: boolean;
+                parties?: boolean;
+                messages?: boolean;
+            };
+        };
+        /**
          * ShareRequest
          * @description A quick action in the room (B6.3b): share a lesson, or send practice questions on a topic.
          */
@@ -9773,6 +9918,18 @@ export interface components {
             kind: "lesson" | "questions";
             lesson?: number | null;
             topic?: components["schemas"]["QuizTopic"] | null;
+        };
+        /**
+         * ShareSwitchesRequest
+         * @description Change what a coordinator can see on a shared deal (B17.1).
+         */
+        ShareSwitchesRequest: {
+            switches: {
+                dates?: boolean;
+                documents?: boolean;
+                parties?: boolean;
+                messages?: boolean;
+            };
         };
         /** SignInResource */
         SignInResource: {
@@ -9940,6 +10097,14 @@ export interface components {
          */
         TextSwitchRequest: {
             on: boolean;
+        };
+        /**
+         * TickRequest
+         * @description Tick or untick a checklist item on a shared file (B17.1): `doc:<name>` or a date's id.
+         */
+        TickRequest: {
+            item: string;
+            done: boolean;
         };
         /** TodoResource */
         TodoResource: {
@@ -10145,6 +10310,7 @@ export type SchemaDutiesRequest = components['schemas']['DutiesRequest'];
 export type SchemaExchangeSignInRequest = components['schemas']['ExchangeSignInRequest'];
 export type SchemaFarmAreaRequest = components['schemas']['FarmAreaRequest'];
 export type SchemaFarmSendRequest = components['schemas']['FarmSendRequest'];
+export type SchemaFileMessageRequest = components['schemas']['FileMessageRequest'];
 export type SchemaFinishSpeedRoundRequest = components['schemas']['FinishSpeedRoundRequest'];
 export type SchemaFlagsRequest = components['schemas']['FlagsRequest'];
 export type SchemaFlashcardReviewsRequest = components['schemas']['FlashcardReviewsRequest'];
@@ -10224,7 +10390,9 @@ export type SchemaServiceAreaRequest = components['schemas']['ServiceAreaRequest
 export type SchemaSessionNotesRequest = components['schemas']['SessionNotesRequest'];
 export type SchemaSessionOfferRequest = components['schemas']['SessionOfferRequest'];
 export type SchemaShareContactsRequest = components['schemas']['ShareContactsRequest'];
+export type SchemaShareDealRequest = components['schemas']['ShareDealRequest'];
 export type SchemaShareRequest = components['schemas']['ShareRequest'];
+export type SchemaShareSwitchesRequest = components['schemas']['ShareSwitchesRequest'];
 export type SchemaSignInResource = components['schemas']['SignInResource'];
 export type SchemaSplitQuestionRequest = components['schemas']['SplitQuestionRequest'];
 export type SchemaSplitSheetRequest = components['schemas']['SplitSheetRequest'];
@@ -10239,6 +10407,7 @@ export type SchemaSyncVisitsRequest = components['schemas']['SyncVisitsRequest']
 export type SchemaTeamLeadRequest = components['schemas']['TeamLeadRequest'];
 export type SchemaTextNumberRequest = components['schemas']['TextNumberRequest'];
 export type SchemaTextSwitchRequest = components['schemas']['TextSwitchRequest'];
+export type SchemaTickRequest = components['schemas']['TickRequest'];
 export type SchemaTodoResource = components['schemas']['TodoResource'];
 export type SchemaToolRequestRequest = components['schemas']['ToolRequestRequest'];
 export type SchemaUpdateConnectionRequest = components['schemas']['UpdateConnectionRequest'];
@@ -18742,6 +18911,366 @@ export interface operations {
             };
             401: components["responses"]["AuthenticationException"];
             403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "deals.coordinators.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                deal: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            coordinators: {
+                                id: number;
+                                name: string;
+                                business: string;
+                            }[];
+                            shares: {
+                                id: string;
+                                coordinator: string;
+                                switches: {
+                                    dates: boolean;
+                                    documents: boolean;
+                                    parties: boolean;
+                                    messages: boolean;
+                                };
+                                status: string;
+                                end_reason: string | null;
+                                ended_at: string | null;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "deals.coordinators.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                deal: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ShareDealRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            switches: {
+                                dates: boolean;
+                                documents: boolean;
+                                parties: boolean;
+                                messages: boolean;
+                            };
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "deal-shares.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                share: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ShareSwitchesRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            switches: {
+                                dates: boolean;
+                                documents: boolean;
+                                parties: boolean;
+                                messages: boolean;
+                            };
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "deal-shares.destroy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                share: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        removed: boolean;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "coordinator.files.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            counts: {
+                                active: number;
+                                due_this_week: number;
+                                missing: number;
+                            };
+                            files: {
+                                id: string;
+                                agent: string;
+                                property: string;
+                                stage: string;
+                                shared_on: string;
+                                next: {
+                                    label: string;
+                                    due_on: string;
+                                } | null;
+                                missing: number;
+                                progress: {
+                                    done: number;
+                                    total: number;
+                                };
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "coordinator.files.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                share: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            agent: string;
+                            property: string;
+                            city: string | null;
+                            stage: string;
+                            shared_on: string;
+                            switches: {
+                                dates: boolean;
+                                documents: boolean;
+                                parties: boolean;
+                                messages: boolean;
+                            };
+                            dates: {
+                                id: string;
+                                label: string;
+                                due_on: string;
+                                done: boolean;
+                            }[] | null;
+                            documents: {
+                                name: string;
+                                status: string;
+                                done: boolean;
+                            }[] | null;
+                            parties: {
+                                name: string;
+                                role: string;
+                            }[] | null;
+                            draft: string;
+                            conversation: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "coordinator.files.tick": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                share: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TickRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        ticked: boolean;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "coordinator.files.message": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                share: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FileMessageRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            conversation: string;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
             422: components["responses"]["ValidationException"];
             /** @description Too many requests */
             429: {

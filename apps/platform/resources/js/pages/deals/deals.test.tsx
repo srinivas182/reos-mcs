@@ -65,18 +65,20 @@ describe('Deals board (screen 14, B9.1)', () => {
 
     it('keeps a deal from a tool read-only, and moves a REOS deal from its panel', async () => {
         const user = userEvent.setup();
-        // The deal panel also reads the deal's client links (B14.2): none here.
+        // The deal panel also reads the deal's client links (B14.2) and coordinators (B17.1): none here.
+        const side = (url: string) =>
+            url.endsWith('/portals') || url.endsWith('/coordinators');
         fetchMock.mockImplementation((url: string) =>
             Promise.resolve(
                 url.endsWith('/portals')
                     ? reply([])
-                    : reply({ ...elmStreet, stage: 'closed' }),
+                    : url.endsWith('/coordinators')
+                      ? reply({ coordinators: [], shares: [] })
+                      : reply({ ...elmStreet, stage: 'closed' }),
             ),
         );
         const sent = () =>
-            fetchMock.mock.calls.filter(
-                (call) => !String(call[0]).endsWith('/portals'),
-            );
+            fetchMock.mock.calls.filter((call) => !side(String(call[0])));
         const { unmount } = render(
             <DealsPage board={dealBoard} selected={oakCourt} />,
         );

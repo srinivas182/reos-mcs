@@ -18,6 +18,15 @@ import {
     send as portalsSend,
     store as portalsStore,
 } from '@/routes/deals/portals';
+import { SharePanel } from '@/components/coordinators/share-panel';
+import {
+    destroy as shareDestroy,
+    update as shareUpdate,
+} from '@/routes/deal-shares';
+import {
+    index as coordinatorsIndex,
+    store as coordinatorsStore,
+} from '@/routes/deals/coordinators';
 import { DealPortals } from './deal-portals';
 import { DealSignatures } from './deal-signatures';
 import { TOOL_NAMES, type DealFull, type DealStage } from './types';
@@ -221,6 +230,18 @@ export function DealPanel({
             ) : null}
 
             <DealSignatures deal={deal} onChanged={onChanged} />
+
+            {/* Coordinators (B17.1): share by part with a transaction coordinator, until closing. */}
+            <SharePanel
+                key={`tc-${deal.uuid}`}
+                closed={deal.stage === 'closed' || deal.stage === 'cancelled'}
+                routes={{
+                    list: coordinatorsIndex(deal.uuid).url,
+                    share: coordinatorsStore(deal.uuid).url,
+                    update: (id) => shareUpdate(id).url,
+                    remove: (id) => shareDestroy(id).url,
+                }}
+            />
 
             {/* The client portal (B14.2): share the deal with a client through their own link. */}
             <DealPortals

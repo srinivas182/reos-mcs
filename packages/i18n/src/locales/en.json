@@ -108,7 +108,8 @@
     "agentsInMyAreas": "Agents in my areas",
     "providerRequests": "Provider requests",
     "teamsAndRouting": "Team and routing",
-    "teamLeads": "Team leads"
+    "teamLeads": "Team leads",
+    "myFiles": "My files"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -2407,7 +2408,12 @@
         "team.lead_leader": "Sent a team lead to the team leader",
         "team.agreement_changed": "Changed the team agreement",
         "team.split_sent": "Sent a split sheet",
-        "team.split_signed": "Signed a split sheet"
+        "team.split_signed": "Signed a split sheet",
+        "coordinator.shared": "Shared a deal with a coordinator",
+        "coordinator.switches": "Changed a coordinator's access",
+        "coordinator.ticked": "Coordinator ticked a checklist item",
+        "coordinator.messaged": "Coordinator messaged the agent",
+        "coordinator.access_ended": "Coordinator access ended"
       }
     }
   },
@@ -11838,6 +11844,73 @@
     "leads": {
       "title": "Team leads",
       "purpose": "Claim team leads before the time runs out, and sign your split sheets."
+    }
+  },
+  "coordinators": {
+    "title": "My files",
+    "purpose": "Deals agents shared with you, until closing. You see only the parts each agent switched on.",
+    "counts": {
+      "active": "Active files",
+      "dueThisWeek": "Due this week",
+      "missing": "Missing documents"
+    },
+    "empty": "No files yet",
+    "emptyHint": "When an agent you're connected with shares a deal, it shows here until closing.",
+    "next": "Next: {{label}}, {{date}}",
+    "noNext": "No upcoming dates shared",
+    "missing_one": "{{count}} document missing",
+    "missing_other": "{{count}} documents missing",
+    "progress": "{{done}} of {{total}} done",
+    "open": "Open the file for {{property}}",
+    "back": "Back to my files",
+    "sharedBy": "Shared by {{agent}} on {{date}}",
+    "dates": "Key dates",
+    "documents": "Documents",
+    "parties": "Parties",
+    "notShared": "{{agent}} hasn't shared this part.",
+    "tick": "{{name}} done",
+    "ticked": "Saved. {{agent}} sees your progress.",
+    "message": "Message {{agent}}",
+    "messageHint": "Goes to your chat with {{agent}}. Coordinators handle paperwork and dates; advice stays with the agent.",
+    "send": "Send message",
+    "sent": "Sent to {{agent}}.",
+    "openChat": "Open the chat",
+    "messagesOff": "{{agent}} hasn't turned on messages for this file.",
+    "draft": "Hi {{agent}}, this is {{coordinator}} on {{property}}. Still missing: {{missing}}. Next date: {{next}}. Please send what you have when you can.",
+    "nothingMissing": "nothing",
+    "notifyTitle": "{{agent}} shared a file with you",
+    "notifyBody": "{{property}} is on My files until closing.",
+    "errors": {
+      "notConnected": "Share with a transaction coordinator you're connected with.",
+      "closed": "This deal is closed, so it can't be shared.",
+      "messagesOff": "The agent hasn't turned on messages for this file."
+    },
+    "share": {
+      "title": "Transaction coordinator",
+      "purpose": "Share this deal with your coordinator. They see only what you switch on, and access ends at closing.",
+      "coordinator": "Coordinator",
+      "choose": "Choose a coordinator",
+      "parts": {
+        "dates": "Key dates",
+        "documents": "Documents",
+        "parties": "Parties and contacts",
+        "messages": "Messages to you"
+      },
+      "partFor": "{{part}} for {{name}}",
+      "share": "Share deal",
+      "shared": "Shared with {{name}}. Access ends at closing.",
+      "saved": "Access updated for {{name}}.",
+      "remove": "Remove {{name}}",
+      "removed": "{{name}} no longer has access.",
+      "active": "Has access until closing",
+      "ended": {
+        "closed": "Access ended at closing",
+        "cancelled": "Access ended: the deal was cancelled",
+        "removed": "Access ended: removed"
+      },
+      "none": "No coordinators yet",
+      "noneHint": "Connect with a transaction coordinator in Service providers, then share deals with them here.",
+      "closedNote": "Closed and cancelled deals can't be shared."
     }
   }
 }
