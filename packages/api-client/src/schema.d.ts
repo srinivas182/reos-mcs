@@ -4448,6 +4448,101 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/organisation/policies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * The brokerage's policies
+         * @description The current manual and its TREC conflicts, the advertising policy, and the brokerage's own rules, each with the TREC rule it contradicts if any.
+         */
+        get: operations["brokerage.policies"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organisation/policies/check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Check words against TREC
+         * @description The first TREC rule the words contradict, with its source, or null. Used while a rule is being written.
+         */
+        post: operations["brokerage.policies.check"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organisation/policies/rules": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Add a brokerage rule
+         * @description Checked against TREC at once. A conflicting rule is kept and flagged; in answers on that topic the TREC rule goes first.
+         */
+        post: operations["brokerage.policies.rules.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organisation/policies/rules/{rule}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Change a brokerage rule */
+        put: operations["brokerage.policies.rules.update"];
+        post?: never;
+        /** Remove a brokerage rule */
+        delete: operations["brokerage.policies.rules.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organisation/policies/rules/{rule}/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Put a removed brokerage rule back (Undo) */
+        post: operations["brokerage.policies.rules.restore"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/me/study": {
         parameters: {
             query?: never;
@@ -5199,7 +5294,7 @@ export interface paths {
         get: operations["brokerage.seats"];
         /**
          * Choose who pays
-         * @description The brokerage, each agent, or split (the brokerage pays the seat, agents their own extras), and whether AI credits are pooled across seats.
+         * @description The brokerage, each agent, or split (the brokerage pays the seat, agents their own extras), and whether AI credits are pooled across seats. The designated broker only.
          */
         put: operations["brokerage.seats.update"];
         post?: never;
@@ -5723,6 +5818,46 @@ export interface paths {
          *     them, keeps the best score, and puts the misses into flashcards.
          */
         post: operations["practice.speed.finish"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organisation/staff": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Who runs the brokerage
+         * @description Each person with the broker role in the brokerage or its teams: designated broker, office admin or team leader, with their duties.
+         */
+        get: operations["brokerage.staff"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organisation/staff/{member}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Change someone's duties
+         * @description Approve posts, answer escalated questions, manage policies, sponsor agents. The designated broker only.
+         */
+        put: operations["brokerage.staff.update"];
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -6817,6 +6952,14 @@ export interface components {
          * @enum {string}
          */
         BrokerRole: "sponsoring_broker" | "designated_broker" | "delegated_supervisor";
+        /**
+         * BrokerageRuleRequest
+         * @description A brokerage rule (A15.2): its topic and words.
+         */
+        BrokerageRuleRequest: {
+            topic: string;
+            text: string;
+        };
         /** CalendarEventResource */
         CalendarEventResource: {
             id: number;
@@ -7224,6 +7367,13 @@ export interface components {
             signed_in_at: string | null;
             /** @description The device making this request. */
             current: boolean;
+        };
+        /**
+         * DutiesRequest
+         * @description The duties an office admin or team leader has (A15.2).
+         */
+        DutiesRequest: {
+            duties: ("approve_posts" | "answer_escalations" | "manage_policies" | "sponsor_agents")[];
         };
         /** ExchangeSignInRequest */
         ExchangeSignInRequest: {
@@ -7756,6 +7906,13 @@ export interface components {
         PlanTaskRequest: {
             week: number;
             done: boolean;
+        };
+        /**
+         * PolicyCheckRequest
+         * @description Words to check against TREC's rules as a brokerage rule is typed (A15.2).
+         */
+        PolicyCheckRequest: {
+            text: string;
         };
         /**
          * PostRequest
@@ -8465,6 +8622,7 @@ export type SchemaBookSessionRequest = components['schemas']['BookSessionRequest
 export type SchemaBriefSettingsRequest = components['schemas']['BriefSettingsRequest'];
 export type SchemaBrokerLicenceRequest = components['schemas']['BrokerLicenceRequest'];
 export type SchemaBrokerRole = components['schemas']['BrokerRole'];
+export type SchemaBrokerageRuleRequest = components['schemas']['BrokerageRuleRequest'];
 export type SchemaCalendarEventResource = components['schemas']['CalendarEventResource'];
 export type SchemaCalendarMode = components['schemas']['CalendarMode'];
 export type SchemaCatalogueItemResource = components['schemas']['CatalogueItemResource'];
@@ -8487,6 +8645,7 @@ export type SchemaDealFileRequest = components['schemas']['DealFileRequest'];
 export type SchemaDealRequest = components['schemas']['DealRequest'];
 export type SchemaDefaultCrmRequest = components['schemas']['DefaultCrmRequest'];
 export type SchemaDeviceResource = components['schemas']['DeviceResource'];
+export type SchemaDutiesRequest = components['schemas']['DutiesRequest'];
 export type SchemaExchangeSignInRequest = components['schemas']['ExchangeSignInRequest'];
 export type SchemaFarmAreaRequest = components['schemas']['FarmAreaRequest'];
 export type SchemaFarmSendRequest = components['schemas']['FarmSendRequest'];
@@ -8525,6 +8684,7 @@ export type SchemaPhoneContactsRequest = components['schemas']['PhoneContactsReq
 export type SchemaPhoneStartRequest = components['schemas']['PhoneStartRequest'];
 export type SchemaPhoneVerifyRequest = components['schemas']['PhoneVerifyRequest'];
 export type SchemaPlanTaskRequest = components['schemas']['PlanTaskRequest'];
+export type SchemaPolicyCheckRequest = components['schemas']['PolicyCheckRequest'];
 export type SchemaPostRequest = components['schemas']['PostRequest'];
 export type SchemaProviderLicenceRequest = components['schemas']['ProviderLicenceRequest'];
 export type SchemaPushDeviceRequest = components['schemas']['PushDeviceRequest'];
@@ -22733,6 +22893,270 @@ export interface operations {
             };
         };
     };
+    "brokerage.policies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            manual: {
+                                version: number;
+                                file_name: string;
+                                conflicts: number;
+                            } | null;
+                            advertising: {
+                                approval_new_agents: boolean;
+                                approval_all: boolean;
+                                banned: number;
+                            };
+                            rules: {
+                                id: number;
+                                topic: string;
+                                text: string;
+                                conflict: {
+                                    rule: string;
+                                    citation: string;
+                                    url: string | null;
+                                    excerpt: string;
+                                    rule_text: string;
+                                } | null;
+                                updated_at: string | null;
+                            }[];
+                            can_manage: boolean;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "brokerage.policies.check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PolicyCheckRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            conflict: {
+                                rule: string;
+                                citation: string;
+                                url: string | null;
+                                excerpt: string;
+                                rule_text: string;
+                            } | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "brokerage.policies.rules.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BrokerageRuleRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            topic: string;
+                            text: string;
+                            conflict: {
+                                rule: string;
+                                citation: string;
+                                url: string | null;
+                                excerpt: string;
+                                rule_text: string;
+                            } | null;
+                            updated_at: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "brokerage.policies.rules.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                rule: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BrokerageRuleRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            topic: string;
+                            text: string;
+                            conflict: {
+                                rule: string;
+                                citation: string;
+                                url: string | null;
+                                excerpt: string;
+                                rule_text: string;
+                            } | null;
+                            updated_at: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "brokerage.policies.rules.destroy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                rule: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "brokerage.policies.rules.restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                rule: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
     "practice.today": {
         parameters: {
             query?: never;
@@ -27160,6 +27584,91 @@ export interface operations {
                             best: number;
                             record: boolean;
                             misses: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "brokerage.staff": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            people: {
+                                user_id: number;
+                                name: string;
+                                /** @enum {string} */
+                                title: "designated_broker" | "office_admin" | "team_leader";
+                                team: string | null;
+                                duties: string[];
+                                editable: boolean;
+                            }[];
+                            designated: boolean;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "brokerage.staff.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                member: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DutiesRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            people: {
+                                user_id: number;
+                                name: string;
+                                /** @enum {string} */
+                                title: "designated_broker" | "office_admin" | "team_leader";
+                                team: string | null;
+                                duties: string[];
+                                editable: boolean;
+                            }[];
+                            designated: boolean;
                         };
                     };
                 };

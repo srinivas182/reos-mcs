@@ -89,7 +89,7 @@ import { index as recruitingIndex } from '@/routes/recruiting';
 import { index as virtualBroker } from '@/routes/virtual-broker';
 import { index as contractReview } from '@/routes/contracts';
 import { index as brokerVirtualBroker } from '@/routes/organisation/virtual-broker';
-import { index as advertisingPolicy } from '@/routes/organisation/advertising';
+import { index as policiesIndex } from '@/routes/policies';
 import { index as mentorProgram } from '@/routes/organisation/mentors';
 import { index as mentorWorkspace } from '@/routes/mentoring';
 import { index as brokerChallenges } from '@/routes/organisation/challenges';
@@ -351,8 +351,8 @@ export function roleNavigation(
             item(
                 'policies',
                 ScrollText,
-                advertisingPolicy(),
-                '/organisation/advertising',
+                policiesIndex(),
+                '/organisation/policies',
             ),
             // Compliance log (B13.2): every check, fix, approval and send-back, with CSV export.
             item(

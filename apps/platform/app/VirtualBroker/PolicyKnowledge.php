@@ -109,6 +109,8 @@ final readonly class PolicyKnowledge
         return PolicyPassage::query()->create([
             'organisation_id' => $brokerage->id, 'kind' => PolicyPassage::FAQ, 'heading' => mb_substr(trim($question), 0, 300),
             'content' => trim($answer), 'broker_question_id' => $questionId,
+            // Checked against TREC as it's written (A15.2): TREC goes first in answers on that topic.
+            'conflict' => TexasConflicts::first($answer, $this->search->stateRules(($brokerage->states ?? [])[0] ?? 'TX')),
         ]);
     }
 

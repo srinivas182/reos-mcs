@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Organisation;
 
+use App\Authorization\Role;
+use App\Brokerage\BrokerageStaff;
+use App\Enums\OrganisationType;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Organisation\Concerns\ForAdminOrganisation;
 use App\Http\Requests\Organisation\SendInvitesRequest;
@@ -26,6 +29,14 @@ final class InvitationController extends Controller
         $organisation = $this->adminOrganisation($user);
         $team = $request->filled('team_id') ? Organisation::query()->find($request->integer('team_id')) : null;
         abort_if($request->filled('team_id') && $team === null, 422);
+
+        $staff = app(BrokerageStaff::class);
+
+        // People and permissions (A15.2): only the designated broker adds admins and team leaders;
+        // inviting agents is the "sponsor agents" duty.
+        if ($organisation->type === OrganisationType::Brokerage) {
+            $request->role() === Role::Broker ? $staff->designatedOnly($organisation, $user) : $staff->allow($user, $organisation, 'sponsor_agents');
+        }
 
         $parsed = $request->parsed();
         $result = $invitations->invite($organisation, $user, $parsed['people'], $request->role(), $team, $request->string('locale')->toString());

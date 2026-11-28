@@ -17,8 +17,10 @@ use App\Http\Controllers\Api\Billing\MembershipController;
 use App\Http\Controllers\Api\Bookings\BookingController;
 use App\Http\Controllers\Api\Brokerage\BrokerageSetupController;
 use App\Http\Controllers\Api\Brokerage\BrokerVerificationController;
+use App\Http\Controllers\Api\Brokerage\PoliciesController;
 use App\Http\Controllers\Api\Brokerage\RosterController;
 use App\Http\Controllers\Api\Brokerage\SeatsController;
+use App\Http\Controllers\Api\Brokerage\StaffController;
 use App\Http\Controllers\Api\Calendar\CalendarController;
 use App\Http\Controllers\Api\Catalogue\CatalogueController;
 use App\Http\Controllers\Api\Ce\CeWalletController;
@@ -577,6 +579,17 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('organisation/roster/invite', [RosterController::class, 'invite'])->middleware('throttle:5,1,api-roster-invite')->name('api.brokerage.roster.invite');
     Route::get('organisation/seats', [SeatsController::class, 'show'])->name('api.brokerage.seats');
     Route::put('organisation/seats', [SeatsController::class, 'update'])->middleware('throttle:20,1,api-seats')->name('api.brokerage.seats.update');
+    // People and permissions, and brokerage rules checked against TREC (A15.2).
+    Route::get('organisation/staff', [StaffController::class, 'index'])->name('api.brokerage.staff');
+    Route::put('organisation/staff/{member}', [StaffController::class, 'update'])->whereNumber('member')->middleware('throttle:30,1,api-staff')->name('api.brokerage.staff.update');
+    Route::get('organisation/policies', [PoliciesController::class, 'index'])->name('api.brokerage.policies');
+    Route::post('organisation/policies/check', [PoliciesController::class, 'check'])->middleware('throttle:60,1,api-policy-check')->name('api.brokerage.policies.check');
+    Route::middleware('throttle:30,1,api-policy-rules')->group(function () {
+        Route::post('organisation/policies/rules', [PoliciesController::class, 'store'])->name('api.brokerage.policies.rules.store');
+        Route::put('organisation/policies/rules/{rule}', [PoliciesController::class, 'update'])->whereNumber('rule')->name('api.brokerage.policies.rules.update');
+        Route::delete('organisation/policies/rules/{rule}', [PoliciesController::class, 'destroy'])->whereNumber('rule')->name('api.brokerage.policies.rules.destroy');
+        Route::post('organisation/policies/rules/{rule}/restore', [PoliciesController::class, 'restore'])->whereNumber('rule')->name('api.brokerage.policies.rules.restore');
+    });
     // Verify your brokerage (A15.1a): the designated broker's TREC check before the brokerage is created.
     Route::middleware('throttle:20,1,api-broker-verify')->group(function () {
         Route::post('brokerage/verify/lookup', [BrokerVerificationController::class, 'lookup'])->name('api.brokerage.verify.lookup');

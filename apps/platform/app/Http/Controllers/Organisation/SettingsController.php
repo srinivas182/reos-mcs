@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Organisation;
 
 use App\Authorization\Role;
 use App\Brokerage\BrokerageSeats;
+use App\Brokerage\BrokerageStaff;
 use App\Enums\OrganisationType;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Tenancy\TenantDomainResource;
@@ -55,6 +56,8 @@ final class SettingsController extends Controller
             'invite' => $invitations->options($tenant),
             // Seats and who pays (A15.1b, broker journey screen 4): brokerages only.
             'seatsPlan' => $tenant->type === OrganisationType::Brokerage ? app(BrokerageSeats::class)->show($tenant) : null,
+            // People and permissions (A15.2): who runs the brokerage and their duties.
+            'staff' => $tenant->type === OrganisationType::Brokerage ? ['people' => app(BrokerageStaff::class)->list($tenant), 'designated' => app(BrokerageStaff::class)->isDesignated($tenant, $user)] : null,
         ]);
     }
 

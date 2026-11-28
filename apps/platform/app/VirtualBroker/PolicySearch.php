@@ -21,7 +21,7 @@ use Illuminate\Database\Eloquent\Builder;
  * words a passage holds, so a manual of a few hundred pages stays fast
  * on SQLite and PostgreSQL alike and every result can be explained.
  *
- * @phpstan-type Hit array{kind: 'manual'|'faq'|'rule', id: string, title: string, citation: string|null, page: int|null, url: string|null, effective_from: string|null, excerpt: string, score: float, position: int|null, trec_wins?: bool}
+ * @phpstan-type Hit array{kind: 'manual'|'faq'|'rule', id: string, title: string, citation: string|null, page: int|null, url: string|null, effective_from: string|null, excerpt: string, score: float, position: int|null, trec_wins?: bool, conflict?: string|null}
  */
 final readonly class PolicySearch
 {
@@ -62,7 +62,7 @@ final readonly class PolicySearch
         $passages = PolicyPassage::query()
             ->where('organisation_id', $brokerage->id)
             ->where(static function (Builder $q) use ($brokerage): void {
-                $q->where('kind', PolicyPassage::FAQ)->orWhereIn('policy_manual_id', PolicyManual::query()->select('id')
+                $q->whereIn('kind', [PolicyPassage::FAQ, PolicyPassage::POLICY])->orWhereIn('policy_manual_id', PolicyManual::query()->select('id')
                     ->where('organisation_id', $brokerage->id)->where('status', PolicyManual::CURRENT));
             })
             ->where(static function (Builder $q) use ($words): void {
@@ -76,13 +76,15 @@ final readonly class PolicySearch
             $score = self::score($words, $passage->content, $passage->heading);
 
             if ($score >= self::MIN_SCORE) {
-                $faq = $passage->kind === PolicyPassage::FAQ;
+                // The brokerage's own words: FAQ answers and brokerage rules (A15.2).
+                $faq = $passage->kind !== PolicyPassage::MANUAL;
                 $hits[] = [
                     'kind' => $faq ? 'faq' : 'manual', 'id' => ($faq ? 'faq-' : 'manual-').$passage->id,
                     'title' => $passage->heading ?? '', 'citation' => null, 'page' => $passage->page, 'url' => null,
                     'effective_from' => $passage->created_at?->toDateString(), 'excerpt' => self::excerpt($passage->content),
                     // The broker's own answers rank a little higher than the manual for the same words.
                     'score' => min(1.0, $score + ($faq ? 0.1 : 0.0)), 'position' => $faq ? null : $passage->position,
+                    'conflict' => $passage->conflict['rule'] ?? null,
                 ];
             }
         }

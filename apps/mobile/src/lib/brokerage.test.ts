@@ -1,4 +1,4 @@
-import { chooseSeats, firstOpen, inviteAll, lookupLicence, ready } from './brokerage';
+import { checkRule, chooseSeats, firstOpen, inviteAll, lookupLicence, ready } from './brokerage';
 
 const mockApi = { GET: jest.fn(), POST: jest.fn(), PUT: jest.fn() };
 jest.mock('@/lib/api', () => ({ api: () => mockApi }));
@@ -29,5 +29,15 @@ describe('brokerage setup on the phone (A15.1)', () => {
     mockApi.PUT.mockResolvedValueOnce({ data: { data: { payer: 'split' } } });
     await expect(chooseSeats('split', false)).resolves.toEqual({ payer: 'split' });
     expect(mockApi.PUT).toHaveBeenCalledWith('/organisation/seats', { body: { payer: 'split', credits_pooled: false } });
+  });
+});
+
+describe('brokerage rules on the phone (A15.2)', () => {
+  it('checks words against TREC only once there are enough of them', async () => {
+    mockApi.POST.mockClear();
+    await expect(checkRule('Hi')).resolves.toBeNull();
+    expect(mockApi.POST).not.toHaveBeenCalled();
+    mockApi.POST.mockResolvedValueOnce({ data: { data: { conflict: { rule: 'brokerage.compensation', citation: '22 TAC §535.3', url: null, excerpt: 'x', rule_text: 'y' } } } });
+    await expect(checkRule('Agents may accept fees directly.')).resolves.toMatchObject({ citation: '22 TAC §535.3' });
   });
 });

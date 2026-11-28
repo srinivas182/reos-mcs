@@ -49,6 +49,27 @@ final class TexasConflicts
         return array_values($conflicts);
     }
 
+    /**
+     * The first TREC rule a brokerage's own text contradicts (a brokerage
+     * rule or an FAQ answer written in REOS, A15.2), with its source.
+     *
+     * @param  array<string, StateRule>  $rules
+     * @return array{rule: string, citation: string, url: string|null, excerpt: string, rule_text: string}|null
+     */
+    public static function first(string $text, array $rules): ?array
+    {
+        foreach (preg_split('/(?<=[.!?])\s+/u', trim($text)) ?: [] as $sentence) {
+            $key = self::check($sentence);
+            $rule = $key === null ? null : ($rules[$key] ?? null);
+
+            if ($rule instanceof StateRule) {
+                return ['rule' => $rule->key, 'citation' => $rule->citation, 'url' => $rule->source_url, 'excerpt' => PolicySearch::excerpt($sentence, 300), 'rule_text' => PolicySearch::ruleText($rule)];
+            }
+        }
+
+        return null;
+    }
+
     /** The rule a sentence contradicts, if any. */
     public static function check(string $sentence): ?string
     {
