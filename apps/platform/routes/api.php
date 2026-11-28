@@ -31,6 +31,7 @@ use App\Http\Controllers\Api\Catalogue\CatalogueController;
 use App\Http\Controllers\Api\Ce\CeWalletController;
 use App\Http\Controllers\Api\Certificates\CertificateController;
 use App\Http\Controllers\Api\Classes\ClassesController;
+use App\Http\Controllers\Api\Communities\CommunityController;
 use App\Http\Controllers\Api\Compliance\ComplianceController;
 use App\Http\Controllers\Api\Connections\ConnectionController;
 use App\Http\Controllers\Api\Contracts\ContractReviewController;
@@ -616,6 +617,27 @@ Route::middleware('auth:sanctum')->group(function () {
     // Report a question (A8.1).
     Route::post('questions/{question}/report', [QuestionReportController::class, 'store'])->whereNumber('question')->middleware('throttle:20,1,api-question-report')->name('api.questions.report');
     // Deals (B9.1, ADR 0037): the agent's own.
+    // Communities (B17.2): posts, resources and expert sessions; invites by link and QR; results.
+    Route::get('communities', [CommunityController::class, 'mine'])->name('api.communities.index');
+    Route::get('community', [CommunityController::class, 'own'])->name('api.community.show');
+    Route::put('community', [CommunityController::class, 'update'])->middleware('throttle:20,1,api-community')->name('api.community.update');
+    Route::post('community/code', [CommunityController::class, 'newCode'])->middleware('throttle:10,1,api-community')->name('api.community.code');
+    Route::get('community/results', [CommunityController::class, 'results'])->name('api.community.results');
+    Route::post('community/resources', [CommunityController::class, 'addResource'])->middleware('throttle:30,1,api-community')->name('api.community.resources.store');
+    Route::delete('community/resources/{resource}', [CommunityController::class, 'removeResource'])->whereUuid('resource')->middleware('throttle:30,1,api-community')->name('api.community.resources.destroy');
+    Route::post('community/sessions', [CommunityController::class, 'schedule'])->middleware('throttle:20,1,api-community')->name('api.community.sessions.store');
+    Route::delete('community/sessions/{session}', [CommunityController::class, 'cancelSession'])->whereUuid('session')->middleware('throttle:20,1,api-community')->name('api.community.sessions.destroy');
+    Route::get('community/sessions/{session}/roster', [CommunityController::class, 'roster'])->whereUuid('session')->name('api.community.sessions.roster');
+    Route::put('community/sessions/{session}/attendance', [CommunityController::class, 'attendance'])->whereUuid('session')->middleware('throttle:30,1,api-community')->name('api.community.sessions.attendance');
+    Route::get('communities/join/{code}', [CommunityController::class, 'preview'])->where('code', '[a-z0-9]{6,24}')->name('api.communities.preview');
+    Route::post('communities/join/{code}', [CommunityController::class, 'join'])->where('code', '[a-z0-9]{6,24}')->middleware('throttle:10,1,api-community-join')->name('api.communities.join.store');
+    Route::get('communities/{community}', [CommunityController::class, 'show'])->whereUuid('community')->name('api.communities.show');
+    Route::delete('communities/{community}/membership', [CommunityController::class, 'leave'])->whereUuid('community')->middleware('throttle:20,1,api-community-join')->name('api.communities.leave');
+    Route::post('communities/{community}/posts', [CommunityController::class, 'post'])->whereUuid('community')->middleware('throttle:20,1,api-community-posts')->name('api.communities.posts.store');
+    Route::delete('community-posts/{post}', [CommunityController::class, 'removePost'])->whereUuid('post')->middleware('throttle:30,1,api-community-posts')->name('api.community-posts.destroy');
+    Route::put('community-posts/{post}/pin', [CommunityController::class, 'pin'])->whereUuid('post')->middleware('throttle:30,1,api-community-posts')->name('api.community-posts.pin');
+    Route::post('community-sessions/{session}/rsvp', [CommunityController::class, 'rsvp'])->whereUuid('session')->middleware('throttle:30,1,api-community-rsvp')->name('api.community-sessions.rsvp');
+    Route::delete('community-sessions/{session}/rsvp', [CommunityController::class, 'cancelRsvp'])->whereUuid('session')->middleware('throttle:30,1,api-community-rsvp')->name('api.community-sessions.rsvp.destroy');
     // Coordinators (B17.1): the agent shares a deal by part; the coordinator's files until closing.
     Route::get('deals/{deal}/coordinators', [CoordinatorController::class, 'forDeal'])->whereUuid('deal')->name('api.deals.coordinators.index');
     Route::post('deals/{deal}/coordinators', [CoordinatorController::class, 'share'])->whereUuid('deal')->middleware('throttle:20,1,api-coordinators')->name('api.deals.coordinators.store');

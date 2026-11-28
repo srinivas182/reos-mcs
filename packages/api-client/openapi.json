@@ -20020,6 +20020,1892 @@
                 }
             }
         },
+        "/communities": {
+            "get": {
+                "operationId": "communities.index",
+                "summary": "My communities",
+                "tags": [
+                    "Community"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string"
+                                                    },
+                                                    "name": {
+                                                        "type": "string"
+                                                    },
+                                                    "owner": {
+                                                        "type": "string"
+                                                    },
+                                                    "members": {
+                                                        "type": "integer"
+                                                    },
+                                                    "next": {
+                                                        "type": [
+                                                            "object",
+                                                            "null"
+                                                        ],
+                                                        "properties": {
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "starts_at": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "title",
+                                                            "starts_at"
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "name",
+                                                    "owner",
+                                                    "members",
+                                                    "next"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/community": {
+            "get": {
+                "operationId": "community.show",
+                "description": "Set up on first use, for Pro and Partner providers (422 `plan` otherwise). With the invite link and results.",
+                "summary": "My community (the owner)",
+                "tags": [
+                    "Community"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "name": {
+                                                    "type": "string"
+                                                },
+                                                "about": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "owner": {
+                                                    "type": "string"
+                                                },
+                                                "is_owner": {
+                                                    "type": "boolean"
+                                                },
+                                                "member": {
+                                                    "type": "boolean"
+                                                },
+                                                "members": {
+                                                    "type": "integer"
+                                                },
+                                                "invite_url": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "qr_url": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "posts": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "author": {
+                                                                "type": "string"
+                                                            },
+                                                            "body": {
+                                                                "type": "string"
+                                                            },
+                                                            "pinned": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "at": {
+                                                                "type": "string"
+                                                            },
+                                                            "mine": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "author",
+                                                            "body",
+                                                            "pinned",
+                                                            "at",
+                                                            "mine"
+                                                        ]
+                                                    }
+                                                },
+                                                "resources": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "url": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "title",
+                                                            "url"
+                                                        ]
+                                                    }
+                                                },
+                                                "sessions": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "about": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "format": {
+                                                                "type": "string"
+                                                            },
+                                                            "starts_at": {
+                                                                "type": "string"
+                                                            },
+                                                            "minutes": {
+                                                                "type": "integer"
+                                                            },
+                                                            "place": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "join_url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "capacity": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "price_cents": {
+                                                                "type": "integer"
+                                                            },
+                                                            "ce_course": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "status": {
+                                                                "type": "string"
+                                                            },
+                                                            "going": {
+                                                                "type": "integer"
+                                                            },
+                                                            "attended": {
+                                                                "type": "integer"
+                                                            },
+                                                            "mine": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "title",
+                                                            "about",
+                                                            "format",
+                                                            "starts_at",
+                                                            "minutes",
+                                                            "place",
+                                                            "join_url",
+                                                            "capacity",
+                                                            "price_cents",
+                                                            "ce_course",
+                                                            "status",
+                                                            "going",
+                                                            "attended",
+                                                            "mine"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "name",
+                                                "about",
+                                                "owner",
+                                                "is_owner",
+                                                "member",
+                                                "members",
+                                                "invite_url",
+                                                "qr_url",
+                                                "posts",
+                                                "resources",
+                                                "sessions"
+                                            ]
+                                        },
+                                        "results": {
+                                            "type": "object",
+                                            "properties": {
+                                                "members": {
+                                                    "type": "integer"
+                                                },
+                                                "joined_30": {
+                                                    "type": "integer"
+                                                },
+                                                "via": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "link": {
+                                                            "type": "integer"
+                                                        },
+                                                        "qr": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "link",
+                                                        "qr"
+                                                    ]
+                                                },
+                                                "posts_30": {
+                                                    "type": "integer"
+                                                },
+                                                "sessions": {
+                                                    "type": "integer"
+                                                },
+                                                "rsvps": {
+                                                    "type": "integer"
+                                                },
+                                                "attended": {
+                                                    "type": "integer"
+                                                },
+                                                "show_rate": {
+                                                    "type": "integer"
+                                                },
+                                                "top": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "going": {
+                                                                "type": "integer"
+                                                            },
+                                                            "attended": {
+                                                                "type": "integer"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "title",
+                                                            "going",
+                                                            "attended"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "members",
+                                                "joined_30",
+                                                "via",
+                                                "posts_30",
+                                                "sessions",
+                                                "rsvps",
+                                                "attended",
+                                                "show_rate",
+                                                "top"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "results"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "community.update",
+                "summary": "Rename or describe my community",
+                "tags": [
+                    "Community"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CommunityRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "name": {
+                                                    "type": "string"
+                                                },
+                                                "about": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "name",
+                                                "about"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/community/code": {
+            "post": {
+                "operationId": "community.code",
+                "description": "The old link stops working.",
+                "summary": "A new invite link and QR code",
+                "tags": [
+                    "Community"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "invite_url": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "invite_url"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/community/results": {
+            "get": {
+                "operationId": "community.results",
+                "summary": "Results (the owner)",
+                "tags": [
+                    "Community"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "members": {
+                                                    "type": "integer"
+                                                },
+                                                "joined_30": {
+                                                    "type": "integer"
+                                                },
+                                                "via": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "link": {
+                                                            "type": "integer"
+                                                        },
+                                                        "qr": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "link",
+                                                        "qr"
+                                                    ]
+                                                },
+                                                "posts_30": {
+                                                    "type": "integer"
+                                                },
+                                                "sessions": {
+                                                    "type": "integer"
+                                                },
+                                                "rsvps": {
+                                                    "type": "integer"
+                                                },
+                                                "attended": {
+                                                    "type": "integer"
+                                                },
+                                                "show_rate": {
+                                                    "type": "integer"
+                                                },
+                                                "top": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "going": {
+                                                                "type": "integer"
+                                                            },
+                                                            "attended": {
+                                                                "type": "integer"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "title",
+                                                            "going",
+                                                            "attended"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "members",
+                                                "joined_30",
+                                                "via",
+                                                "posts_30",
+                                                "sessions",
+                                                "rsvps",
+                                                "attended",
+                                                "show_rate",
+                                                "top"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/community/resources": {
+            "post": {
+                "operationId": "community.resources.store",
+                "summary": "Add a resource (the owner)",
+                "tags": [
+                    "Community"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ResourceRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "title": {
+                                                    "type": "string"
+                                                },
+                                                "url": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "title",
+                                                "url"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/community/resources/{resource}": {
+            "delete": {
+                "operationId": "community.resources.destroy",
+                "summary": "Remove a resource (the owner)",
+                "tags": [
+                    "Community"
+                ],
+                "parameters": [
+                    {
+                        "name": "resource",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "removed": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "required": [
+                                        "removed"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/community/sessions": {
+            "post": {
+                "operationId": "community.sessions.store",
+                "description": "Members are told. Free on Pro; a price needs Partner (422 `price_cents`). A CE course number only when the session is approved for CE elsewhere; otherwise it's information only.",
+                "summary": "Schedule an expert session (the owner)",
+                "tags": [
+                    "Community"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SessionRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "id"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/community/sessions/{session}": {
+            "delete": {
+                "operationId": "community.sessions.destroy",
+                "summary": "Cancel a session (the owner)",
+                "tags": [
+                    "Community"
+                ],
+                "parameters": [
+                    {
+                        "name": "session",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "cancelled": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "required": [
+                                        "cancelled"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/community/sessions/{session}/roster": {
+            "get": {
+                "operationId": "community.sessions.roster",
+                "summary": "Who's going (the host)",
+                "tags": [
+                    "Community"
+                ],
+                "parameters": [
+                    {
+                        "name": "session",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "name": {
+                                                        "type": "string"
+                                                    },
+                                                    "attended": {
+                                                        "type": "boolean"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "name",
+                                                    "attended"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/community/sessions/{session}/attendance": {
+            "put": {
+                "operationId": "community.sessions.attendance",
+                "description": "Marks the session done.",
+                "summary": "Who came (the host)",
+                "tags": [
+                    "Community"
+                ],
+                "parameters": [
+                    {
+                        "name": "session",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AttendanceRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "name": {
+                                                        "type": "string"
+                                                    },
+                                                    "attended": {
+                                                        "type": "boolean"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "name",
+                                                    "attended"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/communities/join/{code}": {
+            "get": {
+                "operationId": "communities.preview",
+                "description": "Whether the person can join: verified agents and providers only.",
+                "summary": "An invite, before joining",
+                "tags": [
+                    "Community"
+                ],
+                "parameters": [
+                    {
+                        "name": "code",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "name": {
+                                                    "type": "string"
+                                                },
+                                                "about": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "owner": {
+                                                    "type": "string"
+                                                },
+                                                "members": {
+                                                    "type": "integer"
+                                                },
+                                                "verified": {
+                                                    "type": "boolean"
+                                                },
+                                                "member": {
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "name",
+                                                "about",
+                                                "owner",
+                                                "members",
+                                                "verified",
+                                                "member"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "communities.join.store",
+                "description": "422 `code` for someone who isn't a verified agent or provider.",
+                "summary": "Join by link or QR code",
+                "tags": [
+                    "Community"
+                ],
+                "parameters": [
+                    {
+                        "name": "code",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/JoinRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "id"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/communities/{community}": {
+            "get": {
+                "operationId": "communities.show",
+                "description": "Members only: posts (pinned first), resources and sessions. A session's join link shows once you're going.",
+                "summary": "A community",
+                "tags": [
+                    "Community"
+                ],
+                "parameters": [
+                    {
+                        "name": "community",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "name": {
+                                                    "type": "string"
+                                                },
+                                                "about": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "owner": {
+                                                    "type": "string"
+                                                },
+                                                "is_owner": {
+                                                    "type": "boolean"
+                                                },
+                                                "member": {
+                                                    "type": "boolean"
+                                                },
+                                                "members": {
+                                                    "type": "integer"
+                                                },
+                                                "invite_url": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "qr_url": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "posts": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "author": {
+                                                                "type": "string"
+                                                            },
+                                                            "body": {
+                                                                "type": "string"
+                                                            },
+                                                            "pinned": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "at": {
+                                                                "type": "string"
+                                                            },
+                                                            "mine": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "author",
+                                                            "body",
+                                                            "pinned",
+                                                            "at",
+                                                            "mine"
+                                                        ]
+                                                    }
+                                                },
+                                                "resources": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "url": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "title",
+                                                            "url"
+                                                        ]
+                                                    }
+                                                },
+                                                "sessions": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "about": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "format": {
+                                                                "type": "string"
+                                                            },
+                                                            "starts_at": {
+                                                                "type": "string"
+                                                            },
+                                                            "minutes": {
+                                                                "type": "integer"
+                                                            },
+                                                            "place": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "join_url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "capacity": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "price_cents": {
+                                                                "type": "integer"
+                                                            },
+                                                            "ce_course": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "status": {
+                                                                "type": "string"
+                                                            },
+                                                            "going": {
+                                                                "type": "integer"
+                                                            },
+                                                            "attended": {
+                                                                "type": "integer"
+                                                            },
+                                                            "mine": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "title",
+                                                            "about",
+                                                            "format",
+                                                            "starts_at",
+                                                            "minutes",
+                                                            "place",
+                                                            "join_url",
+                                                            "capacity",
+                                                            "price_cents",
+                                                            "ce_course",
+                                                            "status",
+                                                            "going",
+                                                            "attended",
+                                                            "mine"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "name",
+                                                "about",
+                                                "owner",
+                                                "is_owner",
+                                                "member",
+                                                "members",
+                                                "invite_url",
+                                                "qr_url",
+                                                "posts",
+                                                "resources",
+                                                "sessions"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/communities/{community}/membership": {
+            "delete": {
+                "operationId": "communities.leave",
+                "summary": "Leave a community",
+                "tags": [
+                    "Community"
+                ],
+                "parameters": [
+                    {
+                        "name": "community",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "left": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "required": [
+                                        "left"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/communities/{community}/posts": {
+            "post": {
+                "operationId": "communities.posts.store",
+                "description": "Checked first: advertising wording, no pay for referrals, no phone numbers, email addresses or links (422 `body` with the reason).",
+                "summary": "Post",
+                "tags": [
+                    "Community"
+                ],
+                "parameters": [
+                    {
+                        "name": "community",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PostRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "id"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/community-posts/{post}": {
+            "delete": {
+                "operationId": "community-posts.destroy",
+                "description": "Its author or the community's owner.",
+                "summary": "Take a post down",
+                "tags": [
+                    "Community"
+                ],
+                "parameters": [
+                    {
+                        "name": "post",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "removed": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "required": [
+                                        "removed"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/community-posts/{post}/pin": {
+            "put": {
+                "operationId": "community-posts.pin",
+                "summary": "Pin a post (the owner)",
+                "tags": [
+                    "Community"
+                ],
+                "parameters": [
+                    {
+                        "name": "post",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PinRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "pinned": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "required": [
+                                        "pinned"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/community-sessions/{session}/rsvp": {
+            "post": {
+                "operationId": "community-sessions.rsvp",
+                "description": "Free: going. Paid: held, with the checkout link; going once paid. 422 `session` when it's full or over.",
+                "summary": "RSVP to a session",
+                "tags": [
+                    "Community"
+                ],
+                "parameters": [
+                    {
+                        "name": "session",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "string"
+                                                },
+                                                "checkout_url": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "status",
+                                                "checkout_url"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "community-sessions.rsvp.destroy",
+                "summary": "Cancel my RSVP",
+                "tags": [
+                    "Community"
+                ],
+                "parameters": [
+                    {
+                        "name": "session",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "cancelled": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "required": [
+                                        "cancelled"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
         "/compliance/check": {
             "post": {
                 "operationId": "compliance.check",
@@ -67216,7 +69102,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/PostRequest"
+                                "$ref": "#/components/schemas/App.Http.Requests.Social.PostRequest"
                             }
                         }
                     }
@@ -67447,7 +69333,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/PostRequest"
+                                "$ref": "#/components/schemas/App.Http.Requests.Social.PostRequest"
                             }
                         }
                     }
@@ -68009,7 +69895,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/PostRequest"
+                                "$ref": "#/components/schemas/App.Http.Requests.Social.PostRequest"
                             }
                         }
                     }
@@ -78470,6 +80356,96 @@
                 ],
                 "title": "AnswerQuestionRequest"
             },
+            "App.Http.Requests.Social.PostRequest": {
+                "type": "object",
+                "description": "A social post: text, media, a link, the places it goes, and now, later or a draft (B11).",
+                "properties": {
+                    "body": {
+                        "type": "string",
+                        "maxLength": 5000
+                    },
+                    "media": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "maxLength": 1000
+                        },
+                        "maxItems": 10
+                    },
+                    "link": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uri",
+                        "maxLength": 500
+                    },
+                    "targets": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "connection": {
+                                    "type": "integer"
+                                },
+                                "channel": {
+                                    "type": "string",
+                                    "maxLength": 20
+                                },
+                                "id": {
+                                    "type": "string",
+                                    "maxLength": 120
+                                }
+                            },
+                            "required": [
+                                "connection",
+                                "channel",
+                                "id"
+                            ]
+                        },
+                        "maxItems": 12
+                    },
+                    "when": {
+                        "type": "string",
+                        "enum": [
+                            "now",
+                            "later",
+                            "draft"
+                        ]
+                    },
+                    "at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "listing": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uuid",
+                        "description": "The listing (B10.2) a listing post comes from."
+                    },
+                    "ask_broker": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Instead of fixing flagged wording, send the post to the broker with this reason (B13.2).",
+                        "minLength": 3,
+                        "maxLength": 500
+                    }
+                },
+                "required": [
+                    "body",
+                    "media",
+                    "targets",
+                    "when"
+                ],
+                "title": "App.Http.Requests.Social.PostRequest"
+            },
             "AppConfigResource": {
                 "type": "object",
                 "properties": {
@@ -78796,6 +80772,23 @@
                     "question"
                 ],
                 "title": "AssistantQuestionRequest"
+            },
+            "AttendanceRequest": {
+                "type": "object",
+                "description": "Who came to a session (B17.2).",
+                "properties": {
+                    "user_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "maxItems": 2000
+                    }
+                },
+                "required": [
+                    "user_ids"
+                ],
+                "title": "AttendanceRequest"
             },
             "BookSessionRequest": {
                 "type": "object",
@@ -79468,6 +81461,28 @@
                     "options"
                 ],
                 "title": "ClassPollRequest"
+            },
+            "CommunityRequest": {
+                "type": "object",
+                "description": "The community's name and about (B17.2).",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 120
+                    },
+                    "about": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 2000
+                    }
+                },
+                "required": [
+                    "name"
+                ],
+                "title": "CommunityRequest"
             },
             "ConnectionResource": {
                 "type": "object",
@@ -80775,6 +82790,20 @@
                     "code"
                 ],
                 "title": "InviteCodeRequest"
+            },
+            "JoinRequest": {
+                "type": "object",
+                "description": "Joining by the link or the QR code (B17.2).",
+                "properties": {
+                    "via": {
+                        "type": "string",
+                        "enum": [
+                            "link",
+                            "qr"
+                        ]
+                    }
+                },
+                "title": "JoinRequest"
             },
             "KnowledgeHitResource": {
                 "type": "object",
@@ -82085,6 +84114,19 @@
                 ],
                 "title": "PhoneVerifyRequest"
             },
+            "PinRequest": {
+                "type": "object",
+                "description": "Pin or unpin a post (B17.2).",
+                "properties": {
+                    "pinned": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "pinned"
+                ],
+                "title": "PinRequest"
+            },
             "PlanRequest": {
                 "type": "object",
                 "description": "The plan to buy: basic (Listed), pro or premium (Partner) (B15.2).",
@@ -82139,91 +84181,16 @@
             },
             "PostRequest": {
                 "type": "object",
-                "description": "A social post: text, media, a link, the places it goes, and now, later or a draft (B11).",
+                "description": "A post in a community (B17.2).",
                 "properties": {
                     "body": {
                         "type": "string",
-                        "maxLength": 5000
-                    },
-                    "media": {
-                        "type": "array",
-                        "items": {
-                            "type": "string",
-                            "maxLength": 1000
-                        },
-                        "maxItems": 10
-                    },
-                    "link": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "format": "uri",
-                        "maxLength": 500
-                    },
-                    "targets": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "connection": {
-                                    "type": "integer"
-                                },
-                                "channel": {
-                                    "type": "string",
-                                    "maxLength": 20
-                                },
-                                "id": {
-                                    "type": "string",
-                                    "maxLength": 120
-                                }
-                            },
-                            "required": [
-                                "connection",
-                                "channel",
-                                "id"
-                            ]
-                        },
-                        "maxItems": 12
-                    },
-                    "when": {
-                        "type": "string",
-                        "enum": [
-                            "now",
-                            "later",
-                            "draft"
-                        ]
-                    },
-                    "at": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "format": "date-time"
-                    },
-                    "listing": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "format": "uuid",
-                        "description": "The listing (B10.2) a listing post comes from."
-                    },
-                    "ask_broker": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "description": "Instead of fixing flagged wording, send the post to the broker with this reason (B13.2).",
-                        "minLength": 3,
-                        "maxLength": 500
+                        "minLength": 2,
+                        "maxLength": 4000
                     }
                 },
                 "required": [
-                    "body",
-                    "media",
-                    "targets",
-                    "when"
+                    "body"
                 ],
                 "title": "PostRequest"
             },
@@ -82837,6 +84804,27 @@
                     "reason"
                 ],
                 "title": "ReportRequest"
+            },
+            "ResourceRequest": {
+                "type": "object",
+                "description": "A resource link for the community (B17.2).",
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "minLength": 2,
+                        "maxLength": 120
+                    },
+                    "url": {
+                        "type": "string",
+                        "format": "uri",
+                        "maxLength": 500
+                    }
+                },
+                "required": [
+                    "title",
+                    "url"
+                ],
+                "title": "ResourceRequest"
             },
             "ReviewProviderRequest": {
                 "type": "object",
@@ -83661,6 +85649,83 @@
                     "active"
                 ],
                 "title": "SessionOfferRequest"
+            },
+            "SessionRequest": {
+                "type": "object",
+                "description": "An expert session (B17.2): online or in person, free or (on Partner) paid, with a CE course number only if approved elsewhere.",
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 160
+                    },
+                    "about": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 2000
+                    },
+                    "format": {
+                        "type": "string",
+                        "enum": [
+                            "online",
+                            "in_person"
+                        ]
+                    },
+                    "starts_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "minutes": {
+                        "type": "integer",
+                        "minimum": 15,
+                        "maximum": 480
+                    },
+                    "place": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 200
+                    },
+                    "join_url": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uri",
+                        "maxLength": 500
+                    },
+                    "capacity": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "minimum": 1,
+                        "maximum": 2000
+                    },
+                    "price_cents": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 100000
+                    },
+                    "ce_course": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 40
+                    }
+                },
+                "required": [
+                    "title",
+                    "format",
+                    "starts_at",
+                    "minutes",
+                    "price_cents"
+                ],
+                "title": "SessionRequest"
             },
             "ShareContactsRequest": {
                 "type": "object",

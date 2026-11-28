@@ -147,6 +147,28 @@
 - Invites by link and QR.
 - Results for the provider.
 - **Done when:** a provider runs an expert session for 18 agents.
+- **As built, B17.2** (ADR 0086):
+  - **Data:** `communities` (owner, name, about, invite code), `community_members` (role, via link or QR, joined and left), `community_posts`, `community_resources`, `community_events` (format, time, place or join link, capacity, price, CE course number, status) and `community_rsvps` (going, held or cancelled; attended).
+  - **Services:**
+    - `App\Communities\Communities`: Pro and Partner providers lead; only verified agents and providers join. Members are told about new sessions. RSVP respects the capacity. Paid sessions are Partner only and go through checkout, and the RSVP is held until paid. The host saves attendance. Results.
+    - `PostCheck`: advertising wording, no pay for referrals, no contacts or links.
+  - **API:** `/api/v1/communities`, `/api/v1/community` (owner: settings, code, resources, sessions, roster, attendance, results), `/api/v1/communities/join/{code}`, `/api/v1/communities/{community}` (view, leave, posts), `/api/v1/community-posts/{post}` (remove, pin), `/api/v1/community-sessions/{session}/rsvp`.
+  - **Web:**
+    - Community at `/community` (provider screens 16–17): the invite link with a QR code (`/community/qr.svg`), schedule a session, the roster with attendance, posts, resources and results;
+    - Results at `/community/results` (screen 18);
+    - Communities at `/communities` for agents, and a community at `/communities/{id}`;
+    - the invite page at `/join/community/{code}`;
+    - provider nav items Community and Results (were planned), and an agent nav item Communities.
+  - **Phone:** Communities, a community (sessions with RSVP and the CE note, posts, resources), and the invite screen. There's a Me row for agents and providers.
+  - **Done when:** a Pest test has Maya Chen (Pro):
+    - invite 18 Lone Star Realty agents, 6 by QR code and 12 by link;
+    - schedule "Reading a loan estimate with your buyers"; all 18 are told and RSVP;
+    - tick all 18 as attended after the session.
+    Results show 18 members, 18 RSVPs, 18 came and a 100% show rate. Other tests:
+    - only verified people join, and a new link turns the old one off;
+    - Listed providers can't lead;
+    - posts with referral fees, phone numbers or fair housing wording are turned down;
+    - paid sessions need Partner, are capped, and go from held to going when paid.
 
 ### B17.3 QuickBooks (Team B)
 

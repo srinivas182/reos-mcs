@@ -36,6 +36,7 @@ import {
     Tag,
     Target,
     Users,
+    UsersRound,
     Video,
     Wallet,
     Handshake,
@@ -100,6 +101,11 @@ import { index as approvalsIndex } from '@/routes/approvals';
 import { index as ceComplianceIndex } from '@/routes/ce-compliance';
 import { index as providerAgents } from '@/routes/provider-agents';
 import { index as providerFiles } from '@/routes/provider-files';
+import {
+    results as communityResults,
+    show as communityShow,
+} from '@/routes/community';
+import { index as communitiesIndex } from '@/routes/communities';
 import { index as providerNetworkIndex } from '@/routes/provider-network';
 import { index as reportsIndex } from '@/routes/reports';
 import { index as teamIndex, leads as teamLeads } from '@/routes/team';
@@ -170,6 +176,9 @@ export type NavLabel =
     | 'teamsAndRouting'
     | 'teamLeads'
     | 'myFiles'
+    | 'community'
+    | 'results'
+    | 'communities'
     | 'providerJoin'
     | 'serviceProviders'
     | 'profile'
@@ -338,6 +347,8 @@ export function roleNavigation(
             item('podAndChallenges', Trophy, podIndex(), '/pod'),
             // Verified providers (B15.3): licence checked, areas and services.
             item('serviceProviders', Handshake, providersIndex(), '/providers'),
+            // Communities led by providers, joined by link or QR code (B17.2).
+            item('communities', UsersRound, communitiesIndex(), '/communities'),
             // Team leads to claim and split sheets to sign (A17.3).
             item('teamLeads', Inbox, teamLeads(), '/team/leads'),
             // Requests from providers, connections and my choices (B16.2).
@@ -374,8 +385,14 @@ export function roleNavigation(
             // Joining and the profile agents see (B15.2 and B15.3, provider screens 1–7).
             item('providerJoin', ListChecks, providerJoin(), '/provider/join'),
             item('profile', IdCard, providerProfile(), '/provider/profile'),
-            planned('community'),
-            planned('results'),
+            // Communities (B17.2, provider screens 16–18): sessions, posts, invites and results.
+            item('community', UsersRound, communityShow(), '/community'),
+            item(
+                'results',
+                ChartColumn,
+                communityResults(),
+                '/community/results',
+            ),
             item(
                 'planAndBilling',
                 CreditCard,

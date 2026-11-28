@@ -10,6 +10,7 @@ use App\Billing\Gateways\PaymentGateway;
 use App\Billing\Gateways\PaymentResult;
 use App\Billing\Ledger\MoneyPostings;
 use App\Billing\Payouts\RevenueSplit;
+use App\Communities\Communities;
 use App\Models\Order;
 use App\Models\Organisation;
 use App\Models\Price;
@@ -226,6 +227,8 @@ final readonly class Checkout
             // A booked 1-on-1 session (A10.2a): confirmed once paid.
             if ($order->product->kind === ProductKind::Session) {
                 app(SessionBookings::class)->paid($order);
+                // A paid expert session in a community (B17.2): the held RSVP is going.
+                app(Communities::class)->paid($order);
             }
 
             if ($order->product->kind === ProductKind::CreditPack && $order->user !== null) {
