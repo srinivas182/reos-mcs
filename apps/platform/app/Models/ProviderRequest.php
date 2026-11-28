@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int|null $provider_category_id
  * @property string|null $message
  * @property string $status pending, accepted, declined, expired or withdrawn
+ * @property string $initiated_by provider (B16.1) or agent (B16.3)
  * @property Carbon $expires_at
  * @property Carbon|null $responded_at
  * @property Carbon|null $created_at
@@ -39,7 +40,11 @@ final class ProviderRequest extends Model
 
     public const WITHDRAWN = 'withdrawn';
 
-    protected $fillable = ['uuid', 'provider_profile_id', 'provider_id', 'agent_id', 'provider_category_id', 'message', 'status', 'expires_at', 'responded_at'];
+    public const BY_PROVIDER = 'provider';
+
+    public const BY_AGENT = 'agent';
+
+    protected $fillable = ['uuid', 'provider_profile_id', 'provider_id', 'agent_id', 'provider_category_id', 'message', 'status', 'initiated_by', 'expires_at', 'responded_at'];
 
     protected function casts(): array
     {

@@ -105,7 +105,8 @@ final readonly class AgentsInArea
     {
         $local = ($now ?? CarbonImmutable::now())->setTimezone(self::TIMEZONE);
         $limit = ProviderPlans::requests($profile->tier);
-        $used = ProviderRequest::query()->where('provider_profile_id', $profile->id)->where('created_at', '>=', $local->startOfMonth()->utc())->count();
+        // Only the provider's own requests count; agents asking (B16.3) never do.
+        $used = ProviderRequest::query()->where('provider_profile_id', $profile->id)->where('initiated_by', ProviderRequest::BY_PROVIDER)->where('created_at', '>=', $local->startOfMonth()->utc())->count();
 
         return ['tier' => $profile->tier, 'limit' => $limit, 'used' => $used, 'left' => max(0, $limit - $used), 'resets_on' => $local->startOfMonth()->addMonth()->toDateString()];
     }

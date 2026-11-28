@@ -2388,7 +2388,9 @@
         "provider.request_declined": "Declined a request to connect",
         "provider.contacts_shared": "Shared contacts with a connection",
         "provider.contacts_unshared": "Stopped sharing contacts with a connection",
-        "provider.blocked": "Blocked a connection"
+        "provider.blocked": "Blocked a connection",
+        "provider.agent_connected": "Connected with a provider",
+        "provider.reviewed": "Reviewed a provider"
       }
     }
   },
@@ -8914,7 +8916,52 @@
       "resources": "Free resources",
       "sessions": "Expert sessions",
       "about": "About",
-      "licenceNumber": "License {{number}}"
+      "licenceNumber": "License {{number}}",
+      "near": {
+        "title": "Providers near you",
+        "serving": "Serving {{cities}}",
+        "none": "Add deals or confirm your MLS record to see who serves your areas. For now, every verified provider shows.",
+        "badge": "Near you",
+        "all": "All categories",
+        "category": "{{name}} ({{count}})",
+        "empty": "No verified providers here yet",
+        "emptyHint": "Try another category. New providers join every week.",
+        "open": "Open {{name}}"
+      },
+      "connect": {
+        "button": "Request to connect",
+        "buttonFor": "Request to connect with {{name}}",
+        "connected": "Connected with {{name}}. Your chat is in Messages.",
+        "already": "You're connected. Contacts show once you both press Share.",
+        "open": "Open connection",
+        "hello": "Hi, this is {{name}}. I'd like to connect.",
+        "notifyTitle": "{{name}} connected with you",
+        "notifyBody": "An agent connected from Providers near you. Your chat is open in Messages.",
+        "blocked": "You can't connect with this provider."
+      },
+      "reviews": {
+        "title": "Reviews from agents",
+        "none": "No reviews yet",
+        "noneHint": "Agents can review a provider 30 days after connecting.",
+        "average_one": "{{average}} out of 5 · {{count}} review",
+        "average_other": "{{average}} out of 5 · {{count}} reviews",
+        "stars_one": "{{count}} star",
+        "stars_other": "{{count}} stars",
+        "by": "{{agent}} · {{date}}",
+        "write": "Write a review",
+        "edit": "Update my review",
+        "rating": "Your rating",
+        "body": "What was it like to work with them? (optional)",
+        "bodyHint": "No phone numbers, emails or links.",
+        "submit": "Post review",
+        "saved": "Thanks. Your review is posted.",
+        "from": "You can review on {{date}}, 30 days after connecting.",
+        "errors": {
+          "notConnected": "Only agents connected with this provider can review them.",
+          "tooSoon": "You can review on {{date}}, 30 days after connecting.",
+          "contact": "Leave out phone numbers, emails and links."
+        }
+      }
     },
     "agents": {
       "title": "Agents in my areas",

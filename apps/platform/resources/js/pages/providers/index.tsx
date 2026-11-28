@@ -5,7 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { EmptyState } from '@/components/empty-state';
 import { PageHeader } from '@/components/page-header';
 import { ProviderProfileCard } from '@/components/providers/provider-card';
-import type { ProviderCard } from '@/components/providers/types';
+import { NearYou } from '@/components/providers/near-you';
+import type { NearYouData, ProviderCard } from '@/components/providers/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -16,10 +17,13 @@ export default function Providers({
     providers,
     filters,
     categories,
+    near = null,
 }: {
     providers: ProviderCard[];
     filters: { category: string | null; place: string | null };
     categories: { key: string; name: string }[];
+    /** Providers near you, with ratings (B16.3). */
+    near?: NearYouData | null;
 }) {
     const { t } = useTranslation();
     const [category, setCategory] = useState(filters.category ?? '');
@@ -33,6 +37,16 @@ export default function Providers({
                     title={t('providers.directory.title')}
                     description={t('providers.directory.purpose')}
                 />
+                {near && !filters.place ? (
+                    <NearYou
+                        near={near}
+                        category={filters.category}
+                        profileHref={(id) => show(id).url}
+                        categoryHref={(key) =>
+                            index({ query: { category: key ?? undefined } }).url
+                        }
+                    />
+                ) : null}
                 <form
                     className="flex flex-wrap items-end gap-3"
                     onSubmit={(e) => {
