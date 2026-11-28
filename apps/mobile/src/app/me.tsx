@@ -69,12 +69,7 @@ export default function MeScreen() {
   return (
     <Screen>
       <TitleBar title="" onBack={() => router.back()} />
-      <ProfileHeader
-        name={name}
-        detail={current ? roleName(t, current.role) : ''}
-        link={current?.organisation.name}
-        onLinkPress={() => setSheet('organisations')}
-      />
+      <ProfileHeader name={name} detail={current ? roleName(t, current.role) : ''} link={current?.organisation.name} onLinkPress={() => setSheet('organisations')} />
 
       {user?.two_step.required && current ? (
         <Callout
@@ -103,6 +98,8 @@ export default function MeScreen() {
         <MenuRow icon={Wrench} title={t('providers.onboarding.title')} onPress={() => router.push('/provider/join')} />
         {/* Build your profile (B15.3, provider screen 7), for providers. */}
         {current?.role === 'provider' ? <MenuRow icon={IdCard} title={t('providers.profile.title')} onPress={() => router.push('/provider/profile')} /> : null}
+        {/* Agents in my areas and requests to connect (B16.1), for providers. */}
+        {current?.role === 'provider' ? <MenuRow icon={Users} title={t('providers.agents.title')} onPress={() => router.push('/provider/agents')} /> : null}
         {/* Verified providers (B15.3), for agents and brokers. */}
         {current?.role === 'agent' || current?.role === 'broker' ? <MenuRow icon={Handshake} title={t('providers.directory.title')} onPress={() => router.push('/providers')} /> : null}
         {/* What my broker sees (A16.1): the agent's own summary, as their broker sees it. */}
@@ -122,13 +119,7 @@ export default function MeScreen() {
         <MenuRow icon={Languages} title={t('mobile.me.accessibility')} onPress={() => router.push('/accessibility')} />
       </MenuGroup>
 
-      {others.length > 0 ? (
-        <MenuCard
-          icon={ArrowLeftRight}
-          title={others.length === 1 && others[0] ? t('mobile.me.switchRoleTo', { role: roleName(t, others[0].role) }) : t('mobile.me.switchRole')}
-          onPress={() => setSheet('roles')}
-        />
-      ) : null}
+      {others.length > 0 ? <MenuCard icon={ArrowLeftRight} title={others.length === 1 && others[0] ? t('mobile.me.switchRoleTo', { role: roleName(t, others[0].role) }) : t('mobile.me.switchRole')} onPress={() => setSheet('roles')} /> : null}
 
       <Pressable accessibilityRole="button" onPress={() => void signOut()} style={styles.signOut}>
         <Text weight="semibold" tone="danger">

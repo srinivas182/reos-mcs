@@ -109,6 +109,70 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/provider/agents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Agents in my areas
+         * @description REOS agents working in the provider's areas (MLS listings and REOS deals in 12 months), by level: new, active or top producer. First name and initial only; never contacts. With this month's requests used and left.
+         */
+        get: operations["provider.agents"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/provider/requests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My requests to connect
+         * @description The provider's requests, newest first: waiting, accepted, declined, expired or withdrawn.
+         */
+        get: operations["provider.requests"];
+        put?: never;
+        /**
+         * Ask an agent to connect
+         * @description Counts toward the plan's monthly limit (Listed 5, Pro 25, Partner 75). The note can't hold phone numbers, email addresses or links. 422 with `limit` when the month's requests are used.
+         */
+        post: operations["provider.requests.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/provider/requests/{providerRequest}/withdraw": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Withdraw a waiting request
+         * @description It still counts toward the month.
+         */
+        post: operations["provider.requests.withdraw"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/announcements": {
         parameters: {
             query?: never;
@@ -9112,6 +9176,14 @@ export interface components {
             reply_to?: string | null;
         };
         /**
+         * SendRequestRequest
+         * @description A request to connect (B16.1): the agent, and an optional short note without contact details.
+         */
+        SendRequestRequest: {
+            agent_id: number;
+            message?: string | null;
+        };
+        /**
          * ServiceAreaRequest
          * @description A service area: a city, a ZIP code, or a radius in miles around a ZIP code (B15.2).
          */
@@ -9553,6 +9625,7 @@ export type SchemaScheduleSessionRequest = components['schemas']['ScheduleSessio
 export type SchemaSeatsRequest = components['schemas']['SeatsRequest'];
 export type SchemaSendForSignatureRequest = components['schemas']['SendForSignatureRequest'];
 export type SchemaSendMessageRequest = components['schemas']['SendMessageRequest'];
+export type SchemaSendRequestRequest = components['schemas']['SendRequestRequest'];
 export type SchemaServiceAreaRequest = components['schemas']['ServiceAreaRequest'];
 export type SchemaSessionNotesRequest = components['schemas']['SessionNotesRequest'];
 export type SchemaSessionOfferRequest = components['schemas']['SessionOfferRequest'];
@@ -9987,6 +10060,203 @@ export interface operations {
             };
             401: components["responses"]["AuthenticationException"];
             422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "provider.agents": {
+        parameters: {
+            query?: {
+                level?: "new" | "active" | "top" | null;
+                area?: number | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            areas: {
+                                id: number;
+                                label: string;
+                            }[];
+                            filters: {
+                                /** @enum {string|null} */
+                                level: "new" | "active" | "top" | null;
+                                area: number | null;
+                            };
+                            counts: {
+                                new: number;
+                                active: number;
+                                top: number;
+                            };
+                            agents: {
+                                id: number;
+                                name: string;
+                                brokerage: string | null;
+                                /** @enum {string} */
+                                level: "new" | "active" | "top";
+                                sides: number;
+                                cities: string[];
+                                request: {
+                                    id: string;
+                                    status: string;
+                                    sent_at: string;
+                                } | null;
+                                can_request: boolean;
+                            }[];
+                            usage: {
+                                tier: string | null;
+                                limit: number;
+                                used: number;
+                                left: number;
+                                resets_on: string;
+                            };
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "provider.requests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            agent: string;
+                            status: string;
+                            message: string | null;
+                            sent_at: string;
+                            expires_at: string;
+                        }[];
+                        usage: {
+                            tier: string | null;
+                            limit: number;
+                            used: number;
+                            left: number;
+                            resets_on: string;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "provider.requests.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SendRequestRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            status: string;
+                            expires_at: string;
+                        };
+                        usage: {
+                            tier: string | null;
+                            limit: number;
+                            used: number;
+                            left: number;
+                            resets_on: string;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "provider.requests.withdraw": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerRequest: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        withdrawn: boolean;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
             /** @description Too many requests */
             429: {
                 headers: {

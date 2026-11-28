@@ -43,6 +43,7 @@ use App\Http\Controllers\Api\Practice\PracticeController as ApiPracticeControlle
 use App\Http\Controllers\Api\Practice\ReportController;
 use App\Http\Controllers\Api\Practice\SpeedRoundController;
 use App\Http\Controllers\Api\Practice\StudyGroupController;
+use App\Http\Controllers\Api\Providers\AgentsInAreaController;
 use App\Http\Controllers\Api\Providers\JoiningController;
 use App\Http\Controllers\Api\Providers\ProviderOnboardingController;
 use App\Http\Controllers\Api\Providers\ProviderProfileController;
@@ -131,6 +132,7 @@ use App\Http\Controllers\Practice\PracticePageController;
 use App\Http\Controllers\Practice\SharedReportController;
 use App\Http\Controllers\Practice\StudyPlanController;
 use App\Http\Controllers\Practice\TopicPlanPageController;
+use App\Http\Controllers\Provider\AgentsPageController;
 use App\Http\Controllers\Provider\JoinPageController;
 use App\Http\Controllers\Provider\ProfilePagesController;
 use App\Http\Controllers\Provider\ProviderPhotoController;
@@ -540,6 +542,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('provider/profile', [ProviderProfileController::class, 'update'])->middleware('throttle:20,1,provider-profile-save')->name('provider-profile.update');
     Route::post('provider/profile/bio', [ProviderProfileController::class, 'draft'])->middleware('throttle:10,1,provider-bio')->name('provider-profile.bio');
     Route::post('provider/profile/photo', [ProviderProfileController::class, 'photo'])->middleware('throttle:10,1,provider-photo')->name('provider-profile.photo');
+    // Agents in my areas and requests to connect (B16.1): the page, and the same actions as the API.
+    Route::get('provider/agents', AgentsPageController::class)->name('provider-agents.index');
+    Route::post('provider/requests', [AgentsInAreaController::class, 'send'])->middleware('throttle:20,1,provider-requests')->name('provider-agents.request');
+    Route::post('provider/requests/{providerRequest}/withdraw', [AgentsInAreaController::class, 'withdraw'])->whereUuid('providerRequest')->middleware('throttle:20,1,provider-requests')->name('provider-agents.withdraw');
     Route::get('providers', [ProfilePagesController::class, 'index'])->name('providers.index');
     Route::get('providers/{profile}', [ProfilePagesController::class, 'show'])->whereNumber('profile')->name('providers.show');
 });

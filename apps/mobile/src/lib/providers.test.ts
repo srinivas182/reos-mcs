@@ -1,4 +1,22 @@
-import { acceptRules, addArea, areaParts, chooseCategory, loadProviders, lowestPrice, nextStep, requestCategory, saveAnswers, saveProfile, splitList, startPlan, type Onboarding, type ProviderCategory } from './providers';
+import {
+  askToConnect,
+  loadAgentsInArea,
+  usageShare,
+  acceptRules,
+  addArea,
+  areaParts,
+  chooseCategory,
+  loadProviders,
+  lowestPrice,
+  nextStep,
+  requestCategory,
+  saveAnswers,
+  saveProfile,
+  splitList,
+  startPlan,
+  type Onboarding,
+  type ProviderCategory,
+} from './providers';
 
 const mockApi = { GET: jest.fn(), POST: jest.fn(), PUT: jest.fn() };
 jest.mock('@/lib/api', () => ({ api: () => mockApi }));
@@ -89,5 +107,21 @@ describe('the provider profile on the phone (B15.3)', () => {
     mockApi.GET.mockResolvedValueOnce({ data: { data: [] } });
     await loadProviders(undefined, 'Katy');
     expect(mockApi.GET).toHaveBeenCalledWith('/providers', { params: { query: { category: undefined, place: 'Katy' } } });
+  });
+});
+
+describe('agents in my areas on the phone (B16.1)', () => {
+  it('loads agents by level and sends a request with a trimmed note', async () => {
+    mockApi.GET.mockResolvedValueOnce({ data: { data: { agents: [], usage: { limit: 5, used: 3, left: 2 } } } });
+    await expect(loadAgentsInArea('top')).resolves.toMatchObject({ usage: { left: 2 } });
+    expect(mockApi.GET).toHaveBeenLastCalledWith('/provider/agents', { params: { query: { level: 'top' } } });
+
+    mockApi.POST.mockResolvedValueOnce({ data: { data: { id: 'r-1', status: 'pending' }, usage: { limit: 5, used: 4, left: 1 } } });
+    await expect(askToConnect(11, '  Happy to help.  ')).resolves.toMatchObject({ id: 'r-1' });
+    expect(mockApi.POST).toHaveBeenLastCalledWith('/provider/requests', { body: { agent_id: 11, message: 'Happy to help.' } });
+
+    mockApi.POST.mockResolvedValueOnce({ error: { errors: { limit: ["You've used all 5 requests for this month."] } } });
+    await expect(askToConnect(12, '')).rejects.toThrow("You've used all 5 requests for this month.");
+    expect(usageShare({ tier: 'basic', limit: 5, used: 4, left: 1, resets_on: '2026-12-01' })).toBeCloseTo(0.8);
   });
 });

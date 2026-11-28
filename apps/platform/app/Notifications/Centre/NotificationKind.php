@@ -92,6 +92,9 @@ enum NotificationKind: string
     /** A sponsorship release or join, or deals handed over to you (A16.2). */
     case Sponsorship = 'sponsorship';
 
+    /** A verified provider asks to connect (B16.1). */
+    case ProviderRequest = 'provider_request';
+
     public const INBOX = 'inbox';
 
     public const PUSH = 'push';
@@ -146,7 +149,7 @@ enum NotificationKind: string
         return match ($this) {
             self::NewDevice, self::AccountDeletion, self::PrivacyRequest => 'account',
             self::PurchaseReceipt, self::PaymentFailed, self::MembershipLink => 'billing',
-            self::Message, self::Announcement, self::MessagesReported => 'messages',
+            self::Message, self::Announcement, self::MessagesReported, self::ProviderRequest => 'messages',
             self::SessionBooked, self::SessionStarting, self::ClassCheck, self::ClassReport, self::ExamReminder, self::PassNews, self::BrokerOffer, self::LicenceFound, self::CeRenewal, self::StateRulesChanged, self::StateWentLive, self::WeeklyReport, self::Challenge, self::StudentQuestion, self::InstructorAnswer, self::Mentoring, self::CourseAssigned => 'learning',
             self::Invitation, self::SeatsRequested, self::BrokerAsked, self::SupportAccess, self::ApprovalExpiring, self::AvatarConsentEnded, self::ContentReview, self::PolicyQuestion, self::PostApproval, self::ApprovalOverdue, self::Sponsorship => 'organisation',
             self::IntegrationPaused, self::FlagRolledBack, self::ConnectionNeedsReconnect => 'tools',

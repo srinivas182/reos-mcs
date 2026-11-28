@@ -53,7 +53,9 @@ describe('signing up', function () {
 describe('the check before acting', function () {
     it('uses the latest record, else the default for the role', function () {
         expect($this->consents->allows($this->maria, ConsentPurpose::ProviderNetwork))->toBeTrue()
-            ->and($this->consents->allows($this->james, ConsentPurpose::ProviderNetwork))->toBeFalse()
+            // Agents are in the provider network until they turn it off (S16 decision 4).
+            ->and($this->consents->allows($this->james, ConsentPurpose::ProviderNetwork))->toBeTrue()
+            ->and($this->consents->allows($this->james, ConsentPurpose::Recruiting))->toBeFalse()
             ->and($this->consents->allows($this->maria, ConsentPurpose::Recruiting))->toBeFalse()
             ->and($this->consents->allows($this->maria, ConsentPurpose::Sms))->toBeFalse()
             ->and($this->consents->allows($this->maria, ConsentPurpose::SessionRecording, 'session:4'))->toBeFalse();
