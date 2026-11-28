@@ -1,7 +1,9 @@
 <?php
 
 use App\Connections\ConnectorRegistry;
+use App\Http\Controllers\Accounting\QuickBooksPagesController;
 use App\Http\Controllers\Agents\AgentSetupPageController;
+use App\Http\Controllers\Api\Accounting\QuickBooksController;
 use App\Http\Controllers\Api\Agents\BriefController;
 use App\Http\Controllers\Api\Agents\ModeController;
 use App\Http\Controllers\Api\Agents\TodayController;
@@ -681,6 +683,15 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisat
     // Sponsored AI help and licensed agents open to a move (A17.2).
     Route::put('sponsorships/{sponsorship}', 'cap')->whereUuid('sponsorship')->middleware('throttle:30,1,recruiting-cap')->name('cap');
     Route::post('agents/{agent}/invite', 'invite')->whereNumber('agent')->middleware('throttle:20,1,recruiting-invite')->name('invite');
+});
+// QuickBooks Online (B17.3, broker web journey: integrations): connect, map the accounts once, export split sheets and payouts.
+Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisation.manage'])->prefix('organisation/accounting')->name('accounting.')->group(function () {
+    Route::get('/', [QuickBooksPagesController::class, 'index'])->name('index');
+    Route::get('quickbooks/callback', [QuickBooksPagesController::class, 'callback'])->middleware('throttle:10,1,accounting-callback')->name('quickbooks.callback');
+    Route::post('connect', [QuickBooksController::class, 'connect'])->middleware('throttle:10,1,accounting')->name('connect');
+    Route::put('accounts', [QuickBooksController::class, 'accounts'])->middleware('throttle:20,1,accounting')->name('accounts');
+    Route::post('export', [QuickBooksController::class, 'export'])->middleware('throttle:10,1,accounting')->name('export');
+    Route::delete('/', [QuickBooksController::class, 'disconnect'])->middleware('throttle:10,1,accounting')->name('disconnect');
 });
 // Brokerage integrations (B8.2, broker screen 40): which tools agents may use, the brokerage's own CRM, its mapping.
 Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisation.manage'])->prefix('organisation/integrations')->name('brokerage-integrations.')

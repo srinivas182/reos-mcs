@@ -2,6 +2,7 @@ import type { InertiaLinkProps } from '@inertiajs/react';
 import type { LucideIcon } from 'lucide-react';
 import {
     BookOpen,
+    BookOpenCheck,
     Route,
     ChartColumn,
     Inbox,
@@ -54,6 +55,7 @@ import {
 } from 'lucide-react';
 import { dashboard } from '@/routes';
 import { show as brandingShow } from '@/routes/branding';
+import { index as accountingIndex } from '@/routes/accounting';
 import { index as brokerageIntegrationsIndex } from '@/routes/brokerage-integrations';
 import { index as contactsIndex } from '@/routes/contacts';
 import { index as dealsIndex } from '@/routes/deals';
@@ -156,6 +158,7 @@ export type NavLabel =
     | 'brandingAndDomain'
     | 'brokerageSettings'
     | 'brokerageIntegrations'
+    | 'accounting'
     | 'contacts'
     | 'agents'
     | 'complianceAndAudit'
@@ -480,6 +483,13 @@ export function roleNavigation(
                 '/organisation/reports',
             ),
             item('brokerageIntegrations', Plug, brokerageIntegrationsIndex()),
+            // QuickBooks Online (B17.3): split sheets and payouts as journal entries.
+            item(
+                'accounting',
+                BookOpenCheck,
+                accountingIndex(),
+                '/organisation/accounting',
+            ),
             item('brokerageSettings', Building2, organisationSettings()),
         ],
         // Mentors work in the mentor workspace (web journey screen 48).

@@ -91,6 +91,8 @@ Schedule::command('reos:social:insights')->hourlyAt(20)->withoutOverlapping()->o
 Schedule::command('reos:teams:leads')->everyMinute()->withoutOverlapping()->onOneServer();
 // Coordinator access ends at closing (B17.1): a daily backstop to the deal-saved hook.
 Schedule::command('reos:coordinators:sweep')->dailyAt('02:20')->withoutOverlapping()->onOneServer();
+// QuickBooks Online (B17.3): anything that didn't post when signed, and payouts, once a day.
+Schedule::command('reos:accounting:export')->dailyAt('03:10')->withoutOverlapping()->onOneServer();
 // Requests to connect unanswered for 14 days expire (B16.1).
 Schedule::command('reos:providers:requests')->dailyAt('03:40')->timezone('America/Chicago')->withoutOverlapping()->onOneServer();
 // The broker's morning brief, weekdays (A16.3).

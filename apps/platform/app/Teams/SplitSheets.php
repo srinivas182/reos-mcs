@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Teams;
 
+use App\Accounting\QuickBooksExports;
 use App\Authorization\Role;
 use App\Messaging\Conversations;
 use App\Models\Organisation;
@@ -113,6 +114,8 @@ final readonly class SplitSheets
 
         $this->tenancy->run($sheet->organisation_id, static fn () => $sheet->forceFill(['status' => 'signed', 'signed_at' => now()])->save());
         $this->audit->record('team.split_signed', 'split_sheet', $sheet->uuid, ['agent_cents' => $sheet->agent_cents], $agent, $sheet->organisation_id);
+        // QuickBooks Online (B17.3): a connected brokerage gets the journal entry now.
+        app(QuickBooksExports::class)->signed($sheet);
 
         return $sheet;
     }

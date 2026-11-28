@@ -6270,6 +6270,90 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/organisation/accounting": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * QuickBooks
+         * @description The connection, the company's accounts and the mapping, what's waiting to post, and the last 20 entries.
+         */
+        get: operations["brokerage.accounting.show"];
+        put?: never;
+        post?: never;
+        /**
+         * Disconnect QuickBooks
+         * @description Entries already posted stay in QuickBooks.
+         */
+        delete: operations["brokerage.accounting.disconnect"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organisation/accounting/connect": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Connect QuickBooks
+         * @description Where to send the broker to sign in to Intuit; Intuit returns to REOS, which finishes the connection.
+         */
+        post: operations["brokerage.accounting.connect"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organisation/accounting/accounts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Map the accounts
+         * @description An account from the company's chart for each role: clearing, brokerage income, team payable, agent payable, payouts expense and payouts clearing.
+         */
+        put: operations["brokerage.accounting.accounts"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organisation/accounting/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Export now
+         * @description Posts every signed split sheet and sent payout that hasn't posted. 422 `accounting` until connected and mapped.
+         */
+        post: operations["brokerage.accounting.export"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/practice/readiness": {
         parameters: {
             query?: never;
@@ -8409,6 +8493,20 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /**
+         * AccountsRequest
+         * @description The QuickBooks account for each role (B17.3), mapped once.
+         */
+        AccountsRequest: {
+            accounts: {
+                clearing: string;
+                brokerage_income: string;
+                team_payable: string;
+                agent_payable: string;
+                payouts_expense: string;
+                payouts_clearing: string;
+            };
+        };
         /** ActiveRoleRequest */
         ActiveRoleRequest: {
             /** @description One of the roles the person holds (see `roles` in `GET /me`). */
@@ -10648,6 +10746,7 @@ export interface components {
     headers: never;
     pathItems: never;
 }
+export type SchemaAccountsRequest = components['schemas']['AccountsRequest'];
 export type SchemaActiveRoleRequest = components['schemas']['ActiveRoleRequest'];
 export type SchemaAddContactRequest = components['schemas']['AddContactRequest'];
 export type SchemaAddLicenceRequest = components['schemas']['AddLicenceRequest'];
@@ -30673,6 +30772,220 @@ export interface operations {
             };
             401: components["responses"]["AuthenticationException"];
             404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "brokerage.accounting.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            connection: {
+                                company: string;
+                                mode: string;
+                                status: string;
+                                connected_at: string | null;
+                                accounts: {
+                                    [key: string]: string;
+                                };
+                                mapped: boolean;
+                            } | null;
+                            chart: {
+                                id: string;
+                                name: string;
+                                type: string;
+                            }[];
+                            roles: string[];
+                            pending: {
+                                split_sheets: {
+                                    id: string;
+                                    property: string;
+                                    agent: string;
+                                    closing_on: string;
+                                    gross_cents: number;
+                                }[];
+                                payouts: {
+                                    id: string;
+                                    payee: string;
+                                    sent_on: string;
+                                    amount_cents: number;
+                                }[];
+                            };
+                            exports: {
+                                kind: string;
+                                subject: string;
+                                amount_cents: number;
+                                status: string;
+                                ref: string | null;
+                                error: string | null;
+                                at: string;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "brokerage.accounting.disconnect": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        disconnected: boolean;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "brokerage.accounting.connect": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            url: string;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "brokerage.accounting.accounts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AccountsRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            mapped: boolean;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "brokerage.accounting.export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            posted: number;
+                            failed: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
             422: components["responses"]["ValidationException"];
             /** @description Too many requests */
             429: {

@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use App\Accounting\QuickBooksExports;
+use App\Accounting\SimulatedQuickBooks;
 use App\Authorization\Role;
 use App\Billing\Ledger\Ledger;
 use App\Billing\Plans;
@@ -22,6 +24,7 @@ use App\Features\Rollouts;
 use App\Http\Middleware\EnsureAdminTwoStep;
 use App\Integrations\IntegrationMode;
 use App\Licences\Ce\CeReporting;
+use App\Models\AccountingConnection;
 use App\Models\AgentPage;
 use App\Models\AuditEvent;
 use App\Models\BrokerOffer;
@@ -102,6 +105,16 @@ function auditCase(User $actor, string $method, string $uri, array $data = [], ?
 function auditOps(): User
 {
     return User::factory()->superAdmin()->create(['name' => 'Ops Srini']);
+}
+
+/** A brokerage with QuickBooks connected in the simulator (B17.3). */
+function auditQuickBooks(Organisation $lone, User $linda, bool $mapped): void
+{
+    IntegrationSetting::query()->updateOrCreate(['integration_id' => 'quickbooks-online'], ['mode' => IntegrationMode::Simulator]);
+    app(Tenancy::class)->asPlatform(static fn () => AccountingConnection::query()->create([
+        'organisation_id' => $lone->id, 'mode' => 'simulator', 'realm_id' => SimulatedQuickBooks::REALM, 'company_name' => 'Lone Star Realty LLC', 'connected_by' => $linda->id,
+        'accounts' => $mapped ? array_combine(QuickBooksExports::ROLES, ['35', '81', '33', '34', '60', '36']) : null,
+    ]));
 }
 
 /** @return array{0: Organisation, 1: User} */
@@ -844,6 +857,31 @@ function adminActions(): array
             $offer = BrokerOffer::query()->create(['uuid' => (string) Str::uuid(), 'brokerage_id' => $lone->id, 'candidate_id' => $ana->id, 'office_city' => 'Katy', 'split_percent' => 70, 'monthly_fee_cents' => 0, 'mentoring' => true, 'status' => 'open']);
 
             return auditCase($linda, 'POST', "/recruiting/offers/{$offer->uuid}/withdraw", tenant: $lone->id);
+        },
+        // QuickBooks Online (B17.3): connect, map the accounts, export, disconnect.
+        'accounting.connect' => function () {
+            [$lone, $linda] = auditBrokerage();
+            IntegrationSetting::query()->updateOrCreate(['integration_id' => 'quickbooks-online'], ['mode' => IntegrationMode::Simulator]);
+
+            return auditCase($linda, 'POST', '/organisation/accounting/connect', tenant: $lone->id);
+        },
+        'accounting.accounts' => function () {
+            [$lone, $linda] = auditBrokerage();
+            auditQuickBooks($lone, $linda, mapped: false);
+
+            return auditCase($linda, 'PUT', '/organisation/accounting/accounts', ['accounts' => array_combine(QuickBooksExports::ROLES, ['35', '81', '33', '34', '60', '36'])], tenant: $lone->id);
+        },
+        'accounting.export' => function () {
+            [$lone, $linda] = auditBrokerage();
+            auditQuickBooks($lone, $linda, mapped: true);
+
+            return auditCase($linda, 'POST', '/organisation/accounting/export', tenant: $lone->id);
+        },
+        'accounting.disconnect' => function () {
+            [$lone, $linda] = auditBrokerage();
+            auditQuickBooks($lone, $linda, mapped: true);
+
+            return auditCase($linda, 'DELETE', '/organisation/accounting', tenant: $lone->id);
         },
         // Recruiting (A17.2): a sponsored AI cap, and inviting an agent open to a move.
         'recruiting.cap' => function () {

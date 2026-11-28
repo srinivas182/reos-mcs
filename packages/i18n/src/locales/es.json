@@ -112,7 +112,8 @@
     "myFiles": "Mis expedientes",
     "community": "Comunidad",
     "results": "Resultados",
-    "communities": "Comunidades"
+    "communities": "Comunidades",
+    "accounting": "QuickBooks"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -2423,7 +2424,12 @@
         "community.post_removed": "Quitó una publicación de la comunidad",
         "community.session_scheduled": "Programó una sesión con expertos",
         "community.session_cancelled": "Canceló una sesión con expertos",
-        "community.attendance": "Guardó la asistencia a la sesión"
+        "community.attendance": "Guardó la asistencia a la sesión",
+        "accounting.connected": "Conectó QuickBooks",
+        "accounting.disconnected": "Desconectó QuickBooks",
+        "accounting.accounts_mapped": "Asignó cuentas de QuickBooks",
+        "accounting.exported": "Exportó a QuickBooks",
+        "accounting.connect_started": "Comenzó a conectar QuickBooks"
       }
     }
   },
@@ -12059,6 +12065,56 @@
       "referralPay": "Las comunidades no se pueden usar para pagar referidos: quite \"{{phrase}}\".",
       "contact": "Comparta sus datos de contacto mediante las conexiones, no en publicaciones: quite teléfonos, correos electrónicos y enlaces.",
       "wording": "Cambie \"{{phrase}}\": no cumple las reglas de publicidad."
+    }
+  },
+  "accounting": {
+    "title": "QuickBooks",
+    "purpose": "Registre en su compañía de QuickBooks Online las hojas de reparto firmadas y los pagos. Asigne sus cuentas una sola vez.",
+    "connect": "Conectar QuickBooks",
+    "connectHint": "Usted inicia sesión en Intuit y elige su compañía. REOS solo registra asientos contables.",
+    "connected": "QuickBooks está conectado.",
+    "company": "Conectado a {{company}}",
+    "simulated": "Simulado: no se envía nada a Intuit.",
+    "needsReconnect": "QuickBooks necesita que vuelva a iniciar sesión.",
+    "disconnect": "Desconectar QuickBooks",
+    "disconnected": "QuickBooks está desconectado. Los asientos ya registrados se quedan en QuickBooks.",
+    "map": "Asigne sus cuentas",
+    "mapHint": "Elija la cuenta para cada parte de una hoja de reparto y de un pago. Solo lo hace una vez.",
+    "choose": "Elija una cuenta",
+    "save": "Guardar cuentas",
+    "saved": "Cuentas guardadas.",
+    "roles": {
+      "clearing": "Comisión recibida (cuenta puente)",
+      "brokerage_income": "Parte de la agencia (ingreso)",
+      "team_payable": "Parte del equipo (por pagar)",
+      "agent_payable": "Parte del agente (por pagar)",
+      "payouts_expense": "Pagos a mentores e instructores (gasto)",
+      "payouts_clearing": "Pagos realizados (cuenta puente)"
+    },
+    "pending": "Pendientes de registrar",
+    "pendingEmpty": "No hay nada pendiente",
+    "pendingEmptyHint": "Las hojas de reparto firmadas y los pagos se registran aquí, una sola vez cada uno.",
+    "sheetRow": "{{property}} · {{agent}} · {{amount}}",
+    "payoutRow": "Pago a {{payee}} · {{amount}}",
+    "export": "Exportar ahora",
+    "exportedResult": "Se registraron {{posted}}. {{failed}} no se registraron.",
+    "history": "Asientos registrados",
+    "historyEmpty": "Aún no hay asientos",
+    "historyEmptyHint": "Los asientos aparecen aquí cuando se registran.",
+    "kinds": {
+      "split_sheet": "Hoja de reparto",
+      "payout": "Pago"
+    },
+    "statuses": {
+      "posted": "Registrado como {{ref}}",
+      "failed": "No se registró: {{error}}"
+    },
+    "errors": {
+      "state": "Ese inicio de sesión en QuickBooks venció. Vuelva a conectar.",
+      "notConnected": "Primero conecte QuickBooks.",
+      "notMapped": "Primero asigne sus cuentas.",
+      "account": "Elija una cuenta de su compañía de QuickBooks.",
+      "off": "QuickBooks está desactivado en este momento."
     }
   }
 }

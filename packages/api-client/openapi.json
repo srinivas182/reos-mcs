@@ -59197,6 +59197,481 @@
                 }
             }
         },
+        "/organisation/accounting": {
+            "get": {
+                "operationId": "brokerage.accounting.show",
+                "description": "The connection, the company's accounts and the mapping, what's waiting to post, and the last 20 entries.",
+                "summary": "QuickBooks",
+                "tags": [
+                    "QuickBooks"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "connection": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "company": {
+                                                            "type": "string"
+                                                        },
+                                                        "mode": {
+                                                            "type": "string"
+                                                        },
+                                                        "status": {
+                                                            "type": "string"
+                                                        },
+                                                        "connected_at": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "accounts": {
+                                                            "type": "object",
+                                                            "additionalProperties": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "mapped": {
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "company",
+                                                        "mode",
+                                                        "status",
+                                                        "connected_at",
+                                                        "accounts",
+                                                        "mapped"
+                                                    ]
+                                                },
+                                                "chart": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "type": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "name",
+                                                            "type"
+                                                        ]
+                                                    }
+                                                },
+                                                "roles": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "pending": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "split_sheets": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "property": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "agent": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "closing_on": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "gross_cents": {
+                                                                        "type": "integer"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "property",
+                                                                    "agent",
+                                                                    "closing_on",
+                                                                    "gross_cents"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "payouts": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "payee": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "sent_on": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "amount_cents": {
+                                                                        "type": "integer"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "payee",
+                                                                    "sent_on",
+                                                                    "amount_cents"
+                                                                ]
+                                                            }
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "split_sheets",
+                                                        "payouts"
+                                                    ]
+                                                },
+                                                "exports": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "kind": {
+                                                                "type": "string"
+                                                            },
+                                                            "subject": {
+                                                                "type": "string"
+                                                            },
+                                                            "amount_cents": {
+                                                                "type": "integer"
+                                                            },
+                                                            "status": {
+                                                                "type": "string"
+                                                            },
+                                                            "ref": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "error": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "at": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "kind",
+                                                            "subject",
+                                                            "amount_cents",
+                                                            "status",
+                                                            "ref",
+                                                            "error",
+                                                            "at"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "connection",
+                                                "chart",
+                                                "roles",
+                                                "pending",
+                                                "exports"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "brokerage.accounting.disconnect",
+                "description": "Entries already posted stay in QuickBooks.",
+                "summary": "Disconnect QuickBooks",
+                "tags": [
+                    "QuickBooks"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "disconnected": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "required": [
+                                        "disconnected"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/organisation/accounting/connect": {
+            "post": {
+                "operationId": "brokerage.accounting.connect",
+                "description": "Where to send the broker to sign in to Intuit; Intuit returns to REOS, which finishes the connection.",
+                "summary": "Connect QuickBooks",
+                "tags": [
+                    "QuickBooks"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "url": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "url"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/organisation/accounting/accounts": {
+            "put": {
+                "operationId": "brokerage.accounting.accounts",
+                "description": "An account from the company's chart for each role: clearing, brokerage income, team payable, agent payable, payouts expense and payouts clearing.",
+                "summary": "Map the accounts",
+                "tags": [
+                    "QuickBooks"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AccountsRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "mapped": {
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "required": [
+                                                "mapped"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/organisation/accounting/export": {
+            "post": {
+                "operationId": "brokerage.accounting.export",
+                "description": "Posts every signed split sheet and sent payout that hasn't posted. 422 `accounting` until connected and mapped.",
+                "summary": "Export now",
+                "tags": [
+                    "QuickBooks"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "posted": {
+                                                    "type": "integer"
+                                                },
+                                                "failed": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "required": [
+                                                "posted",
+                                                "failed"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
         "/practice/readiness": {
             "get": {
                 "operationId": "practice.readiness",
@@ -80152,6 +80627,53 @@
     },
     "components": {
         "schemas": {
+            "AccountsRequest": {
+                "type": "object",
+                "description": "The QuickBooks account for each role (B17.3), mapped once.",
+                "properties": {
+                    "accounts": {
+                        "type": "object",
+                        "properties": {
+                            "clearing": {
+                                "type": "string",
+                                "maxLength": 40
+                            },
+                            "brokerage_income": {
+                                "type": "string",
+                                "maxLength": 40
+                            },
+                            "team_payable": {
+                                "type": "string",
+                                "maxLength": 40
+                            },
+                            "agent_payable": {
+                                "type": "string",
+                                "maxLength": 40
+                            },
+                            "payouts_expense": {
+                                "type": "string",
+                                "maxLength": 40
+                            },
+                            "payouts_clearing": {
+                                "type": "string",
+                                "maxLength": 40
+                            }
+                        },
+                        "required": [
+                            "clearing",
+                            "brokerage_income",
+                            "team_payable",
+                            "agent_payable",
+                            "payouts_expense",
+                            "payouts_clearing"
+                        ]
+                    }
+                },
+                "required": [
+                    "accounts"
+                ],
+                "title": "AccountsRequest"
+            },
             "ActiveRoleRequest": {
                 "type": "object",
                 "properties": {

@@ -118,3 +118,5 @@ REOS Spanish is for people in Texas and the US, many of whom also use English ap
 | Community (provider-led) | Comunidad | B17.2 |
 | Expert session | Sesión con expertos | B17.2 |
 | RSVP | Confirmar asistencia | B17.2 |
+| Journal entry (accounting) | Asiento contable | B17.3 |
+| Clearing account | Cuenta puente | B17.3 |
