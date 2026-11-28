@@ -71,6 +71,20 @@
 - Sponsorship ends when the candidate passes or chooses another sponsor.
 - Licensed agents open to a move, with Invite to talk.
 - **Done when:** a candidate accepts an offer with sponsored help.
+- **As built, A17.2** (ADR 0083):
+  - **Data:** `broker_offers.ai_credits`, `candidate_sponsorships` and `recruiting_invites`. They span a brokerage and a person outside it, so the brokerage is `brokerage_id`, checked in the app.
+  - **Services:**
+    - `App\Recruiting\SponsoredHelp`: accepted (from `BrokerOffers::accept`), payerFor, used, board and setCap. It ends when the candidate passes or joins another brokerage. `AiCredits::candidatePayer` adds `offer` after the month's credits.
+    - `App\Recruiting\OpenAgents`: list (opted-in, licensed in the brokerage's states, not ours) and invite (a private chat once every 90 days, audited for the inviting brokerage only). `Relationships` counts invites.
+  - **Routes:**
+    - Web (admin): `PUT /recruiting/sponsorships/{id}` and `POST /recruiting/agents/{id}/invite`, and `sponsored` and `agents` on `/recruiting`.
+    - API: `GET /api/v1/organisation/recruiting/agents`, `POST …/agents/{id}/invite`, `GET …/sponsorships` and `PUT …/sponsorships/{id}`.
+  - **Web:** Recruiting adds Sponsored AI help (pool, use, status, cap) and Licensed agents open to a move (Invite to talk). The offer dialog adds sponsored AI credits. The candidate's offer card says "Includes sponsored AI study help".
+  - **Phone:** Your brokerage → Recruiting (agents open to a move with Invite to talk, and sponsored help). The candidate's offers show the AI help chip.
+  - **Done when:** a Pest test has Lone Star fund its pool (1,000) and offer Ana 200 credits. She sees only that help is sponsored and accepts. Beyond her month's credits, an answer draws 5 credits from Lone Star's pool (995) and her use (5). A lower cap stops it, and once she passes the sponsorship ends. Other tests cover:
+    - ending when she joins another brokerage;
+    - only opted-in agents, never their own brokerage;
+    - an invite opening a chat, audited for Lone Star only, with nothing sent to their broker.
 
 ### A17.3 Teams and campaigns (Team A)
 

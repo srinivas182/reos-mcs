@@ -1,4 +1,4 @@
-import { Award, GraduationCap, MapPin, Star } from 'lucide-react';
+import { Award, GraduationCap, MapPin, Sparkles, Star } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { OfferRow } from '@/components/licence/types';
 import { Button } from '@/components/ui/button';
@@ -72,6 +72,12 @@ export function OfferCard({
                     <li className="flex items-center gap-2">
                         <Award aria-hidden className="size-4" />
                         {t('licence.offers.mentoring')}
+                    </li>
+                ) : null}
+                {offer.ai_help ? (
+                    <li className="flex items-center gap-2">
+                        <Sparkles aria-hidden className="size-4" />
+                        {t('licence.offers.aiHelp')}
                     </li>
                 ) : null}
             </ul>

@@ -5848,6 +5848,83 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/organisation/recruiting/agents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Licensed agents open to a move
+         * @description Agents who turned on "Open to recruiting", licensed in the brokerage's states and not with it: first name and initial, closings in 12 months, focus and why they match. Their broker is never told.
+         */
+        get: operations["brokerage.recruiting.agents"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organisation/recruiting/agents/{agent}/invite": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Invite an agent to talk
+         * @description Opens a private chat in Messages (once every 90 days).
+         */
+        post: operations["brokerage.recruiting.invite"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organisation/recruiting/sponsorships": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Sponsored AI help
+         * @description The brokerage's credit pool and each sponsored candidate's cap, use and status.
+         */
+        get: operations["brokerage.recruiting.sponsorships"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organisation/recruiting/sponsorships/{sponsorship}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Change a candidate's cap */
+        put: operations["brokerage.recruiting.cap"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/referrals": {
         parameters: {
             query?: never;
@@ -8540,6 +8617,13 @@ export interface components {
             };
         };
         /**
+         * InviteAgentRequest
+         * @description Invite a licensed agent to talk (A17.2): an optional first message.
+         */
+        InviteAgentRequest: {
+            message?: string | null;
+        };
+        /**
          * InviteCodeRequest
          * @description The invite code someone who signed up in the app was given (B14.3b).
          */
@@ -9509,6 +9593,13 @@ export interface components {
             user: components["schemas"]["MeResource"];
         };
         /**
+         * SponsorCapRequest
+         * @description A candidate's sponsored AI cap (A17.2).
+         */
+        SponsorCapRequest: {
+            cap: number;
+        };
+        /**
          * StartConnectionRequest
          * @description Start connecting a tool: which one, and how much history the first sync fetches.
          */
@@ -9832,6 +9923,7 @@ export type SchemaHealthResource = components['schemas']['HealthResource'];
 export type SchemaHistoryRange = components['schemas']['HistoryRange'];
 export type SchemaIdentityProvider = components['schemas']['IdentityProvider'];
 export type SchemaIdentitySignInRequest = components['schemas']['IdentitySignInRequest'];
+export type SchemaInviteAgentRequest = components['schemas']['InviteAgentRequest'];
 export type SchemaInviteCodeRequest = components['schemas']['InviteCodeRequest'];
 export type SchemaKnowledgeHitResource = components['schemas']['KnowledgeHitResource'];
 export type SchemaLibraryGroup = components['schemas']['LibraryGroup'];
@@ -9902,6 +9994,7 @@ export type SchemaSessionOfferRequest = components['schemas']['SessionOfferReque
 export type SchemaShareContactsRequest = components['schemas']['ShareContactsRequest'];
 export type SchemaShareRequest = components['schemas']['ShareRequest'];
 export type SchemaSignInResource = components['schemas']['SignInResource'];
+export type SchemaSponsorCapRequest = components['schemas']['SponsorCapRequest'];
 export type SchemaStartConnectionRequest = components['schemas']['StartConnectionRequest'];
 export type SchemaStartConversationRequest = components['schemas']['StartConversationRequest'];
 export type SchemaStartReviewRequest = components['schemas']['StartReviewRequest'];
@@ -24735,6 +24828,8 @@ export interface operations {
                                 fees: string | null;
                                 training: string | null;
                                 mentoring: boolean;
+                                ai_help: boolean;
+                                ai_credits: number | null;
                                 message: string | null;
                                 /** @enum {string} */
                                 status: "open" | "accepted" | "declined" | "withdrawn";
@@ -24788,6 +24883,8 @@ export interface operations {
                                 fees: string | null;
                                 training: string | null;
                                 mentoring: boolean;
+                                ai_help: boolean;
+                                ai_credits: number | null;
                                 message: string | null;
                                 /** @enum {string} */
                                 status: "open" | "accepted" | "declined" | "withdrawn";
@@ -24850,6 +24947,8 @@ export interface operations {
                                 fees: string | null;
                                 training: string | null;
                                 mentoring: boolean;
+                                ai_help: boolean;
+                                ai_credits: number | null;
                                 message: string | null;
                                 /** @enum {string} */
                                 status: "open" | "accepted" | "declined" | "withdrawn";
@@ -24912,6 +25011,8 @@ export interface operations {
                                 fees: string | null;
                                 training: string | null;
                                 mentoring: boolean;
+                                ai_help: boolean;
+                                ai_credits: number | null;
                                 message: string | null;
                                 /** @enum {string} */
                                 status: "open" | "accepted" | "declined" | "withdrawn";
@@ -28645,6 +28746,164 @@ export interface operations {
                 };
             };
             401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "brokerage.recruiting.agents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            name: string;
+                            closings: number;
+                            focus: string;
+                            reasons: ("closings" | "city" | "new")[];
+                            invited_at: string | null;
+                            conversation: string | null;
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "brokerage.recruiting.invite": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                agent: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["InviteAgentRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        conversation: string;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "brokerage.recruiting.sponsorships": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            pool: number;
+                            candidates: {
+                                id: string;
+                                candidate: string;
+                                cap: number;
+                                used: number;
+                                /** @enum {string} */
+                                status: "active" | "used_up" | "ended";
+                                end_reason: string | null;
+                                since: string;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "brokerage.recruiting.cap": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                sponsorship: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SponsorCapRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            pool: number;
+                            candidates: {
+                                id: string;
+                                candidate: string;
+                                cap: number;
+                                used: number;
+                                /** @enum {string} */
+                                status: "active" | "used_up" | "ended";
+                                end_reason: string | null;
+                                since: string;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
         };
     };
     "referrals.index": {

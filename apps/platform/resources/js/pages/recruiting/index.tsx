@@ -4,11 +4,19 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { EmptyState } from '@/components/empty-state';
 import { OfferDialog } from '@/components/recruiting/offer-dialog';
-import type { RecruitCandidate } from '@/components/recruiting/types';
+import {
+    OpenAgents,
+    SponsoredHelp,
+} from '@/components/recruiting/recruit-more';
+import type {
+    OpenAgent,
+    RecruitCandidate,
+    SponsoredBoard,
+} from '@/components/recruiting/types';
 import { PageHeader } from '@/components/page-header';
 import { Button } from '@/components/ui/button';
 import { money } from '@/lib/billing';
-import { withdraw } from '@/routes/recruiting';
+import { cap, invite, withdraw } from '@/routes/recruiting';
 
 /**
  * Recruiting (A10.3b, broker web sidebar): candidates in the brokerage's
@@ -18,9 +26,15 @@ import { withdraw } from '@/routes/recruiting';
 export default function RecruitingPage({
     brokerage,
     candidates,
+    sponsored = { pool: 0, candidates: [] },
+    agents = [],
 }: {
     brokerage: { name: string; states: string[] };
     candidates: RecruitCandidate[];
+    /** Sponsored AI help (A17.2, screen 26). */
+    sponsored?: SponsoredBoard;
+    /** Licensed agents open to a move (A17.2, screen 27). */
+    agents?: OpenAgent[];
 }) {
     const { t, i18n } = useTranslation();
     const [editing, setEditing] = useState<RecruitCandidate | null>(null);
@@ -125,6 +139,22 @@ export default function RecruitingPage({
                         ))}
                     </ul>
                 )}
+                <SponsoredHelp
+                    board={sponsored}
+                    onCap={(id, value) =>
+                        router.put(
+                            cap(id).url,
+                            { cap: value },
+                            { preserveScroll: true },
+                        )
+                    }
+                />
+                <OpenAgents
+                    agents={agents}
+                    onInvite={(a) =>
+                        router.post(invite(a.id).url, { message: '' })
+                    }
+                />
             </div>
             <OfferDialog
                 key={editing?.id ?? 'none'}

@@ -25,6 +25,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property bool $mentoring
  * @property string|null $message
  * @property string $status open, accepted, declined or withdrawn
+ * @property int $ai_credits AI credits the brokerage sponsors (A17.2), 0 for none
  * @property CarbonImmutable|null $answered_at
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
@@ -41,11 +42,11 @@ final class BrokerOffer extends Model
 
     public const WITHDRAWN = 'withdrawn';
 
-    protected $fillable = ['uuid', 'brokerage_id', 'candidate_id', 'made_by', 'office_city', 'split_percent', 'monthly_fee_cents', 'fees', 'training', 'mentoring', 'message', 'status', 'answered_at'];
+    protected $fillable = ['uuid', 'brokerage_id', 'candidate_id', 'made_by', 'office_city', 'split_percent', 'monthly_fee_cents', 'fees', 'training', 'mentoring', 'message', 'status', 'answered_at', 'ai_credits'];
 
     protected function casts(): array
     {
-        return ['split_percent' => 'integer', 'monthly_fee_cents' => 'integer', 'mentoring' => 'boolean', 'answered_at' => 'datetime'];
+        return ['split_percent' => 'integer', 'monthly_fee_cents' => 'integer', 'mentoring' => 'boolean', 'answered_at' => 'datetime', 'ai_credits' => 'integer'];
     }
 
     /** @return BelongsTo<Organisation, $this> */

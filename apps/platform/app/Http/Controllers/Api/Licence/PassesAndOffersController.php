@@ -94,7 +94,7 @@ final class PassesAndOffersController extends Controller
      *
      * Best first: an office in my city, the brokerage's mentors' rating, then the terms.
      *
-     * @response array{data: array{opted_in: bool, city: string|null, offers: list<array{id: string, brokerage: string, office_city: string, split_percent: int, monthly_fee_cents: int, fees: string|null, training: string|null, mentoring: bool, message: string|null, status: 'open'|'accepted'|'declined'|'withdrawn', rating: float|null, ratings: int, fit: bool, contact: array{name: string, email: string, phone: string|null}|null}>}}
+     * @response array{data: array{opted_in: bool, city: string|null, offers: list<array{id: string, brokerage: string, office_city: string, split_percent: int, monthly_fee_cents: int, fees: string|null, training: string|null, mentoring: bool, ai_help: bool, ai_credits: int|null, message: string|null, status: 'open'|'accepted'|'declined'|'withdrawn', rating: float|null, ratings: int, fit: bool, contact: array{name: string, email: string, phone: string|null}|null}>}}
      */
     public function offers(#[CurrentUser] User $user, BrokerOffers $offers): JsonResponse
     {
@@ -106,7 +106,7 @@ final class PassesAndOffersController extends Controller
      *
      * Brokerages in my state see my first name, city and stage, never contact details or scores.
      *
-     * @response array{data: array{opted_in: bool, city: string|null, offers: list<array{id: string, brokerage: string, office_city: string, split_percent: int, monthly_fee_cents: int, fees: string|null, training: string|null, mentoring: bool, message: string|null, status: 'open'|'accepted'|'declined'|'withdrawn', rating: float|null, ratings: int, fit: bool, contact: array{name: string, email: string, phone: string|null}|null}>}}
+     * @response array{data: array{opted_in: bool, city: string|null, offers: list<array{id: string, brokerage: string, office_city: string, split_percent: int, monthly_fee_cents: int, fees: string|null, training: string|null, mentoring: bool, ai_help: bool, ai_credits: int|null, message: string|null, status: 'open'|'accepted'|'declined'|'withdrawn', rating: float|null, ratings: int, fit: bool, contact: array{name: string, email: string, phone: string|null}|null}>}}
      */
     public function optIn(Request $request, #[CurrentUser] User $user, BrokerOffers $offers): JsonResponse
     {
@@ -121,7 +121,7 @@ final class PassesAndOffersController extends Controller
      *
      * The brokerage gets my name, email and phone.
      *
-     * @response array{data: array{opted_in: bool, city: string|null, offers: list<array{id: string, brokerage: string, office_city: string, split_percent: int, monthly_fee_cents: int, fees: string|null, training: string|null, mentoring: bool, message: string|null, status: 'open'|'accepted'|'declined'|'withdrawn', rating: float|null, ratings: int, fit: bool, contact: array{name: string, email: string, phone: string|null}|null}>}}
+     * @response array{data: array{opted_in: bool, city: string|null, offers: list<array{id: string, brokerage: string, office_city: string, split_percent: int, monthly_fee_cents: int, fees: string|null, training: string|null, mentoring: bool, ai_help: bool, ai_credits: int|null, message: string|null, status: 'open'|'accepted'|'declined'|'withdrawn', rating: float|null, ratings: int, fit: bool, contact: array{name: string, email: string, phone: string|null}|null}>}}
      */
     public function accept(BrokerOffer $offer, #[CurrentUser] User $user, BrokerOffers $offers): JsonResponse
     {
@@ -135,7 +135,7 @@ final class PassesAndOffersController extends Controller
      *
      * It's hidden.
      *
-     * @response array{data: array{opted_in: bool, city: string|null, offers: list<array{id: string, brokerage: string, office_city: string, split_percent: int, monthly_fee_cents: int, fees: string|null, training: string|null, mentoring: bool, message: string|null, status: 'open'|'accepted'|'declined'|'withdrawn', rating: float|null, ratings: int, fit: bool, contact: array{name: string, email: string, phone: string|null}|null}>}}
+     * @response array{data: array{opted_in: bool, city: string|null, offers: list<array{id: string, brokerage: string, office_city: string, split_percent: int, monthly_fee_cents: int, fees: string|null, training: string|null, mentoring: bool, ai_help: bool, ai_credits: int|null, message: string|null, status: 'open'|'accepted'|'declined'|'withdrawn', rating: float|null, ratings: int, fit: bool, contact: array{name: string, email: string, phone: string|null}|null}>}}
      */
     public function decline(BrokerOffer $offer, #[CurrentUser] User $user, BrokerOffers $offers): JsonResponse
     {

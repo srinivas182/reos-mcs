@@ -2392,7 +2392,11 @@
         "provider.contacts_unshared": "Stopped sharing contacts with a connection",
         "provider.blocked": "Blocked a connection",
         "provider.agent_connected": "Connected with a provider",
-        "provider.reviewed": "Reviewed a provider"
+        "provider.reviewed": "Reviewed a provider",
+        "recruiting.sponsorship_started": "Sponsored a candidate's AI help",
+        "recruiting.sponsorship_cap": "Changed a sponsored AI cap",
+        "recruiting.sponsorship_ended": "Ended a candidate's sponsored AI help",
+        "recruiting.agent_invited": "Invited an agent to talk"
       }
     }
   },
@@ -8379,7 +8383,8 @@
         "declined": ":name declined your offer",
         "open": "Open REOS"
       },
-      "purposeShort": "Offers from brokerages in your state, best fit first: an office in your city, their mentors’ rating, then the terms."
+      "purposeShort": "Offers from brokerages in your state, best fit first: an office in your city, their mentors’ rating, then the terms.",
+      "aiHelp": "Includes sponsored AI study help"
     },
     "switch": {
       "title": "Enter your licence number",
@@ -8455,10 +8460,50 @@
       "training": "Training",
       "mentoring": "Mentoring for new agents",
       "message": "Message",
-      "send": "Send offer"
+      "send": "Send offer",
+      "aiCredits": "Sponsored AI help (credits, 0 for none)",
+      "aiCreditsHint": "Credits come from your brokerage's pool. The candidate sees that help is sponsored, never the numbers."
     },
     "contact": "{{email}} · {{phone}}",
-    "sent": "Offer sent."
+    "sent": "Offer sent.",
+    "sponsored": {
+      "title": "Sponsored AI help",
+      "purpose": "Credits your brokerage gives candidates who accepted your offer. Sponsorship ends when they pass or pick another sponsor.",
+      "pool": "Pool balance: {{credits}} credits",
+      "usage": "{{used}} of {{cap}} credits used",
+      "cap": "Cap for {{name}}",
+      "save": "Save cap",
+      "empty": "No sponsored candidates yet",
+      "emptyHint": "Add AI help to an offer. It starts when the candidate accepts.",
+      "statuses": {
+        "active": "Active",
+        "used_up": "Cap reached",
+        "ended": "Ended"
+      },
+      "reasons": {
+        "passed": "Passed the exam",
+        "other_sponsor": "Picked another sponsor",
+        "withdrawn": "Withdrawn"
+      }
+    },
+    "agents": {
+      "title": "Licensed agents open to a move",
+      "purpose": "Agents who turned on \"Open to recruiting\". Their current broker is never told.",
+      "closings_one": "{{count}} closing in 12 months",
+      "closings_other": "{{count}} closings in 12 months",
+      "reasons": {
+        "closings": "Strong producer",
+        "city": "Works where your agents work",
+        "new": "Newer agent"
+      },
+      "invite": "Invite to talk",
+      "inviteFor": "Invite to talk with {{name}}",
+      "invited": "Invited {{date}}",
+      "message": "First message (optional)",
+      "hello": "Hi, this is {{brokerage}}. You said you're open to a move, and we'd love to talk.",
+      "empty": "No agents open to a move yet",
+      "emptyHint": "Agents show here once they turn on \"Open to recruiting\" in Settings › Privacy."
+    }
   },
   "mentors": {
     "title": "Your mentors",

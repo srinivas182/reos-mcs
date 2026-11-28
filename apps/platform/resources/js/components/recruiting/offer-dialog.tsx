@@ -37,6 +37,9 @@ export function OfferDialog({
     const [fees, setFees] = useState(current?.fees ?? '');
     const [training, setTraining] = useState(current?.training ?? '');
     const [mentoring, setMentoring] = useState(current?.mentoring ?? true);
+    const [aiCredits, setAiCredits] = useState(
+        String(current?.ai_credits ?? 0),
+    );
     const [message, setMessage] = useState(current?.message ?? '');
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [busy, setBusy] = useState(false);
@@ -71,6 +74,7 @@ export function OfferDialog({
                                 fees: fees || null,
                                 training: training || null,
                                 mentoring,
+                                ai_credits: Number(aiCredits) || 0,
                                 message: message || null,
                             },
                             {
@@ -158,6 +162,27 @@ export function OfferDialog({
                         />
                         {t('recruiting.form.mentoring')}
                     </label>
+                    <div className="grid gap-2">
+                        <Label htmlFor="offer-ai">
+                            {t('recruiting.form.aiCredits')}
+                        </Label>
+                        <Input
+                            id="offer-ai"
+                            type="number"
+                            min={0}
+                            max={5000}
+                            value={aiCredits}
+                            aria-describedby="offer-ai-hint"
+                            onChange={(e) => setAiCredits(e.target.value)}
+                        />
+                        <p
+                            id="offer-ai-hint"
+                            className="text-base text-muted-foreground"
+                        >
+                            {t('recruiting.form.aiCreditsHint')}
+                        </p>
+                        <InputError message={errors.ai_credits} />
+                    </div>
                     <div className="grid gap-2">
                         <Label htmlFor="offer-message">
                             {t('recruiting.form.message')}

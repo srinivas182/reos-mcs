@@ -12,6 +12,7 @@ use App\Models\Organisation;
 use App\Models\SessionBooking;
 use App\Models\User;
 use App\Notifications\BrokerOfferNotice;
+use App\Recruiting\SponsoredHelp;
 use App\Services\Audit\AuditLogger;
 use App\Services\Authorization\Memberships;
 use App\Sessions\SessionBookings;
@@ -31,7 +32,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * with that brokerage, Decline hides the offer.
  *
  * @phpstan-type CandidateRow array{id: int, first_name: string, city: string|null, stage: 'studying'|'exam_booked'|'passed', offer: OfferRow|null}
- * @phpstan-type OfferRow array{id: string, brokerage: string, office_city: string, split_percent: int, monthly_fee_cents: int, fees: string|null, training: string|null, mentoring: bool, message: string|null, status: 'open'|'accepted'|'declined'|'withdrawn', rating: float|null, ratings: int, fit: bool, contact: array{name: string, email: string, phone: string|null}|null}
+ * @phpstan-type OfferRow array{id: string, brokerage: string, office_city: string, split_percent: int, monthly_fee_cents: int, fees: string|null, training: string|null, mentoring: bool, ai_help: bool, ai_credits: int|null, message: string|null, status: 'open'|'accepted'|'declined'|'withdrawn', rating: float|null, ratings: int, fit: bool, contact: array{name: string, email: string, phone: string|null}|null}
  */
 final readonly class BrokerOffers
 {
@@ -143,6 +144,8 @@ final readonly class BrokerOffers
     public function accept(User $candidate, BrokerOffer $offer): void
     {
         $this->answer($candidate, $offer, BrokerOffer::ACCEPTED);
+        // Sponsored AI help starts with the accepted offer (A17.2).
+        app(SponsoredHelp::class)->accepted($offer);
     }
 
     /** Decline: the offer is hidden. */
@@ -178,6 +181,9 @@ final readonly class BrokerOffers
             'fees' => $offer->fees,
             'training' => $offer->training,
             'mentoring' => $offer->mentoring,
+            // Sponsored AI help (A17.2): the candidate sees only that it's included, the brokerage the credits.
+            'ai_help' => $offer->ai_credits > 0,
+            'ai_credits' => $forBrokerage ? $offer->ai_credits : null,
             'message' => $offer->message,
             'status' => match ($offer->status) {
                 BrokerOffer::ACCEPTED => 'accepted',

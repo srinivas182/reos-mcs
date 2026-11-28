@@ -232,3 +232,26 @@ export async function loadClosings(period: ReportPeriod): Promise<ClosingsReport
 export function briefClear(brief: BrokerBrief): boolean {
   return brief.need_help.count + brief.at_risk.count + brief.approvals.waiting + (brief.ce_due ?? 0) === 0;
 }
+
+export type OpenAgent = Got<'/organisation/recruiting/agents'>['data'][number];
+export type SponsoredBoard = Got<'/organisation/recruiting/sponsorships'>['data'];
+
+/** Licensed agents open to a move (A17.2); their broker is never told. */
+export async function loadOpenAgents(): Promise<OpenAgent[]> {
+  const { data } = await api().GET('/organisation/recruiting/agents');
+
+  return data ? data.data : [];
+}
+
+/** Invite to talk: a private chat in Messages. Returns the conversation's id. */
+export async function inviteAgent(id: number, message = ''): Promise<string> {
+  const { data, error } = await api().POST('/organisation/recruiting/agents/{agent}/invite', { params: { path: { agent: id } }, body: { message } });
+
+  return data ? data.conversation : fail(error);
+}
+
+export async function loadSponsored(): Promise<SponsoredBoard | null> {
+  const { data } = await api().GET('/organisation/recruiting/sponsorships');
+
+  return data ? data.data : null;
+}

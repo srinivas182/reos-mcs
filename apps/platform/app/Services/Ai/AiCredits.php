@@ -14,6 +14,7 @@ use App\Models\Product;
 use App\Models\SponsorCodeRedemption;
 use App\Models\Subscription;
 use App\Models\User;
+use App\Recruiting\SponsoredHelp;
 use App\Services\Authorization\ActiveRole;
 use App\Services\Authorization\Memberships;
 use Carbon\CarbonImmutable;
@@ -255,7 +256,10 @@ final readonly class AiCredits
      * 23 November 2026): this month's free credits first, then their
      * sponsor's pool, then credits they bought. Null when none can.
      *
-     * @return 'monthly'|'sponsor'|'topup'|null
+     * A brokerage's sponsored help from an accepted offer (A17.2) comes
+     * after the month's credits and before member sponsors.
+     *
+     * @return 'monthly'|'offer'|'sponsor'|'topup'|null
      */
     public function candidatePayer(User $user, int $credits): ?string
     {
@@ -263,6 +267,7 @@ final readonly class AiCredits
 
         return match (true) {
             $this->ledger->balance($this->ledger->person($user, 'monthly')) >= $credits => 'monthly',
+            app(SponsoredHelp::class)->payerFor($user, $credits) !== null => 'offer',
             $this->sponsorFor($user, $credits) !== null => 'sponsor',
             $this->ledger->balance($this->ledger->person($user, 'topup')) >= $credits => 'topup',
             default => null,
@@ -273,7 +278,14 @@ final readonly class AiCredits
     public function chargeCandidate(User $user, string $payer, string $feature, string $engine, int $credits): void
     {
         DB::transaction(function () use ($user, $payer, $feature, $engine, $credits): void {
+            $offer = $payer === 'offer' ? app(SponsoredHelp::class)->payerFor($user, $credits) : null;
+
+            if ($offer !== null) {
+                app(SponsoredHelp::class)->used($offer, $credits);
+            }
+
             $from = match ($payer) {
+                'offer' => $offer === null ? $this->ledger->person($user, 'monthly') : $this->ledger->organisation($offer->brokerage, 'credits'),
                 'sponsor' => $this->sponsorPool($user, $credits) ?? $this->ledger->person($user, 'monthly'),
                 'topup' => $this->ledger->person($user, 'topup'),
                 default => $this->ledger->person($user, 'monthly'),

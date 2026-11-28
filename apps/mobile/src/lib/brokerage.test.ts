@@ -1,4 +1,5 @@
 import {
+  inviteAgent,
   briefClear,
   type BrokerBrief,
   loadBrief,
@@ -140,5 +141,13 @@ describe('reports and the morning brief on the phone (A16.3)', () => {
     mockApi.GET.mockResolvedValueOnce({ data: { data: brief } });
     await expect(loadBrief()).resolves.toBe(brief);
     expect(mockApi.GET).toHaveBeenLastCalledWith('/organisation/brief');
+  });
+});
+
+describe('recruiting on the phone (A17.2)', () => {
+  it('invites an agent to talk and returns the chat', async () => {
+    mockApi.POST.mockResolvedValueOnce({ data: { conversation: 'c-1' } });
+    await expect(inviteAgent(21)).resolves.toBe('c-1');
+    expect(mockApi.POST).toHaveBeenLastCalledWith('/organisation/recruiting/agents/{agent}/invite', { params: { path: { agent: 21 } }, body: { message: '' } });
   });
 });
