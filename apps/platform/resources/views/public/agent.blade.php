@@ -75,6 +75,25 @@
         @endif
     </section>
 
+    @if ($page['client_reviews'])
+        <section aria-labelledby="agent-reviews" class="space-y-4">
+            <h2 id="agent-reviews" class="text-xl font-semibold">{{ __('cards.reviewsTitle') }}</h2>
+            <p class="text-base">{{ __('cards.reviewLine', ['average' => number_format($page['client_reviews']['average'], 1), 'count' => $page['client_reviews']['count']]) }}</p>
+            <ul class="grid gap-4 sm:grid-cols-2">
+                @foreach ($page['client_reviews']['latest'] as $review)
+                    <li class="rounded-reos-lg border border-border bg-card p-5">
+                        <figure class="space-y-2">
+                            @if ($review['comment'])
+                                <blockquote class="text-base">“{{ $review['comment'] }}”</blockquote>
+                            @endif
+                            <figcaption class="text-sm text-muted-foreground">{{ __('cards.reviewBy', ['name' => $review['name'], 'rating' => $review['rating']]) }}</figcaption>
+                        </figure>
+                    </li>
+                @endforeach
+            </ul>
+        </section>
+    @endif
+
     <section aria-labelledby="agent-faqs" class="space-y-4">
         <h2 id="agent-faqs" class="text-xl font-semibold">{{ __('cards.faqTitle') }}</h2>
         <dl class="space-y-4">

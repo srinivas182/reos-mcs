@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\Ce\CeWalletController;
 use App\Http\Controllers\Api\Classes\ClassesController;
 use App\Http\Controllers\Api\Compliance\ComplianceController;
 use App\Http\Controllers\Api\Contracts\ContractReviewController;
+use App\Http\Controllers\Api\Deals\ClientPortalController;
 use App\Http\Controllers\Api\Deals\DealController;
 use App\Http\Controllers\Api\Deals\SignatureController;
 use App\Http\Controllers\Api\Instructor\QuestionController as InstructorQuestionController;
@@ -99,6 +100,7 @@ use App\Http\Controllers\Organisation\SsoController;
 use App\Http\Controllers\Payouts\EarningsController;
 use App\Http\Controllers\Payouts\SalesController;
 use App\Http\Controllers\Payouts\SimulatorController as PayoutSimulatorController;
+use App\Http\Controllers\Portal\PortalController;
 use App\Http\Controllers\Practice\ChallengePageController;
 use App\Http\Controllers\Practice\PracticePageController;
 use App\Http\Controllers\Practice\SharedReportController;
@@ -154,6 +156,17 @@ Route::middleware('throttle:60,1,agent-pages')->group(function () {
     Route::get('agent/{handle}/card', [AgentPublicPageController::class, 'card'])->where('handle', '[a-z0-9-]{1,80}')->name('agent-pages.card');
     Route::get('agent/{handle}/contact.vcf', [AgentPublicPageController::class, 'vcard'])->where('handle', '[a-z0-9-]{1,80}')->name('agent-pages.vcard');
     Route::get('agent/{handle}/qr.svg', [AgentPublicPageController::class, 'qr'])->where('handle', '[a-z0-9-]{1,80}')->name('agent-pages.qr');
+});
+// The client portal (B14.2): one private link per client, no account.
+Route::middleware('throttle:60,1,portal')->group(function () {
+    Route::get('portal/{token}', [PortalController::class, 'show'])->where('token', '[A-Za-z0-9]{48}')->name('portal.show');
+    Route::post('portal/{token}/sign/{signature}', [PortalController::class, 'sign'])->where('token', '[A-Za-z0-9]{48}')->whereUuid('signature')->middleware('throttle:10,1,portal-sign')->name('portal.sign');
+    Route::post('portal/{token}/review', [PortalController::class, 'review'])->where('token', '[A-Za-z0-9]{48}')->middleware('throttle:5,1,portal-review')->name('portal.review');
+});
+// DocuSign on demo data: the client's signing view (only reachable through its signed link).
+Route::middleware(['signed', 'throttle:30,1,portal-simulator'])->group(function () {
+    Route::get('portal-simulator/sign', [PortalController::class, 'simulator'])->name('portal.simulator.sign');
+    Route::post('portal-simulator/sign', [PortalController::class, 'simulatorSign'])->name('portal.simulator.finish');
 });
 Route::get('sitemap.xml', [SitemapController::class, 'sitemap'])->middleware('throttle:30,1,sitemap')->name('sitemap');
 Route::get('robots.txt', [SitemapController::class, 'robots'])->middleware('throttle:30,1,sitemap')->name('robots');
@@ -286,6 +299,11 @@ Route::middleware(['auth', 'verified', EnsureOnboarded::class])->group(function 
     Route::put('deals/listings/page', [CmaController::class, 'updatePage'])->middleware('throttle:20,1,listing-page')->name('deals.listings.page.update');
     Route::post('deals', [DealController::class, 'store'])->middleware('throttle:30,1,deals')->name('deals.store');
     Route::put('deals/{deal}', [DealController::class, 'update'])->whereUuid('deal')->middleware('throttle:60,1,deals')->name('deals.update');
+    // The client portal (B14.2): the deal panel shares the deal with a client.
+    Route::get('deals/{deal}/portals', [ClientPortalController::class, 'index'])->whereUuid('deal')->name('deals.portals.index');
+    Route::post('deals/{deal}/portals', [ClientPortalController::class, 'store'])->whereUuid('deal')->middleware('throttle:30,1,portals')->name('deals.portals.store');
+    Route::post('deals/portals/{portal}/send', [ClientPortalController::class, 'send'])->whereUuid('portal')->middleware('throttle:10,1,portals-send')->name('deals.portals.send');
+    Route::delete('deals/portals/{portal}', [ClientPortalController::class, 'destroy'])->whereUuid('portal')->middleware('throttle:30,1,portals')->name('deals.portals.destroy');
     Route::put('deals/{deal}/stage', [DealController::class, 'stage'])->whereUuid('deal')->middleware('throttle:60,1,deals')->name('deals.stage');
     Route::delete('deals/{deal}', [DealController::class, 'destroy'])->whereUuid('deal')->middleware('throttle:30,1,deals')->name('deals.destroy');
     // Signatures from a deal (B9.3): files, envelopes, and back from DocuSign's sender view.

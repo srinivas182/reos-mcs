@@ -2335,7 +2335,9 @@
         "agent_page.approved": "Página pública aprobada",
         "agent_page.returned": "Página pública devuelta",
         "compliance_log.exported": "Registro de cumplimiento exportado",
-        "agent.moved": "El agente se mudó a otra agencia o equipo"
+        "agent.moved": "El agente se mudó a otra agencia o equipo",
+        "portal.created": "Enlace de cliente creado",
+        "portal.revoked": "Enlace de cliente desactivado"
       }
     }
   },
@@ -10363,6 +10365,74 @@
       "listingsA": "Sí. Propiedades en esta página ahora: {{count}}. Cada una indica el MLS que la proporcionó.",
       "noticesQ": "¿Dónde están los avisos de TREC?",
       "noticesA": "Información sobre servicios de corretaje: {{iabs}}. Aviso de protección al consumidor: {{cpn}}."
+    },
+    "reviewsTitle": "Lo que dicen los clientes",
+    "reviewLine": "{{average}} de 5 según {{count}} clientes",
+    "reviewBy": "{{name}}, {{rating}} de 5"
+  },
+  "portal": {
+    "title": "Su transacción: {{property}}",
+    "purpose": "{{agent}} compartió su transacción con usted: su estado, fechas clave y documentos para firmar.",
+    "hello": "Hola, {{name}}. Así va su transacción.",
+    "thanks": "Gracias. Su reseña se guardó.",
+    "toSign": "Documentos para firmar",
+    "signStatus": {
+      "signed": "Usted ya lo firmó.",
+      "yourTurn": "Listo para su firma.",
+      "waiting": "Esperando que otra persona firme primero.",
+      "byEmail": "DocuSign le enviará por correo el enlace para firmar."
+    },
+    "sign": "Revisar y firmar",
+    "dates": "Fechas clave",
+    "noDates": "Todavía no hay fechas. Su agente las agrega a medida que avanza la transacción.",
+    "documents": "Documentos",
+    "reviewTitle": "¿Qué tal lo hizo {{agent}}?",
+    "reviewHint": "Su transacción se cerró. Una reseña breve ayuda a otras familias a elegir agente.",
+    "rating": "Su calificación",
+    "stars": "{{count}} de 5",
+    "comment": "¿Algo que quiera decir? (opcional)",
+    "publish": "Mostrar mi reseña y mi nombre en la página de {{agent}}",
+    "sendReview": "Enviar mi reseña",
+    "updateReview": "Actualizar mi reseña",
+    "yourAgent": "Su agente",
+    "listings": "Ver propiedades",
+    "private": "Este enlace es solo para usted. Por favor, no lo comparta.",
+    "errors": {
+      "notYourTurn": "Este documento todavía no está listo para su firma.",
+      "noEmail": "Primero agregue el correo del cliente.",
+      "notClosed": "Las reseñas se abren cuando la transacción se cierra."
+    },
+    "mail": {
+      "subject": "{{agent}} compartió su transacción con usted",
+      "greeting": "Hola, {{name}}:",
+      "body": "{{agent}} compartió su transacción con usted. Vea cómo va, sus fechas clave y los documentos para firmar, todo desde un enlace privado.",
+      "action": "Abrir mi transacción",
+      "private": "Este enlace es solo para usted. Si no lo esperaba, puede ignorar este correo."
+    },
+    "simulator": {
+      "title": "Firmar documentos (demostración)",
+      "body": "Esta demostración reemplaza la pantalla de firma de DocuSign.",
+      "finish": "Firmar y terminar"
+    },
+    "panel": {
+      "title": "Compartir con su cliente",
+      "hint": "Un enlace privado para cada cliente: el estado de la transacción, fechas clave y documentos para firmar, y después del cierre, una solicitud de reseña. No necesita cuenta.",
+      "client": "Nombre del cliente",
+      "email": "Correo del cliente",
+      "language": "Idioma",
+      "create": "Crear enlace",
+      "copy": "Enlace",
+      "send": "Enviar el enlace por correo",
+      "sent": "Enlace enviado.",
+      "revoke": "Desactivar",
+      "revoked": "Enlace desactivado.",
+      "opened": "Abierto",
+      "notOpened": "Todavía no lo abre",
+      "reviewed": "Reseña: {{rating}} de 5",
+      "none": "Todavía no hay enlaces de clientes",
+      "noneHint": "Agregue un cliente para compartir la transacción.",
+      "en": "Inglés",
+      "es": "Español"
     }
   }
 }

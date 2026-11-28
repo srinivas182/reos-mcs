@@ -21,7 +21,7 @@ use Illuminate\Support\Carbon;
  * @property string|null $envelope_id
  * @property string $subject
  * @property string $status draft, sent, delivered, completed, declined or voided
- * @property list<array{name: string, email: string, routing_order: int, status: string, at: string|null}> $signers status: waiting, sent, delivered, signed or declined
+ * @property list<array{name: string, email: string, routing_order: int, status: string, at: string|null, client_user_id?: string|null}> $signers status: waiting, sent, delivered, signed or declined
  * @property list<string> $documents
  * @property Carbon|null $sent_at
  * @property Carbon|null $completed_at

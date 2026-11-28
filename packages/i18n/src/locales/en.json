@@ -2335,7 +2335,9 @@
         "agent_page.approved": "Public page approved",
         "agent_page.returned": "Public page sent back",
         "compliance_log.exported": "Compliance log exported",
-        "agent.moved": "Agent moved to another brokerage or team"
+        "agent.moved": "Agent moved to another brokerage or team",
+        "portal.created": "Client link created",
+        "portal.revoked": "Client link turned off"
       }
     }
   },
@@ -10363,6 +10365,74 @@
       "listingsA": "Yes. Listings on this page right now: {{count}}. Each shows the MLS that provided it.",
       "noticesQ": "Where are the TREC notices?",
       "noticesA": "Information About Brokerage Services: {{iabs}}. Consumer Protection Notice: {{cpn}}."
+    },
+    "reviewsTitle": "What clients say",
+    "reviewLine": "{{average}} out of 5 from {{count}} clients",
+    "reviewBy": "{{name}}, {{rating}} of 5"
+  },
+  "portal": {
+    "title": "Your deal: {{property}}",
+    "purpose": "{{agent}} shared your deal with you: its status, key dates and documents to sign.",
+    "hello": "Hi {{name}}, here's where your deal stands.",
+    "thanks": "Thank you. Your review was saved.",
+    "toSign": "Documents to sign",
+    "signStatus": {
+      "signed": "You signed this.",
+      "yourTurn": "Ready for your signature.",
+      "waiting": "Waiting for someone else to sign first.",
+      "byEmail": "DocuSign emails you the link to sign this."
+    },
+    "sign": "Review and sign",
+    "dates": "Key dates",
+    "noDates": "No dates yet. Your agent adds them as the deal moves.",
+    "documents": "Documents",
+    "reviewTitle": "How did {{agent}} do?",
+    "reviewHint": "Your deal has closed. A short review helps other families choose an agent.",
+    "rating": "Your rating",
+    "stars": "{{count}} of 5",
+    "comment": "Anything you'd like to say? (optional)",
+    "publish": "Show my review and first name on {{agent}}'s page",
+    "sendReview": "Send my review",
+    "updateReview": "Update my review",
+    "yourAgent": "Your agent",
+    "listings": "See listings",
+    "private": "This link is just for you. Please don't share it.",
+    "errors": {
+      "notYourTurn": "This document isn't ready for your signature.",
+      "noEmail": "Add the client's email first.",
+      "notClosed": "Reviews open once the deal has closed."
+    },
+    "mail": {
+      "subject": "{{agent}} shared your deal with you",
+      "greeting": "Hi {{name}},",
+      "body": "{{agent}} shared your deal with you. See where it stands, your key dates and the documents to sign, all from one private link.",
+      "action": "Open my deal",
+      "private": "This link is just for you. If you didn't expect it, you can ignore this email."
+    },
+    "simulator": {
+      "title": "Sign documents (demo)",
+      "body": "This demo stands in for DocuSign's signing screen.",
+      "finish": "Sign and finish"
+    },
+    "panel": {
+      "title": "Share with your client",
+      "hint": "A private link for each client: the deal's status, key dates and documents to sign, then a review request after closing. No account needed.",
+      "client": "Client name",
+      "email": "Client email",
+      "language": "Language",
+      "create": "Create link",
+      "copy": "Link",
+      "send": "Email the link",
+      "sent": "Link emailed.",
+      "revoke": "Turn off",
+      "revoked": "Link turned off.",
+      "opened": "Opened",
+      "notOpened": "Not opened yet",
+      "reviewed": "Reviewed: {{rating}} of 5",
+      "none": "No client links yet",
+      "noneHint": "Add a client to share the deal with them.",
+      "en": "English",
+      "es": "Spanish"
     }
   }
 }

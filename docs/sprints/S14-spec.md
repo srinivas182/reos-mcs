@@ -188,6 +188,28 @@
 
 - One link per client: listing pages, offer and deal status with key dates, documents to sign, and a review request after closing.
 - **Done when:** a client signs and reviews from one link.
+- **As built, B14.2** (ADR 0065):
+  - **Data:** `client_portals` and `client_reviews`, both with row-level security (personal allowed).
+  - **Services:**
+    - `App\Deals\ClientPortals`:
+      - for the agent: list, create (reusing an open link), send (email) and revoke;
+      - for the client: find (by hash, open), view, sign, review and publicReviews.
+    - `Signatures::start` gives signers with an open link a `clientUserId`; `signingUrl` returns their signing link.
+    - `SendsForSignature::recipientView` (DocuSign `views/recipient`, plus the simulator's `signAs` and its signing page).
+  - **Routes:**
+    - Client: `/portal/{token}` (Blade), `POST /portal/{token}/sign/{request}` and `POST /portal/{token}/review`, with rate limits.
+    - Agent:
+      - API: `GET` and `POST /api/v1/deals/{deal}/portals`, `POST /api/v1/portals/{id}/send`, `DELETE /api/v1/portals/{id}`.
+      - Web (same controller): `deals/{deal}/portals` and `deals/portals/{id}`.
+  - **Public page:** "What clients say", with the average and the latest three reviews clients allowed. The schema.org `aggregateRating` and `review` come from those.
+  - **Web:** the deal panel has "Share with your client" (`components/deals/deal-portals`): parties one tap away, language, copy, email, turn off, and the review the client left.
+  - **Phone:** the deal screen has "Share with your client": share sheet, email, turn off, create.
+  - **Mail:** `ClientPortalLink`, in the client's language.
+  - **Done when:** a Pest test takes Priya from start to finish:
+    - James creates her link and emails it;
+    - he sends the disclosure, and Priya, who has a link, gets a `clientUserId`;
+    - she opens the portal (stage, dates, agent, `noindex`), signs through the simulator's signing view, and comes back signed, with the envelope completed;
+    - after closing she reviews 5 stars with publishing allowed, and James's page shows "Priya S." and the average.
 
 ### B14.3 Lead capture and referrals (Team B)
 

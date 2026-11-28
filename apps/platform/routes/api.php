@@ -25,6 +25,7 @@ use App\Http\Controllers\Api\Connections\ConnectionController;
 use App\Http\Controllers\Api\Contracts\ContractReviewController;
 use App\Http\Controllers\Api\Crm\ContactController;
 use App\Http\Controllers\Api\Crm\ContactWorkController;
+use App\Http\Controllers\Api\Deals\ClientPortalController;
 use App\Http\Controllers\Api\Deals\DealController;
 use App\Http\Controllers\Api\Deals\SignatureController;
 use App\Http\Controllers\Api\Feedback\AgentFeedbackController;
@@ -555,6 +556,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('deals/transactions', [DealController::class, 'transactions'])->name('api.deals.transactions');
     Route::post('deals', [DealController::class, 'store'])->middleware('throttle:30,1,api-deals')->name('api.deals.store');
     Route::get('deals/{deal}', [DealController::class, 'show'])->whereUuid('deal')->name('api.deals.show');
+    // The client portal (B14.2): share the deal with a client through their own link.
+    Route::get('deals/{deal}/portals', [ClientPortalController::class, 'index'])->whereUuid('deal')->name('api.deals.portals.index');
+    Route::post('deals/{deal}/portals', [ClientPortalController::class, 'store'])->whereUuid('deal')->middleware('throttle:30,1,api-portals')->name('api.deals.portals.store');
+    Route::post('portals/{portal}/send', [ClientPortalController::class, 'send'])->whereUuid('portal')->middleware('throttle:10,1,api-portals-send')->name('api.portals.send');
+    Route::delete('portals/{portal}', [ClientPortalController::class, 'destroy'])->whereUuid('portal')->middleware('throttle:30,1,api-portals')->name('api.portals.destroy');
     Route::put('deals/{deal}', [DealController::class, 'update'])->whereUuid('deal')->middleware('throttle:60,1,api-deals')->name('api.deals.update');
     Route::put('deals/{deal}/stage', [DealController::class, 'stage'])->whereUuid('deal')->middleware('throttle:60,1,api-deals')->name('api.deals.stage');
     Route::delete('deals/{deal}', [DealController::class, 'destroy'])->whereUuid('deal')->middleware('throttle:30,1,api-deals')->name('api.deals.destroy');

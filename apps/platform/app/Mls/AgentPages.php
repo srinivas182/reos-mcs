@@ -8,6 +8,7 @@ use App\Authorization\Role;
 use App\Compliance\ComplianceEngine;
 use App\Compliance\ComplianceLog;
 use App\Compliance\TexasAdRules;
+use App\Deals\ClientPortals;
 use App\Deals\DealAccess;
 use App\Enums\LicenceStatus;
 use App\Feedback\AgentFeedbacks;
@@ -35,11 +36,11 @@ use Illuminate\Validation\ValidationException;
  * @phpstan-import-type ListingView from ListingService
  *
  * @phpstan-type PageSettings array{handle: string, published: bool, bio: string|null, url: string, waiting: bool, note: string|null, phone: string|null, email: string|null, areas: list<string>, card_url: string, vcard_url: string, qr_url: string}
- * @phpstan-type PublicPage array{handle: string, name: string, brokerage: string|null, licences: list<array{state: string, number: string, type: string}>, bio: string|null, peer_rating: array{average: float, count: int}|null, listings: list<ListingView>, sample: bool, url: string, phone: string|null, email: string|null, areas: list<string>, language: 'en'|'es', updated_at: string|null}
+ * @phpstan-type PublicPage array{handle: string, name: string, brokerage: string|null, licences: list<array{state: string, number: string, type: string}>, bio: string|null, peer_rating: array{average: float, count: int}|null, listings: list<ListingView>, sample: bool, url: string, phone: string|null, email: string|null, areas: list<string>, language: 'en'|'es', updated_at: string|null, client_reviews: array{average: float, count: int, latest: list<array{name: string, rating: int, comment: string|null, date: string}>}|null}
  */
 final readonly class AgentPages
 {
-    public function __construct(private ListingService $listings, private DealAccess $access, private AgentFeedbacks $feedback, private ComplianceEngine $compliance, private ComplianceLog $log, private AdvertisingPolicy $policy, private Memberships $memberships, private AuditLogger $audit) {}
+    public function __construct(private ListingService $listings, private DealAccess $access, private AgentFeedbacks $feedback, private ComplianceEngine $compliance, private ComplianceLog $log, private AdvertisingPolicy $policy, private Memberships $memberships, private AuditLogger $audit, private ClientPortals $portals) {}
 
     /** The broker's name the page shows: the agent's MLS office, else their brokerage or sponsoring broker. */
     private function brokerageShown(User $user): ?string
@@ -196,6 +197,8 @@ final readonly class AgentPages
             'areas' => $page->areas ?? array_slice(array_values(array_unique(array_filter(array_map(static fn (array $l): string => (string) $l['city'], $listings)))), 0, 6),
             'language' => $user->locale->value === 'es' ? 'es' : 'en',
             'updated_at' => $page->updated_at?->toIso8601String(),
+            // Reviews clients chose to show, from their portal after closing (B14.2).
+            'client_reviews' => $this->portals->publicReviews($user),
         ];
     }
 

@@ -1458,6 +1458,61 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/deals/{deal}/portals": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The deal's client links */
+        get: operations["deals.portals.index"];
+        put?: never;
+        /**
+         * Share the deal with a client
+         * @description A private link for the client: the deal's stage and key dates, documents to sign, and a review request after closing. No account needed. The same client's open link is reused. Signers with a link sign in it.
+         */
+        post: operations["deals.portals.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/portals/{portal}/send": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Email the link to the client */
+        post: operations["portals.send"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/portals/{portal}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Turn a client's link off */
+        delete: operations["portals.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/listings/{listing}/cma": {
         parameters: {
             query?: never;
@@ -6706,6 +6761,17 @@ export interface components {
             question: string;
         };
         /**
+         * CreatePortalRequest
+         * @description A client to share the deal with (B14.2).
+         */
+        CreatePortalRequest: {
+            name: string;
+            /** Format: email */
+            email?: string | null;
+            /** @enum {string|null} */
+            language?: "en" | "es" | null;
+        };
+        /**
          * DealFileRequest
          * @description A PDF added to a deal to send for signature (B9.3), up to 25 MB.
          */
@@ -7923,6 +7989,7 @@ export type SchemaContactRowResource = components['schemas']['ContactRowResource
 export type SchemaContactTaskRequest = components['schemas']['ContactTaskRequest'];
 export type SchemaContactTouchRequest = components['schemas']['ContactTouchRequest'];
 export type SchemaContractQuestionRequest = components['schemas']['ContractQuestionRequest'];
+export type SchemaCreatePortalRequest = components['schemas']['CreatePortalRequest'];
 export type SchemaDealFileRequest = components['schemas']['DealFileRequest'];
 export type SchemaDealRequest = components['schemas']['DealRequest'];
 export type SchemaDefaultCrmRequest = components['schemas']['DefaultCrmRequest'];
@@ -13059,6 +13126,176 @@ export interface operations {
             };
             401: components["responses"]["AuthenticationException"];
             404: components["responses"]["ModelNotFoundException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "deals.portals.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                deal: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            name: string;
+                            email: string | null;
+                            url: string;
+                            opened_at: string | null;
+                            sent_at: string | null;
+                            expires_at: string;
+                            review: {
+                                rating: number;
+                                publish: boolean;
+                            } | null;
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "deals.portals.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                deal: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreatePortalRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            name: string;
+                            email: string | null;
+                            url: string;
+                            opened_at: string | null;
+                            sent_at: string | null;
+                            expires_at: string;
+                            review: {
+                                rating: number;
+                                publish: boolean;
+                            } | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "portals.send": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                portal: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            name: string;
+                            email: string | null;
+                            url: string;
+                            opened_at: string | null;
+                            sent_at: string | null;
+                            expires_at: string;
+                            review: {
+                                rating: number;
+                                publish: boolean;
+                            } | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "portals.destroy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                portal: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["AuthenticationException"];
             /** @description Too many requests */
             429: {
                 headers: {

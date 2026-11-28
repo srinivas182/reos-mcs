@@ -166,7 +166,7 @@ final readonly class DocuSignDriver implements ConnectorDriver, SendsForSignatur
             'emailSubject' => $subject,
             'status' => 'created',
             'documents' => array_map(static fn (array $doc, int $i): array => ['documentBase64' => base64_encode($doc['contents']), 'name' => $doc['name'], 'fileExtension' => 'pdf', 'documentId' => (string) ($i + 1)], $documents, array_keys($documents)),
-            'recipients' => ['signers' => array_map(static fn (array $s, int $i): array => ['email' => $s['email'], 'name' => $s['name'], 'recipientId' => (string) ($i + 1), 'routingOrder' => (string) $s['routing_order']], $signers, array_keys($signers))],
+            'recipients' => ['signers' => array_map(static fn (array $s, int $i): array => array_filter(['email' => $s['email'], 'name' => $s['name'], 'recipientId' => (string) ($i + 1), 'routingOrder' => (string) $s['routing_order'], 'clientUserId' => $s['client_user_id'] ?? null], static fn (?string $v): bool => $v !== null), $signers, array_keys($signers))],
         ];
 
         if ($webhookUrl !== null) {
@@ -192,6 +192,17 @@ final readonly class DocuSignDriver implements ConnectorDriver, SendsForSignatur
         $url = $view['url'] ?? null;
 
         return is_string($url) && str_starts_with($url, 'https://') ? $url : throw new VendorUnavailable('DocuSign gave no sender view.');
+    }
+
+    public function recipientView(Connection $connection, string $accessToken, string $envelopeId, array $signer, string $returnUrl): string
+    {
+        // The portal link reached the client's email, so DocuSign records the email as how they were identified.
+        $view = $this->json($this->http($accessToken)->post($this->base($connection, $accessToken).'/envelopes/'.rawurlencode($envelopeId).'/views/recipient', [
+            'returnUrl' => $returnUrl, 'authenticationMethod' => 'email', 'email' => $signer['email'], 'userName' => $signer['name'], 'clientUserId' => $signer['client_user_id'],
+        ]));
+        $url = $view['url'] ?? null;
+
+        return is_string($url) && str_starts_with($url, 'https://') ? $url : throw new VendorUnavailable('DocuSign gave no signing view.');
     }
 
     public function envelope(Connection $connection, string $accessToken, string $envelopeId): array

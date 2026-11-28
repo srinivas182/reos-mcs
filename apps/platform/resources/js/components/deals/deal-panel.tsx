@@ -12,6 +12,13 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { nativeSelect } from '@/lib/tenants';
 import { money, useDateText } from './deal-card';
+import {
+    destroy as portalsDestroy,
+    index as portalsIndex,
+    send as portalsSend,
+    store as portalsStore,
+} from '@/routes/deals/portals';
+import { DealPortals } from './deal-portals';
 import { DealSignatures } from './deal-signatures';
 import { TOOL_NAMES, type DealFull, type DealStage } from './types';
 
@@ -214,6 +221,18 @@ export function DealPanel({
             ) : null}
 
             <DealSignatures deal={deal} onChanged={onChanged} />
+
+            {/* The client portal (B14.2): share the deal with a client through their own link. */}
+            <DealPortals
+                key={deal.uuid}
+                parties={deal.parties}
+                routes={{
+                    list: portalsIndex(deal.uuid).url,
+                    create: portalsStore(deal.uuid).url,
+                    send: (id) => portalsSend(id).url,
+                    revoke: (id) => portalsDestroy(id).url,
+                }}
+            />
         </div>
     );
 }

@@ -23,6 +23,8 @@ jest.mock('expo-router', () => {
 jest.mock('@/lib/api', () => ({ api: () => mockApi }));
 
 const ok = (data: unknown) => ({ data, error: undefined, response: { ok: true, status: 200 } });
+/** The deal screen also reads the deal's client links (B14.2): none here. */
+const dealOr = (deal: unknown) => (path: string) => Promise.resolve(path.endsWith('/portals') ? ok({ data: [] }) : deal);
 const wrap = (ui: React.ReactElement) => (
   <I18nextProvider i18n={i18n}>
     <ToastProvider>{ui}</ToastProvider>
@@ -89,7 +91,7 @@ describe('deals on the phone (Agent App screens 9 and 10, B9.1)', () => {
 
   it('keeps a deal from a tool read-only and opens it there', async () => {
     jest.mocked(useLocalSearchParams).mockReturnValue({ uuid: oak.uuid });
-    mockApi.GET.mockResolvedValue(ok({ data: oak }));
+    mockApi.GET.mockImplementation(dealOr(ok({ data: oak })));
     await render(wrap(<DealScreen />));
 
     expect(await screen.findByText('Read only: changes are made in Lone Wolf.')).toBeTruthy();
@@ -100,25 +102,27 @@ describe('deals on the phone (Agent App screens 9 and 10, B9.1)', () => {
 
   it("shows each envelope's signers and opens the signed copy (B9.3)", async () => {
     jest.mocked(useLocalSearchParams).mockReturnValue({ uuid: oak.uuid });
-    mockApi.GET.mockResolvedValue(
-      ok({
-        data: {
-          ...oak,
-          signatures: [
-            {
-              uuid: '2a4b6c8d-0e1f-4a2b-8c3d-4e5f6a7b8c9d',
-              subject: "Seller's Disclosure",
-              status: 'completed',
-              documents: ["Seller's Disclosure.pdf"],
-              signers: [{ name: 'Dan Whitfield', email: 'dan@example.com', routing_order: 1, status: 'signed', at: '2026-11-22T16:00:00Z' }],
-              sent_at: '2026-11-22T14:00:00Z',
-              completed_at: '2026-11-22T16:00:00Z',
-              filed_in: 'lone-wolf',
-            },
-          ],
-          kept_files: [{ uuid: '0b8e6d1c-4f2a-4e5b-9c3d-7a1f2e3d4c5b', kind: 'signed', name: "Seller's Disclosure (signed).pdf", size: 182400, added_at: null, scan: 'clean', url: 'https://reos.com/deals/files/0b8e?signature=x' }],
-        },
-      }),
+    mockApi.GET.mockImplementation(
+      dealOr(
+        ok({
+          data: {
+            ...oak,
+            signatures: [
+              {
+                uuid: '2a4b6c8d-0e1f-4a2b-8c3d-4e5f6a7b8c9d',
+                subject: "Seller's Disclosure",
+                status: 'completed',
+                documents: ["Seller's Disclosure.pdf"],
+                signers: [{ name: 'Dan Whitfield', email: 'dan@example.com', routing_order: 1, status: 'signed', at: '2026-11-22T16:00:00Z' }],
+                sent_at: '2026-11-22T14:00:00Z',
+                completed_at: '2026-11-22T16:00:00Z',
+                filed_in: 'lone-wolf',
+              },
+            ],
+            kept_files: [{ uuid: '0b8e6d1c-4f2a-4e5b-9c3d-7a1f2e3d4c5b', kind: 'signed', name: "Seller's Disclosure (signed).pdf", size: 182400, added_at: null, scan: 'clean', url: 'https://reos.com/deals/files/0b8e?signature=x' }],
+          },
+        }),
+      ),
     );
     await render(wrap(<DealScreen />));
 
