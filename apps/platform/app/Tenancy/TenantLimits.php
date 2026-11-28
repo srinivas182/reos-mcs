@@ -17,12 +17,17 @@ final readonly class TenantLimits
 
     public const PAYER_MEMBER = 'member';
 
+    /** The brokerage pays the seat; agents pay their own extras (A15.1b). */
+    public const PAYER_SPLIT = 'split';
+
+    public const PAYERS = [self::PAYER_ORGANISATION, self::PAYER_MEMBER, self::PAYER_SPLIT];
+
     public const QUEUE_WEIGHTS = ['low', 'standard', 'high'];
 
     public function __construct(
         /** Paid seats; null means no limit. */
         public ?int $seats,
-        /** `organisation` (for example "brokerage pays") or `member`. */
+        /** `organisation` ("brokerage pays"), `member` (agents pay) or `split`. */
         public string $payer,
         public int $creditsPerSeat,
         /** Credits are shared across the tenant's seats. */
@@ -48,7 +53,7 @@ final readonly class TenantLimits
 
         return new self(
             seats: $int('seats', $defaults->seats),
-            payer: in_array($stored['payer'] ?? null, [self::PAYER_ORGANISATION, self::PAYER_MEMBER], true) ? (string) $stored['payer'] : $defaults->payer,
+            payer: in_array($stored['payer'] ?? null, self::PAYERS, true) ? (string) $stored['payer'] : $defaults->payer,
             creditsPerSeat: $int('credits_per_seat', $defaults->creditsPerSeat) ?? $defaults->creditsPerSeat,
             creditsPooled: is_bool($stored['credits_pooled'] ?? null) ? $stored['credits_pooled'] : $defaults->creditsPooled,
             candidatePool: $int('candidate_pool', $defaults->candidatePool) ?? $defaults->candidatePool,

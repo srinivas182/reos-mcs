@@ -4,7 +4,13 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { EmptyState } from '@/components/empty-state';
 import { InviteSheet } from '@/components/invite-sheet';
+import { TrecRoster } from '@/components/brokerage/trec-roster';
+import type { TrecRosterData } from '@/components/brokerage/types';
 import { PageHeader } from '@/components/page-header';
+import {
+    contacts as rosterContacts,
+    invite as rosterInvite,
+} from '@/routes/roster';
 import { Button } from '@/components/ui/button';
 import { roleName } from '@/lib/roles';
 import { timeAgo } from '@/lib/time-ago';
@@ -18,6 +24,8 @@ type Props = {
     agents: AgentRow[];
     invitations: InvitationRow[];
     invite: InviteOptions;
+    /** Bring in your agents from TREC (A15.1b): the brokerage's own brokers. */
+    trec?: TrecRosterData | null;
 };
 
 const th = 'px-3 py-2 text-left';
@@ -29,15 +37,21 @@ const td = 'px-3 py-3 align-middle';
  * Withdraw, the seats, Invite agents and Export. Mode, talks, deals, CE and
  * the "needs help" signal arrive with the agent activity they read.
  */
-export default function Agents({ tenant, agents, invitations, invite }: Props) {
+export default function Agents({
+    tenant,
+    agents,
+    invitations,
+    invite,
+    trec = null,
+}: Props) {
     const { t, i18n } = useTranslation();
     const [tab, setTab] = useState<'all' | 'invited'>('all');
     const [inviting, setInviting] = useState(false);
     const seats = invite.seats;
     const payer =
-        seats.payer === 'organisation'
-            ? t('invites.sheet.payers.organisation', { tenant: tenant.name })
-            : t('invites.sheet.payers.member');
+        seats.payer === 'member'
+            ? t('invites.sheet.payers.member')
+            : t(`invites.sheet.payers.${seats.payer}`, { tenant: tenant.name });
     const dateOf = (iso: string) =>
         new Intl.DateTimeFormat(i18n.language, {
             month: 'short',
@@ -74,6 +88,15 @@ export default function Agents({ tenant, agents, invitations, invite }: Props) {
                         </>
                     }
                 />
+                {trec ? (
+                    <TrecRoster
+                        roster={trec}
+                        routes={{
+                            contacts: rosterContacts().url,
+                            invite: rosterInvite().url,
+                        }}
+                    />
+                ) : null}
 
                 <div
                     role="tablist"

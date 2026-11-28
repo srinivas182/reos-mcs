@@ -5,7 +5,11 @@ import { useTranslation } from 'react-i18next';
 import { BrandTile } from '@/components/brand-tile';
 import { CustomDomainCard } from '@/components/custom-domain-card';
 import { InviteSheet } from '@/components/invite-sheet';
+import { SeatsCard } from '@/components/brokerage/seats-card';
+import type { SeatsPlan } from '@/components/brokerage/types';
 import { PageHeader } from '@/components/page-header';
+import { index as billingIndex } from '@/routes/billing';
+import { update as updateSeats } from '@/routes/seats';
 import { Button } from '@/components/ui/button';
 import { roleName } from '@/lib/roles';
 import { cn } from '@/lib/utils';
@@ -34,11 +38,13 @@ type Props = {
         address: string;
         live_address: string | null;
         seats: number | null;
-        payer: 'organisation' | 'member';
+        payer: 'organisation' | 'member' | 'split';
     };
     domain: TenantDomain | null;
     brand: BrandProps;
     people: Person[];
+    /** Seats and who pays (A15.1b): brokerages only. */
+    seatsPlan?: SeatsPlan | null;
     invite: InviteOptions;
 };
 
@@ -57,6 +63,7 @@ export default function BrokerageSettings({
     brand,
     people,
     invite,
+    seatsPlan = null,
 }: Props) {
     const { t } = useTranslation();
     const [inviting, setInviting] = useState(false);
@@ -78,6 +85,13 @@ export default function BrokerageSettings({
                 />
 
                 <div className="grid gap-4 xl:grid-cols-2">
+                    {seatsPlan ? (
+                        <SeatsCard
+                            plan={seatsPlan}
+                            route={updateSeats().url}
+                            moreHref={billingIndex().url}
+                        />
+                    ) : null}
                     <CustomDomainCard
                         domain={domain}
                         address={tenant.address}

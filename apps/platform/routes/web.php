@@ -8,6 +8,8 @@ use App\Http\Controllers\Api\Agents\TodayController;
 use App\Http\Controllers\Api\Ask\AskController;
 use App\Http\Controllers\Api\Bookings\BookingController;
 use App\Http\Controllers\Api\Brokerage\BrokerVerificationController;
+use App\Http\Controllers\Api\Brokerage\RosterController;
+use App\Http\Controllers\Api\Brokerage\SeatsController;
 use App\Http\Controllers\Api\Ce\CeWalletController;
 use App\Http\Controllers\Api\Classes\ClassesController;
 use App\Http\Controllers\Api\Compliance\ComplianceController;
@@ -510,6 +512,10 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisat
 // Agents (A4.3a, broker and team leader screen 32) and invitations (screens 32 and 41).
 Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisation.manage'])->group(function () {
     Route::get('agents', [AgentsController::class, 'index'])->name('agents.index');
+    // Bring in your agents from TREC, and seats and who pays (A15.1b): the same actions as the API.
+    Route::post('organisation/roster/contacts', [RosterController::class, 'contacts'])->middleware('throttle:10,1,roster-contacts')->name('roster.contacts');
+    Route::post('organisation/roster/invite', [RosterController::class, 'invite'])->middleware('throttle:5,1,roster-invite')->name('roster.invite');
+    Route::put('organisation/seats', [SeatsController::class, 'update'])->middleware('throttle:20,1,seats-update')->name('seats.update');
     Route::get('agents/export', [AgentsController::class, 'export'])->middleware('throttle:10,1,agents-export')->name('agents.export');
     Route::post('organisation/invites', [InvitationController::class, 'store'])->middleware('throttle:20,1,invites-store')->name('invites.store');
     Route::post('organisation/invites/{invitation}/resend', [InvitationController::class, 'resend'])->whereNumber('invitation')->middleware('throttle:30,1,invites-resend')->name('invites.resend');

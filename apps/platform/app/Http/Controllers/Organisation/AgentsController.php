@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Organisation;
 
 use App\Authorization\Role;
+use App\Brokerage\Roster;
 use App\Enums\OrganisationType;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Organisation\Concerns\ForAdminOrganisation;
@@ -54,6 +55,8 @@ final class AgentsController extends Controller
                 'invited_by' => $invitation->inviter?->name,
             ])->values()->all(),
             'invite' => $invitations->options($organisation),
+            // Bring in your agents (A15.1b): TREC's roster, for the brokerage's own brokers.
+            'trec' => $organisation->type === OrganisationType::Brokerage && $organisation->trec_number !== null ? app(Roster::class)->for($organisation) : null,
         ]);
     }
 

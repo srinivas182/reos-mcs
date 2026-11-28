@@ -2046,7 +2046,8 @@
       "payer": "Who pays for seats",
       "payers": {
         "organisation": "The organization pays",
-        "member": "Each member pays"
+        "member": "Each member pays",
+        "split": "Split: the organization pays the seat, members their extras"
       },
       "creditsPerSeat": "AI credits per seat per month",
       "pooled": "Pool credits across seats",
@@ -2345,7 +2346,10 @@
         "referral.accepted": "Referral accepted",
         "invite.claimed": "Invite recorded",
         "farm.sent": "Market update sent",
-        "brokerage.verified": "Brokerage verified with TREC"
+        "brokerage.verified": "Brokerage verified with TREC",
+        "tenant.seats_chosen": "Seats and who pays chosen",
+        "roster.contacts_added": "Agent contacts added for the TREC roster",
+        "roster.invited": "Agents invited from the TREC roster"
       }
     }
   },
@@ -2540,7 +2544,8 @@
     "noLimit": "no seat limit",
     "payers": {
       "organisation": "Brokerage pays",
-      "member": "Each agent pays"
+      "member": "Each agent pays",
+      "split": "Split: brokerage and agents"
     },
     "brand": "Brand",
     "editBrand": "Edit brand",
@@ -2690,7 +2695,8 @@
       "seatsNoLimit": "No seat limit · {{payer}}",
       "payers": {
         "organisation": "{{tenant}} pays",
-        "member": "Each person pays for their own seat"
+        "member": "Each person pays for their own seat",
+        "split": "{{tenant}} pays the seat; each person pays their extras"
       },
       "noText": "Invites by text start when REOS turns on text messages. Use email for now.",
       "send": "Send invites",
@@ -10754,6 +10760,59 @@
       "do": "Start",
       "done": "Done",
       "complete": "Your brokerage is set up."
+    },
+    "roster": {
+      "title": "Bring in your agents",
+      "purpose": "Every agent TREC lists under your brokerage's license today. Invite them all in one step.",
+      "counts": "{{sponsored}} sponsored on TREC · {{member}} in your brokerage · {{invited}} invited · {{ready}} ready to invite · {{needs}} need an email or phone",
+      "states": {
+        "member": "In your brokerage",
+        "invited": "Invited",
+        "on_reos": "On REOS",
+        "contact": "Ready to invite",
+        "needs_contact": "Needs an email or phone"
+      },
+      "inviteAll": "Invite all",
+      "inviteAllCount_one": "Invite {{count}} agent",
+      "inviteAllCount_other": "Invite all {{count}} agents",
+      "nothing": "Everyone you can reach is in or invited.",
+      "sent_one": "{{count}} invitation sent.",
+      "sent_other": "{{count}} invitations sent.",
+      "stillNeeds_one": "{{count}} agent still needs an email or phone.",
+      "stillNeeds_other": "{{count}} agents still need an email or phone.",
+      "addContacts": "Add emails or phones",
+      "addHint": "TREC doesn't publish emails or phones. One line per agent: the license number, then an email or phone, such as 0722222, maria@example.com.",
+      "lines": "License numbers and contacts",
+      "save": "Save contacts",
+      "saved_one": "{{count}} contact saved.",
+      "saved_other": "{{count}} contacts saved.",
+      "refused": "Not on your TREC roster: {{lines}}",
+      "licence": "License {{number}}",
+      "expires": "Expires {{date}}",
+      "none": "TREC lists no agents under your brokerage yet",
+      "noneHint": "The roster refreshes every night from TREC's records.",
+      "notVerified": "Verify your brokerage with TREC to see your roster."
+    },
+    "seats": {
+      "title": "Seats and who pays",
+      "purpose": "Choose who pays for agents' seats and how AI credits are shared. Seats are bought on reos.com.",
+      "usage": "{{used}} of {{seats}} seats used · {{pending}} invited",
+      "usageNoLimit": "{{used}} agents · {{pending}} invited",
+      "payer": "Who pays for seats",
+      "payers": {
+        "organisation": "The brokerage pays",
+        "member": "Each agent pays",
+        "split": "Split: the brokerage pays the seat, agents pay their extras"
+      },
+      "pooled": "Pool AI credits across all seats",
+      "pooledHint": "{{credits}} credits per seat each month, shared by everyone. Unused credits don't roll over.",
+      "pool": "Pool this month: {{credits}} credits",
+      "candidates": "Candidate sponsorship pool: {{credits}} credits",
+      "teams_one": "{{count}} team",
+      "teams_other": "{{count}} teams",
+      "save": "Save",
+      "saved": "Saved",
+      "more": "Buy more seats on reos.com"
     }
   }
 }
