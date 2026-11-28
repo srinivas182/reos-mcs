@@ -148,6 +148,44 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/announcements/{announcement}/readers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Who has read an announcement (A16.3), for the admin who sent it
+         * @description Unread people first, then by name. `can_remind` is false once everyone
+         *     has read it, or for a day after the last reminder.
+         */
+        get: operations["announcements.readers"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/announcements/{announcement}/remind": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Remind the people who haven't read it (A16.3), once a day at most */
+        post: operations["announcements.remind"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/app-config": {
         parameters: {
             query?: never;
@@ -5634,6 +5672,66 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/organisation/reports/closings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Closings report
+         * @description Closings and volume by agent, team and month for the period, matched to the transaction tool: each connected tool's closings with its last sync, and closings recorded only in REOS listed as differences.
+         */
+        get: operations["brokerage.reports.closings"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organisation/reports/training": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Training report
+         * @description Each course the brokerage assigned: how many agents, done and overdue, with CE hours for CE courses.
+         */
+        get: operations["brokerage.reports.training"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organisation/brief": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * The broker's morning brief
+         * @description Agents who need help, deals at risk, approvals waiting, agents due for CE (null without "sponsor agents") and closings this month. Counts and stages only.
+         */
+        get: operations["brokerage.brief"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/goals/today": {
         parameters: {
             query?: never;
@@ -9952,6 +10050,75 @@ export interface operations {
                 content: {
                     "application/json": {
                         read: boolean;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "announcements.readers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                announcement: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        id: string;
+                        title: string;
+                        recipients: number;
+                        read: number;
+                        reminded_at: string | null;
+                        can_remind: boolean;
+                        people: {
+                            name: string;
+                            read_at: string | null;
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "announcements.remind": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                announcement: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        reminded: number;
                     };
                 };
             };
@@ -27760,6 +27927,178 @@ export interface operations {
                     };
                 };
             };
+        };
+    };
+    "brokerage.reports.closings": {
+        parameters: {
+            query?: {
+                period?: "this_month" | "last_month" | "this_quarter" | "this_year" | "last_year" | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            brokerage: string;
+                            /** @enum {string} */
+                            scope: "brokerage" | "team";
+                            team: string | null;
+                            /** @enum {string} */
+                            period: "this_month" | "last_month" | "this_quarter" | "this_year" | "last_year";
+                            from: string;
+                            to: string;
+                            totals: {
+                                count: number;
+                                volume: number;
+                            };
+                            by_agent: {
+                                id: number;
+                                name: string;
+                                team: string | null;
+                                count: number;
+                                volume: number;
+                            }[];
+                            by_team: {
+                                name: string | null;
+                                count: number;
+                                volume: number;
+                            }[];
+                            by_month: {
+                                month: string;
+                                count: number;
+                                volume: number;
+                            }[];
+                            tools: {
+                                connection: number;
+                                tool: string;
+                                name: string;
+                                label: string | null;
+                                last_synced_at: string | null;
+                                stale: boolean;
+                                count: number;
+                                volume: number;
+                            }[];
+                            reos_only: {
+                                count: number;
+                                volume: number;
+                                deals: {
+                                    id: string;
+                                    agent: string;
+                                    property: string;
+                                    price: number | null;
+                                    closed_at: string;
+                                }[];
+                            };
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "brokerage.reports.training": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            brokerage: string;
+                            /** @enum {string} */
+                            scope: "brokerage" | "team";
+                            team: string | null;
+                            courses: {
+                                id: number;
+                                title: string;
+                                type: string;
+                                ce_hours: string | null;
+                                assigned: number;
+                                done: number;
+                                overdue: number;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "brokerage.brief": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            date: string;
+                            brokerage: string;
+                            /** @enum {string} */
+                            scope: "brokerage" | "team";
+                            team: string | null;
+                            settings: {
+                                quiet_days: number;
+                                no_deal_days: number;
+                                new_days: number;
+                            };
+                            need_help: {
+                                count: number;
+                                agents: {
+                                    id: number;
+                                    name: string;
+                                    signals: string[];
+                                }[];
+                            };
+                            at_risk: {
+                                count: number;
+                                deals: {
+                                    id: string;
+                                    agent: string;
+                                    stage: string;
+                                    city: string | null;
+                                    reasons: string[];
+                                }[];
+                            };
+                            approvals: {
+                                waiting: number;
+                                overdue: number;
+                            };
+                            ce_due: number | null;
+                            closings: {
+                                count: number;
+                                volume: number;
+                            };
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
         };
     };
     "goals.today": {

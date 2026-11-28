@@ -290,3 +290,90 @@ export type SponsorshipBoard = {
     agents: { id: number; name: string; open_deals: number }[];
     handover: { id: number; name: string }[];
 };
+
+/** A count and dollar volume (A16.3). */
+export type ReportLine = { count: number; volume: number };
+
+export type ReportPeriod =
+    | 'this_month'
+    | 'last_month'
+    | 'this_quarter'
+    | 'this_year'
+    | 'last_year';
+
+/** Brokerage › Reports: closings matched to the transaction tool (A16.3). */
+export type ClosingsReport = {
+    brokerage: string;
+    scope: 'brokerage' | 'team';
+    team: string | null;
+    period: ReportPeriod;
+    from: string;
+    to: string;
+    totals: ReportLine;
+    by_agent: ({
+        id: number;
+        name: string;
+        team: string | null;
+    } & ReportLine)[];
+    by_team: ({ name: string | null } & ReportLine)[];
+    by_month: ({ month: string } & ReportLine)[];
+    tools: ({
+        connection: number;
+        tool: string;
+        name: string;
+        label: string | null;
+        last_synced_at: string | null;
+        stale: boolean;
+    } & ReportLine)[];
+    reos_only: ReportLine & {
+        deals: {
+            id: string;
+            agent: string;
+            property: string;
+            price: number | null;
+            closed_at: string;
+        }[];
+    };
+};
+
+/** Training: each assigned course's progress (A16.3). */
+export type TrainingReport = {
+    brokerage: string;
+    scope: 'brokerage' | 'team';
+    team: string | null;
+    courses: {
+        id: number;
+        title: string;
+        type: string;
+        ce_hours: string | null;
+        assigned: number;
+        done: number;
+        overdue: number;
+    }[];
+};
+
+/** The broker's morning brief (A16.3): counts and stages only. */
+export type BrokerBrief = {
+    date: string;
+    brokerage: string;
+    scope: 'brokerage' | 'team';
+    team: string | null;
+    settings: OversightBoardData['settings'];
+    need_help: {
+        count: number;
+        agents: { id: number; name: string; signals: OversightSignal[] }[];
+    };
+    at_risk: {
+        count: number;
+        deals: {
+            id: string;
+            agent: string;
+            stage: string;
+            city: string | null;
+            reasons: string[];
+        }[];
+    };
+    approvals: { waiting: number; overdue: number };
+    ce_due: number | null;
+    closings: ReportLine;
+};

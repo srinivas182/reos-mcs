@@ -103,7 +103,8 @@
     "providerJoin": "Joining",
     "serviceProviders": "Service providers",
     "oversight": "Agents and deals",
-    "ceCompliance": "CE compliance"
+    "ceCompliance": "CE compliance",
+    "brokerageReports": "Reports"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -2377,7 +2378,8 @@
         "ce.reminded": "Reminded agents about CE",
         "ce.course_assigned": "Assigned a course",
         "sponsorship.released": "Released an agent",
-        "sponsorship.confirmed": "Sponsorship confirmed by TREC"
+        "sponsorship.confirmed": "Sponsorship confirmed by TREC",
+        "announcement.reminded": "Reminded people about an announcement"
       }
     }
   },
@@ -5596,6 +5598,24 @@
     "mail": {
       "from": "From {{from}}",
       "open": "Open in REOS"
+    },
+    "receipts": {
+      "open": "See who's read it",
+      "openFor": "See who's read {{title}}",
+      "title": "Who's read it",
+      "description": "People who haven't read it are listed first.",
+      "readOn": "Read {{date}}",
+      "unread": "Not read yet",
+      "remind": "Remind people who haven't read it",
+      "remindedAt": "Reminded {{date}}. You can remind again after a day.",
+      "allRead": "Everyone has read it.",
+      "loading": "Loading…",
+      "reminderTitle": "Reminder: {{title}}",
+      "reminded_one": "Reminded {{count}} person.",
+      "reminded_other": "Reminded {{count}} people.",
+      "errors": {
+        "once": "You reminded them less than a day ago. Try again tomorrow."
+      }
     }
   },
   "notifications": {
@@ -11408,6 +11428,76 @@
         "handoverTitle": "{{agent}}'s open deals are now yours",
         "handoverBody": "{{count}} open deals were handed to you. {{agent}}'s release is on {{date}}."
       }
+    },
+    "reports": {
+      "title": "Reports",
+      "purpose": "Closings and volume by agent, team and month, matched to your transaction tool, and training progress.",
+      "teamPurpose": "Closings, volume and training for {{team}}.",
+      "period": "Period",
+      "periods": {
+        "this_month": "This month",
+        "last_month": "Last month",
+        "this_quarter": "This quarter",
+        "this_year": "This year",
+        "last_year": "Last year"
+      },
+      "closings": "Closings",
+      "volume": "Volume",
+      "agent": "Agent",
+      "team": "Team",
+      "noTeam": "Not on a team",
+      "month": "Month",
+      "byAgent": "By agent",
+      "byTeam": "By team",
+      "byMonth": "By month",
+      "empty": "No closings in this period",
+      "emptyHint": "Closings show here when a deal closes in REOS or in your transaction tool.",
+      "match": {
+        "title": "Matched to your transaction tool",
+        "synced": "Last synced {{date}}",
+        "neverSynced": "Not synced yet",
+        "stale": "Not synced in the last day, so these numbers may be behind.",
+        "noTool": "No transaction tool connected",
+        "noToolHint": "Connect SkySlope, dotloop or Lone Wolf in Integrations to check these closings against it.",
+        "differences": "Closed only in REOS ({{count}})",
+        "differencesHint": "These closings aren't in your transaction tool. Add them there, or check the deal with the agent.",
+        "matched": "Every closing is in your transaction tool.",
+        "difference": "{{property}} · {{agent}} · {{price}} · closed {{date}}",
+        "tool_one": "{{tool}}: {{count}} closing · {{volume}}",
+        "tool_other": "{{tool}}: {{count}} closings · {{volume}}"
+      },
+      "training": {
+        "title": "Training",
+        "course": "Course",
+        "assigned": "Assigned",
+        "done": "Done",
+        "overdue": "Overdue",
+        "ceHours": "{{hours}} CE hours",
+        "empty": "No courses assigned yet",
+        "emptyHint": "Assign a course to your agents from CE compliance.",
+        "progress": "{{done}} of {{assigned}} done · {{overdue}} overdue"
+      },
+      "totals_one": "{{count}} closing · {{volume}} volume",
+      "totals_other": "{{count}} closings · {{volume}} volume"
+    },
+    "brief": {
+      "ready": "Your morning brief is ready",
+      "title": "Your morning brief",
+      "purpose": "What needs you at {{brokerage}} today.",
+      "approvals": "{{count}} approvals waiting · {{overdue}} past your limit",
+      "allClear": "Nothing needs you this morning.",
+      "openOversight": "Open agents and deals",
+      "openApprovals": "Open approvals",
+      "openCe": "Open CE compliance",
+      "openReports": "Open reports",
+      "closings_one": "{{count}} closing this month · {{volume}}",
+      "closings_other": "{{count}} closings this month · {{volume}}",
+      "needHelp_one": "{{count}} agent may need help",
+      "needHelp_other": "{{count}} agents may need help",
+      "atRisk_one": "{{count}} deal at risk",
+      "atRisk_other": "{{count}} deals at risk",
+      "ceDue_one": "{{count}} agent due for CE",
+      "ceDue_other": "{{count}} agents due for CE"
     }
   }
 }

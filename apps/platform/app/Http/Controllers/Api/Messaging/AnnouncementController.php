@@ -39,4 +39,27 @@ final class AnnouncementController extends Controller
 
         return response()->json(['read' => true]);
     }
+
+    /**
+     * Who has read an announcement (A16.3), for the admin who sent it.
+     *
+     * Unread people first, then by name. `can_remind` is false once everyone
+     * has read it, or for a day after the last reminder.
+     *
+     * @response array{id: string, title: string, recipients: int, read: int, reminded_at: string|null, can_remind: bool, people: list<array{name: string, read_at: string|null}>}
+     */
+    public function readers(string $announcement, #[CurrentUser] User $user, Announcements $announcements): JsonResponse
+    {
+        return response()->json($announcements->readers($user, $announcement));
+    }
+
+    /**
+     * Remind the people who haven't read it (A16.3), once a day at most.
+     *
+     * @response array{reminded: int}
+     */
+    public function remind(string $announcement, #[CurrentUser] User $user, Announcements $announcements): JsonResponse
+    {
+        return response()->json(['reminded' => $announcements->remindUnread($user, $announcement)]);
+    }
 }

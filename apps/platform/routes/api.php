@@ -21,6 +21,7 @@ use App\Http\Controllers\Api\Brokerage\BrokerVerificationController;
 use App\Http\Controllers\Api\Brokerage\CeComplianceController;
 use App\Http\Controllers\Api\Brokerage\OversightController;
 use App\Http\Controllers\Api\Brokerage\PoliciesController;
+use App\Http\Controllers\Api\Brokerage\ReportsController;
 use App\Http\Controllers\Api\Brokerage\RosterController;
 use App\Http\Controllers\Api\Brokerage\SeatsController;
 use App\Http\Controllers\Api\Brokerage\StaffController;
@@ -194,6 +195,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::middleware(RequireFlag::class.':messages')->prefix('announcements')->name('api.announcements.')->controller(ApiAnnouncementController::class)->group(function () {
         Route::get('/', 'index')->name('index');
         Route::post('{announcement}/read', 'read')->whereUuid('announcement')->middleware('throttle:120,1,api-announcements-read')->name('read');
+        Route::get('{announcement}/readers', 'readers')->whereUuid('announcement')->name('readers');
+        Route::post('{announcement}/remind', 'remind')->whereUuid('announcement')->middleware('throttle:10,1,api-announcements-remind')->name('remind');
     });
     // Booking 1-on-1 sessions (A10.2a), with the video rooms they run in.
     Route::middleware(RequireFlag::class.':video_rooms')->prefix('bookings')->name('api.bookings.')->controller(BookingController::class)->group(function () {
@@ -621,6 +624,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('organisation/ce/assign', [CeComplianceController::class, 'assign'])->middleware('throttle:20,1,api-ce-assign')->name('api.brokerage.ce.assign');
     Route::get('organisation/sponsorships', [CeComplianceController::class, 'sponsorships'])->name('api.brokerage.sponsorships');
     Route::post('organisation/sponsorships/release', [CeComplianceController::class, 'release'])->middleware('throttle:10,1,api-sponsorship-release')->name('api.brokerage.sponsorships.release');
+    // Reports and the broker's morning brief (A16.3).
+    Route::get('organisation/reports/closings', [ReportsController::class, 'closings'])->name('api.brokerage.reports.closings');
+    Route::get('organisation/reports/training', [ReportsController::class, 'training'])->name('api.brokerage.reports.training');
+    Route::get('organisation/brief', [ReportsController::class, 'brief'])->name('api.brokerage.brief');
     Route::get('organisation/approvals', [ApprovalsController::class, 'index'])->name('api.brokerage.approvals');
     Route::post('organisation/approvals/{kind}/{item}', [ApprovalsController::class, 'act'])->whereIn('kind', ['post', 'page', 'question'])->where('item', '[A-Za-z0-9-]{1,80}')->middleware('throttle:60,1,api-approvals-act')->name('api.brokerage.approvals.act');
     Route::put('organisation/approvals/settings', [ApprovalsController::class, 'settings'])->middleware('throttle:20,1,api-approvals-settings')->name('api.brokerage.approvals.settings');

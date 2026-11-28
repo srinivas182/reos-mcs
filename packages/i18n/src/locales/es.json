@@ -103,7 +103,8 @@
     "providerJoin": "Inscripción",
     "serviceProviders": "Proveedores de servicios",
     "oversight": "Agentes y operaciones",
-    "ceCompliance": "Cumplimiento de educación continua"
+    "ceCompliance": "Cumplimiento de educación continua",
+    "brokerageReports": "Informes"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -2377,7 +2378,8 @@
         "ce.reminded": "Se recordó la educación continua a los agentes",
         "ce.course_assigned": "Se asignó un curso",
         "sponsorship.released": "Se liberó a un agente",
-        "sponsorship.confirmed": "TREC confirmó el patrocinio"
+        "sponsorship.confirmed": "TREC confirmó el patrocinio",
+        "announcement.reminded": "Recordó un anuncio a quienes no lo leyeron"
       }
     }
   },
@@ -5596,6 +5598,24 @@
     "mail": {
       "from": "De {{from}}",
       "open": "Abrir en REOS"
+    },
+    "receipts": {
+      "open": "Ver quién lo leyó",
+      "openFor": "Ver quién leyó {{title}}",
+      "title": "Quién lo leyó",
+      "description": "Primero aparecen las personas que aún no lo han leído.",
+      "readOn": "Leído el {{date}}",
+      "unread": "Aún no leído",
+      "remind": "Recordar a quienes no lo han leído",
+      "remindedAt": "Recordatorio enviado el {{date}}. Puede volver a recordar después de un día.",
+      "allRead": "Todos lo han leído.",
+      "loading": "Cargando…",
+      "reminderTitle": "Recordatorio: {{title}}",
+      "reminded_one": "Se envió un recordatorio a {{count}} persona.",
+      "reminded_other": "Se envió un recordatorio a {{count}} personas.",
+      "errors": {
+        "once": "Ya envió un recordatorio hace menos de un día. Inténtelo de nuevo mañana."
+      }
     }
   },
   "notifications": {
@@ -11408,6 +11428,76 @@
         "handoverTitle": "Las operaciones abiertas de {{agent}} ahora son suyas",
         "handoverBody": "Se le entregaron {{count}} operaciones abiertas. La liberación de {{agent}} es el {{date}}."
       }
+    },
+    "reports": {
+      "title": "Informes",
+      "purpose": "Cierres y volumen por agente, equipo y mes, comparados con su herramienta de transacciones, y el avance de la capacitación.",
+      "teamPurpose": "Cierres, volumen y capacitación de {{team}}.",
+      "period": "Período",
+      "periods": {
+        "this_month": "Este mes",
+        "last_month": "Mes pasado",
+        "this_quarter": "Este trimestre",
+        "this_year": "Este año",
+        "last_year": "Año pasado"
+      },
+      "closings": "Cierres",
+      "volume": "Volumen",
+      "agent": "Agente",
+      "team": "Equipo",
+      "noTeam": "Sin equipo",
+      "month": "Mes",
+      "byAgent": "Por agente",
+      "byTeam": "Por equipo",
+      "byMonth": "Por mes",
+      "empty": "No hay cierres en este período",
+      "emptyHint": "Los cierres aparecen aquí cuando una operación se cierra en REOS o en su herramienta de transacciones.",
+      "match": {
+        "title": "Comparado con su herramienta de transacciones",
+        "synced": "Última sincronización: {{date}}",
+        "neverSynced": "Aún no sincronizado",
+        "stale": "No se sincronizó en el último día; estas cifras podrían estar atrasadas.",
+        "noTool": "No hay una herramienta de transacciones conectada",
+        "noToolHint": "Conecte SkySlope, dotloop o Lone Wolf en Integraciones para comparar estos cierres.",
+        "differences": "Cerrados solo en REOS ({{count}})",
+        "differencesHint": "Estos cierres no están en su herramienta de transacciones. Agréguelos allí o revise la operación con el agente.",
+        "matched": "Todos los cierres están en su herramienta de transacciones.",
+        "difference": "{{property}} · {{agent}} · {{price}} · cerrado el {{date}}",
+        "tool_one": "{{tool}}: {{count}} cierre · {{volume}}",
+        "tool_other": "{{tool}}: {{count}} cierres · {{volume}}"
+      },
+      "training": {
+        "title": "Capacitación",
+        "course": "Curso",
+        "assigned": "Asignado",
+        "done": "Completado",
+        "overdue": "Vencido",
+        "ceHours": "{{hours}} horas de CE",
+        "empty": "Aún no se han asignado cursos",
+        "emptyHint": "Asigne un curso a sus agentes desde Cumplimiento de CE.",
+        "progress": "{{done}} de {{assigned}} completados · {{overdue}} vencidos"
+      },
+      "totals_one": "{{count}} cierre · {{volume}} de volumen",
+      "totals_other": "{{count}} cierres · {{volume}} de volumen"
+    },
+    "brief": {
+      "ready": "Su resumen matutino está listo",
+      "title": "Su resumen matutino",
+      "purpose": "Lo que necesita su atención hoy en {{brokerage}}.",
+      "approvals": "{{count}} aprobaciones pendientes · {{overdue}} fuera de su plazo",
+      "allClear": "Nada requiere su atención esta mañana.",
+      "openOversight": "Abrir agentes y operaciones",
+      "openApprovals": "Abrir aprobaciones",
+      "openCe": "Abrir cumplimiento de CE",
+      "openReports": "Abrir informes",
+      "closings_one": "{{count}} cierre este mes · {{volume}}",
+      "closings_other": "{{count}} cierres este mes · {{volume}}",
+      "needHelp_one": "{{count}} agente podría necesitar ayuda",
+      "needHelp_other": "{{count}} agentes podrían necesitar ayuda",
+      "atRisk_one": "{{count}} operación en riesgo",
+      "atRisk_other": "{{count}} operaciones en riesgo",
+      "ceDue_one": "{{count}} agente con CE pendiente",
+      "ceDue_other": "{{count}} agentes con CE pendiente"
     }
   }
 }

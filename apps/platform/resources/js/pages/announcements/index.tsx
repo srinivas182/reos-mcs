@@ -1,7 +1,11 @@
 import { Head, router } from '@inertiajs/react';
 import { Megaphone, Plus } from 'lucide-react';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import {
+    ReadersSheet,
+    type Readers,
+} from '@/components/announcements/readers-sheet';
 import { EmptyState } from '@/components/empty-state';
 import InputError from '@/components/input-error';
 import { PageHeader } from '@/components/page-header';
@@ -18,8 +22,9 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { getJson } from '@/lib/content';
 import { roleName } from '@/lib/roles';
-import { store } from '@/routes/announcements';
+import { readers as readersRoute, remind, store } from '@/routes/announcements';
 import type { RoleName } from '@/types/auth';
 
 type Sent = {
@@ -104,6 +109,23 @@ export default function Announcements({
 }) {
     const { t, i18n } = useTranslation();
     const [open, setOpen] = useState(false);
+    // "Who's read it" for one announcement (A16.3).
+    const [reading, setReading] = useState<string | null>(null);
+    const loadReaders = useCallback(
+        () => getJson<Readers>(readersRoute(reading ?? '').url),
+        [reading],
+    );
+    const remindUnread = useCallback(
+        () =>
+            new Promise<void>((resolve) =>
+                router.post(
+                    remind(reading ?? '').url,
+                    {},
+                    { preserveScroll: true, onFinish: () => resolve() },
+                ),
+            ),
+        [reading],
+    );
     const [title, setTitle] = useState('');
     const [body, setBody] = useState('');
     const [roles, setRoles] = useState<string[]>([]);
@@ -247,6 +269,16 @@ export default function Announcements({
                                                 })}
                                             </span>
                                         </div>
+                                        <Button
+                                            variant="outline"
+                                            aria-label={t(
+                                                'announcements.receipts.openFor',
+                                                { title: item.title },
+                                            )}
+                                            onClick={() => setReading(item.id)}
+                                        >
+                                            {t('announcements.receipts.open')}
+                                        </Button>
                                     </li>
                                 );
                             })}
@@ -254,6 +286,13 @@ export default function Announcements({
                     )}
                 </section>
             </div>
+
+            <ReadersSheet
+                open={reading !== null}
+                onOpenChange={(o) => (o ? null : setReading(null))}
+                load={loadReaders}
+                onRemind={remindUnread}
+            />
 
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-xl">

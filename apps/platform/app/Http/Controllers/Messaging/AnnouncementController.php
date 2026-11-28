@@ -48,4 +48,19 @@ final class AnnouncementController extends Controller
 
         return response()->json(['read' => true]);
     }
+
+    /** Who's read it (A16.3), for the admin's "Read by" panel. */
+    public function readers(string $announcement, #[CurrentUser] User $user, Announcements $announcements): JsonResponse
+    {
+        return response()->json($announcements->readers($user, $announcement));
+    }
+
+    /** Remind the people who haven't read it, once a day at most (A16.3). */
+    public function remind(string $announcement, #[CurrentUser] User $user, Announcements $announcements): RedirectResponse
+    {
+        $count = $announcements->remindUnread($user, $announcement);
+        Inertia::flash('toast', ['type' => 'success', 'message' => $count === 0 ? __('announcements.receipts.allRead') : __('announcements.receipts.reminded_'.($count === 1 ? 'one' : 'other'), ['count' => (string) $count])]);
+
+        return back();
+    }
 }

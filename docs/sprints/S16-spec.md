@@ -120,6 +120,28 @@
 - **Reports:** closings and volume by agent, team and month, matched to the transaction tool.
 - **The broker's morning brief:** who needs help, deals at risk, approvals waiting, CE due.
 - **Done when:** the report matches the closings in the transaction tool.
+- **As built, A16.3** (ADR 0078):
+  - **Data:** `announcements.reminded_at`.
+  - **Services:**
+    - `App\Brokerage\Reports`:
+      - closings: by agent, team and month for a period, matched to each connected transaction tool (with its last sync, and stale after a day), and REOS-only closings listed as differences;
+      - training: each assigned course's assigned, done and overdue counts, with CE hours.
+    - `App\Brokerage\BrokerBriefs`: the brief (need help, at risk, approvals, CE due, closings this month), and `reos:brokerage:briefs` on weekdays at 7:30 Central (`BrokerBriefReady`, kind `morning_brief`), sent only when something is in it.
+    - `Announcements::readers` and `remindUnread`: once a day at most, audited `announcement.reminded`.
+  - **Routes:**
+    - API: `GET /api/v1/organisation/reports/closings?period=`, `GET /api/v1/organisation/reports/training`, `GET /api/v1/organisation/brief`, `GET /api/v1/announcements/{id}/readers` and `POST /api/v1/announcements/{id}/remind`.
+    - Web: `/organisation/reports`, `GET /announcements/{id}/readers` and `POST /announcements/{id}/remind`.
+  - **Web:**
+    - Brokerage › Reports (`organisation/reports`): period, totals, the match to the tool with differences, by agent, team and month, and training. Reports is now in the broker sidebar.
+    - The broker dashboard's morning brief card.
+    - Announcements: "See who's read it" opens a sheet with unread people first and Remind.
+  - **Phone:** Your brokerage → Morning brief (`brokerage/brief`, also opened from the notification) and Reports (`brokerage/reports`).
+  - **Done when:** a Pest test connects SkySlope for Lone Star Realty (simulator):
+    - with nothing closed, the report shows SkySlope with 0;
+    - James Miller's sale closes in SkySlope and syncs: the report's SkySlope line is 1 closing for $389,000, exactly the tool's closing;
+    - Maria Garcia's closing recorded only in REOS shows as the one difference, by property.
+
+    Other tests cover periods, a team leader's scope, training progress, the brief and its weekday notification, and read receipts with the once-a-day reminder.
 
 ### B16.1 Agents in area (Team B)
 

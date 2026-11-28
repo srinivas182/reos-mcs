@@ -1434,6 +1434,155 @@
                 }
             }
         },
+        "/announcements/{announcement}/readers": {
+            "get": {
+                "operationId": "announcements.readers",
+                "description": "Unread people first, then by name. `can_remind` is false once everyone\nhas read it, or for a day after the last reminder.",
+                "summary": "Who has read an announcement (A16.3), for the admin who sent it",
+                "tags": [
+                    "Announcement"
+                ],
+                "parameters": [
+                    {
+                        "name": "announcement",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "type": "string"
+                                        },
+                                        "title": {
+                                            "type": "string"
+                                        },
+                                        "recipients": {
+                                            "type": "integer"
+                                        },
+                                        "read": {
+                                            "type": "integer"
+                                        },
+                                        "reminded_at": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        },
+                                        "can_remind": {
+                                            "type": "boolean"
+                                        },
+                                        "people": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "name": {
+                                                        "type": "string"
+                                                    },
+                                                    "read_at": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "name",
+                                                    "read_at"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "id",
+                                        "title",
+                                        "recipients",
+                                        "read",
+                                        "reminded_at",
+                                        "can_remind",
+                                        "people"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/announcements/{announcement}/remind": {
+            "post": {
+                "operationId": "announcements.remind",
+                "summary": "Remind the people who haven't read it (A16.3), once a day at most",
+                "tags": [
+                    "Announcement"
+                ],
+                "parameters": [
+                    {
+                        "name": "announcement",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "reminded": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "required": [
+                                        "reminded"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/app-config": {
             "get": {
                 "operationId": "app-config",
@@ -55574,6 +55723,606 @@
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/organisation/reports/closings": {
+            "get": {
+                "operationId": "brokerage.reports.closings",
+                "description": "Closings and volume by agent, team and month for the period, matched to the transaction tool: each connected tool's closings with its last sync, and closings recorded only in REOS listed as differences.",
+                "summary": "Closings report",
+                "tags": [
+                    "Reports"
+                ],
+                "parameters": [
+                    {
+                        "name": "period",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ],
+                            "enum": [
+                                "this_month",
+                                "last_month",
+                                "this_quarter",
+                                "this_year",
+                                "last_year",
+                                null
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "brokerage": {
+                                                    "type": "string"
+                                                },
+                                                "scope": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "brokerage",
+                                                        "team"
+                                                    ]
+                                                },
+                                                "team": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "period": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "this_month",
+                                                        "last_month",
+                                                        "this_quarter",
+                                                        "this_year",
+                                                        "last_year"
+                                                    ]
+                                                },
+                                                "from": {
+                                                    "type": "string"
+                                                },
+                                                "to": {
+                                                    "type": "string"
+                                                },
+                                                "totals": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "count": {
+                                                            "type": "integer"
+                                                        },
+                                                        "volume": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "count",
+                                                        "volume"
+                                                    ]
+                                                },
+                                                "by_agent": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "team": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "count": {
+                                                                "type": "integer"
+                                                            },
+                                                            "volume": {
+                                                                "type": "integer"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "name",
+                                                            "team",
+                                                            "count",
+                                                            "volume"
+                                                        ]
+                                                    }
+                                                },
+                                                "by_team": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "name": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "count": {
+                                                                "type": "integer"
+                                                            },
+                                                            "volume": {
+                                                                "type": "integer"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "name",
+                                                            "count",
+                                                            "volume"
+                                                        ]
+                                                    }
+                                                },
+                                                "by_month": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "month": {
+                                                                "type": "string"
+                                                            },
+                                                            "count": {
+                                                                "type": "integer"
+                                                            },
+                                                            "volume": {
+                                                                "type": "integer"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "month",
+                                                            "count",
+                                                            "volume"
+                                                        ]
+                                                    }
+                                                },
+                                                "tools": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "connection": {
+                                                                "type": "integer"
+                                                            },
+                                                            "tool": {
+                                                                "type": "string"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "label": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "last_synced_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "stale": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "count": {
+                                                                "type": "integer"
+                                                            },
+                                                            "volume": {
+                                                                "type": "integer"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "connection",
+                                                            "tool",
+                                                            "name",
+                                                            "label",
+                                                            "last_synced_at",
+                                                            "stale",
+                                                            "count",
+                                                            "volume"
+                                                        ]
+                                                    }
+                                                },
+                                                "reos_only": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "count": {
+                                                            "type": "integer"
+                                                        },
+                                                        "volume": {
+                                                            "type": "integer"
+                                                        },
+                                                        "deals": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "agent": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "property": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "price": {
+                                                                        "type": [
+                                                                            "integer",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "closed_at": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "agent",
+                                                                    "property",
+                                                                    "price",
+                                                                    "closed_at"
+                                                                ]
+                                                            }
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "count",
+                                                        "volume",
+                                                        "deals"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "brokerage",
+                                                "scope",
+                                                "team",
+                                                "period",
+                                                "from",
+                                                "to",
+                                                "totals",
+                                                "by_agent",
+                                                "by_team",
+                                                "by_month",
+                                                "tools",
+                                                "reos_only"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/organisation/reports/training": {
+            "get": {
+                "operationId": "brokerage.reports.training",
+                "description": "Each course the brokerage assigned: how many agents, done and overdue, with CE hours for CE courses.",
+                "summary": "Training report",
+                "tags": [
+                    "Reports"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "brokerage": {
+                                                    "type": "string"
+                                                },
+                                                "scope": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "brokerage",
+                                                        "team"
+                                                    ]
+                                                },
+                                                "team": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "courses": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "type": {
+                                                                "type": "string"
+                                                            },
+                                                            "ce_hours": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "assigned": {
+                                                                "type": "integer"
+                                                            },
+                                                            "done": {
+                                                                "type": "integer"
+                                                            },
+                                                            "overdue": {
+                                                                "type": "integer"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "title",
+                                                            "type",
+                                                            "ce_hours",
+                                                            "assigned",
+                                                            "done",
+                                                            "overdue"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "brokerage",
+                                                "scope",
+                                                "team",
+                                                "courses"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/organisation/brief": {
+            "get": {
+                "operationId": "brokerage.brief",
+                "description": "Agents who need help, deals at risk, approvals waiting, agents due for CE (null without \"sponsor agents\") and closings this month. Counts and stages only.",
+                "summary": "The broker's morning brief",
+                "tags": [
+                    "Reports"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "date": {
+                                                    "type": "string"
+                                                },
+                                                "brokerage": {
+                                                    "type": "string"
+                                                },
+                                                "scope": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "brokerage",
+                                                        "team"
+                                                    ]
+                                                },
+                                                "team": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "settings": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "quiet_days": {
+                                                            "type": "integer"
+                                                        },
+                                                        "no_deal_days": {
+                                                            "type": "integer"
+                                                        },
+                                                        "new_days": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "quiet_days",
+                                                        "no_deal_days",
+                                                        "new_days"
+                                                    ]
+                                                },
+                                                "need_help": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "count": {
+                                                            "type": "integer"
+                                                        },
+                                                        "agents": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "signals": {
+                                                                        "type": "array",
+                                                                        "items": {
+                                                                            "type": "string"
+                                                                        }
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "name",
+                                                                    "signals"
+                                                                ]
+                                                            }
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "count",
+                                                        "agents"
+                                                    ]
+                                                },
+                                                "at_risk": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "count": {
+                                                            "type": "integer"
+                                                        },
+                                                        "deals": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "agent": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "stage": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "city": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "reasons": {
+                                                                        "type": "array",
+                                                                        "items": {
+                                                                            "type": "string"
+                                                                        }
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "agent",
+                                                                    "stage",
+                                                                    "city",
+                                                                    "reasons"
+                                                                ]
+                                                            }
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "count",
+                                                        "deals"
+                                                    ]
+                                                },
+                                                "approvals": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "waiting": {
+                                                            "type": "integer"
+                                                        },
+                                                        "overdue": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "waiting",
+                                                        "overdue"
+                                                    ]
+                                                },
+                                                "ce_due": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "closings": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "count": {
+                                                            "type": "integer"
+                                                        },
+                                                        "volume": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "count",
+                                                        "volume"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "date",
+                                                "brokerage",
+                                                "scope",
+                                                "team",
+                                                "settings",
+                                                "need_help",
+                                                "at_risk",
+                                                "approvals",
+                                                "ce_due",
+                                                "closings"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
                     },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"

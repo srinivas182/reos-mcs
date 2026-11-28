@@ -207,3 +207,28 @@ export async function releaseAgent(agentId: number, effectiveOn: string, handove
 export function dueRows(table: CeTable): CeRow[] {
   return table.rows.filter((r) => r.status === 'due' || r.status === 'behind' || r.status === 'overdue');
 }
+
+export type BrokerBrief = Got<'/organisation/brief'>['data'];
+export type ClosingsReport = Got<'/organisation/reports/closings'>['data'];
+export type ReportPeriod = ClosingsReport['period'];
+
+export const PERIODS: ReportPeriod[] = ['this_month', 'last_month', 'this_quarter', 'this_year', 'last_year'];
+
+/** The broker's morning brief (A16.3): who needs help, deals at risk, approvals, CE due, closings. */
+export async function loadBrief(): Promise<BrokerBrief | null> {
+  const { data } = await api().GET('/organisation/brief');
+
+  return data ? data.data : null;
+}
+
+/** Closings matched to the transaction tool (A16.3). */
+export async function loadClosings(period: ReportPeriod): Promise<ClosingsReport | null> {
+  const { data } = await api().GET('/organisation/reports/closings', { params: { query: { period } } });
+
+  return data ? data.data : null;
+}
+
+/** Nothing in the brief needs the broker this morning. */
+export function briefClear(brief: BrokerBrief): boolean {
+  return brief.need_help.count + brief.at_risk.count + brief.approvals.waiting + (brief.ce_due ?? 0) === 0;
+}

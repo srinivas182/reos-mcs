@@ -1,4 +1,25 @@
-import { dueRows, remindAllDue, type CeTable, loadBrokerView, needingHelp, type OversightBoard, checkRule, chooseSeats, clearItem, detailText, firstOpen, inviteAll, itemsFor, lookupLicence, ready, type Approvals } from './brokerage';
+import {
+  briefClear,
+  type BrokerBrief,
+  loadBrief,
+  loadClosings,
+  dueRows,
+  remindAllDue,
+  type CeTable,
+  loadBrokerView,
+  needingHelp,
+  type OversightBoard,
+  checkRule,
+  chooseSeats,
+  clearItem,
+  detailText,
+  firstOpen,
+  inviteAll,
+  itemsFor,
+  lookupLicence,
+  ready,
+  type Approvals,
+} from './brokerage';
 
 const mockApi = { GET: jest.fn(), POST: jest.fn(), PUT: jest.fn() };
 jest.mock('@/lib/api', () => ({ api: () => mockApi }));
@@ -104,5 +125,20 @@ describe('CE compliance on the phone (A16.2)', () => {
     mockApi.POST.mockResolvedValueOnce({ data: { data: { sent: 3, skipped: 0, table } } });
     await expect(remindAllDue()).resolves.toMatchObject({ sent: 3 });
     expect(mockApi.POST).toHaveBeenLastCalledWith('/organisation/ce/remind');
+  });
+});
+
+describe('reports and the morning brief on the phone (A16.3)', () => {
+  it('loads closings for a period and the brief, and knows a clear morning', async () => {
+    mockApi.GET.mockResolvedValueOnce({ data: { data: { period: 'last_month', totals: { count: 1, volume: 389000 } } } });
+    await expect(loadClosings('last_month')).resolves.toMatchObject({ totals: { count: 1 } });
+    expect(mockApi.GET).toHaveBeenLastCalledWith('/organisation/reports/closings', { params: { query: { period: 'last_month' } } });
+
+    const brief = { need_help: { count: 0 }, at_risk: { count: 0 }, approvals: { waiting: 0 }, ce_due: null } as unknown as BrokerBrief;
+    expect(briefClear(brief)).toBe(true);
+    expect(briefClear({ ...brief, ce_due: 2 })).toBe(false);
+    mockApi.GET.mockResolvedValueOnce({ data: { data: brief } });
+    await expect(loadBrief()).resolves.toBe(brief);
+    expect(mockApi.GET).toHaveBeenLastCalledWith('/organisation/brief');
   });
 });

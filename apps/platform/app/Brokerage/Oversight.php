@@ -317,7 +317,8 @@ final readonly class Oversight
         return Licence::query()->where('user_id', $agent->id)->where('state_code', $state)->first() ?? Licence::query()->where('user_id', $agent->id)->first();
     }
 
-    private function teamOf(User $agent, Organisation $brokerage): ?string
+    /** The team an agent is on inside the brokerage, or null. */
+    public function teamOf(User $agent, Organisation $brokerage): ?string
     {
         foreach ($this->memberships->of($agent) as $m) {
             if ($m->role === Role::Agent && $m->organisation->parent_id === $brokerage->id) {
