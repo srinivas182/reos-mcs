@@ -98,7 +98,8 @@
     "videoPractice": "Práctica en video",
     "openHouses": "Casas abiertas",
     "referrals": "Referencias",
-    "farming": "Prospección por zona"
+    "farming": "Prospección por zona",
+    "approvals": "Aprobaciones"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -2354,7 +2355,9 @@
         "policy_rule.added": "Se agregó una regla de la agencia",
         "policy_rule.changed": "Se cambió una regla de la agencia",
         "policy_rule.removed": "Se quitó una regla de la agencia",
-        "policy_rule.restored": "Se restauró una regla de la agencia"
+        "policy_rule.restored": "Se restauró una regla de la agencia",
+        "approvals.settings": "Se cambió el respaldo de aprobaciones",
+        "approvals.fallback": "Se pasó un elemento pendiente a los administradores de oficina"
       }
     }
   },
@@ -5654,7 +5657,8 @@
       "agent_feedback": "Opiniones de agentes",
       "new_lead": "Nuevos clientes potenciales",
       "referral": "Referencias",
-      "invite_reward": "Premios por invitaciones"
+      "invite_reward": "Premios por invitaciones",
+      "approval_overdue": "Aprobaciones que esperan demasiado"
     },
     "digest": {
       "subject": {
@@ -10872,6 +10876,83 @@
       "trecSource": "Leer la regla de TREC",
       "ok": "Sin conflicto con las reglas de TREC.",
       "readOnly": "Su bróker designado administra las políticas."
+    },
+    "approvals": {
+      "title": "Aprobaciones",
+      "purpose": "Publicaciones, páginas públicas y preguntas de los agentes que esperan su revisión, de la más antigua a la más reciente.",
+      "teamPurpose": "Publicaciones, páginas públicas y preguntas de {{team}}, de la más antigua a la más reciente.",
+      "filters": {
+        "all": "Todo",
+        "post": "Publicaciones",
+        "page": "Páginas",
+        "question": "Preguntas"
+      },
+      "filterLabel": "Mostrar",
+      "counts": "{{posts}} publicaciones · {{pages}} páginas · {{questions}} preguntas",
+      "overdueCount_one": "{{count}} superó su límite de {{hours}} horas",
+      "overdueCount_other": "{{count}} superaron su límite de {{hours}} horas",
+      "kinds": {
+        "post": "Publicación",
+        "page": "Página pública",
+        "question": "Pregunta"
+      },
+      "waited": "Lleva {{hours}} horas hábiles esperando",
+      "waitedNew": "Recién llegado",
+      "overdue": "Superó el límite",
+      "emptyTitle": "No hay nada pendiente",
+      "empty": "Cuando un agente le envíe una publicación, una página pública o una pregunta, aparecerá aquí.",
+      "chooseTitle": "Elija un elemento",
+      "choose": "Elija un elemento de la lista para revisarlo aquí.",
+      "from": "De {{agent}}",
+      "channels": "Se publicará en: {{channels}}",
+      "scheduled": "Programado para {{date}}",
+      "issues": "Revisión de publicidad",
+      "noIssues": "No se encontraron problemas de publicidad.",
+      "agentReason": "Motivo de {{agent}}: {{reason}}",
+      "openPage": "Abrir la página",
+      "aiAnswer": "La respuesta del bróker virtual",
+      "reason": "Por qué le llegó",
+      "deal": "Sobre: {{property}}",
+      "approve": "Aprobar",
+      "return": "Devolver",
+      "note": "Nota para el agente",
+      "noteHint": "Indique qué debe cambiar. El agente verá esta nota.",
+      "answer": "Su respuesta",
+      "answerHint": "El agente verá su respuesta junto con la pregunta.",
+      "send": "Enviar respuesta",
+      "addToKnowledge": "Agregar esta respuesta al conocimiento de la correduría para que el bróker virtual pueda usarla",
+      "approved": "Aprobado. Ya está en camino.",
+      "returned": "Devuelto a {{agent}}.",
+      "answered": "Respuesta enviada a {{agent}}.",
+      "settings": {
+        "title": "Respaldo de administradores de oficina",
+        "purpose": "Si un elemento espera más que esto, REOS le avisa a usted y a los administradores de oficina que lo atienden.",
+        "hours": "Horas hábiles de espera",
+        "hoursHint": "Las horas hábiles son de 8 a. m. a 6 p. m., hora del centro, de lunes a viernes.",
+        "save": "Guardar",
+        "saved": "Respaldo fijado en {{count}} horas hábiles."
+      },
+      "errors": {
+        "action": "Esa acción no corresponde a este elemento.",
+        "note": "Agregue una nota para que el agente sepa qué cambiar.",
+        "answer": "Escriba su respuesta primero."
+      },
+      "notify": {
+        "title": {
+          "post": "La publicación de {{agent}} sigue esperando",
+          "page": "La página pública de {{agent}} sigue esperando",
+          "question": "La pregunta de {{agent}} sigue esperando"
+        },
+        "body": "Lleva más de {{hours}} horas hábiles esperando. Abra Aprobaciones para atenderla.",
+        "open": "Abrir Aprobaciones"
+      },
+      "phone": {
+        "title": "Aprobaciones",
+        "waiting_one": "{{count}} pendiente",
+        "waiting_other": "{{count}} pendientes",
+        "review": "Revisar",
+        "back": "Aprobaciones"
+      }
     }
   }
 }

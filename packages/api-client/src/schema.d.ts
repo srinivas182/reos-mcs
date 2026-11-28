@@ -169,6 +169,66 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/organisation/approvals": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * The approvals queue
+         * @description What the signed-in broker can clear: everything for the designated broker; an office admin's duties; a team leader's team. Each item says how many working hours it has waited and whether it's past the brokerage's limit.
+         */
+        get: operations["brokerage.approvals"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organisation/approvals/{kind}/{item}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Clear one item
+         * @description Approve or return (with a note) a post or page; answer a question, optionally adding the answer to the brokerage's knowledge. Returns the queue.
+         */
+        post: operations["brokerage.approvals.act"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organisation/approvals/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Set the fallback limit
+         * @description How many working hours (8 AM to 6 PM Central, Monday to Friday) an item may wait before the office admins are told. The designated broker only.
+         */
+        put: operations["brokerage.approvals.settings"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/ask/threads": {
         parameters: {
             query?: never;
@@ -6854,6 +6914,23 @@ export interface components {
             } | null;
         };
         /**
+         * ApprovalActionRequest
+         * @description Clear one item in the approvals queue (A15.3): approve, return with a note, or answer.
+         */
+        ApprovalActionRequest: {
+            /** @enum {string} */
+            action: "approve" | "return" | "answer";
+            text?: string | null;
+            add_to_knowledge?: boolean;
+        };
+        /**
+         * ApprovalSettingsRequest
+         * @description How many working hours an item may wait before the office admins are told (A15.3).
+         */
+        ApprovalSettingsRequest: {
+            fallback_hours: number;
+        };
+        /**
          * AskBrokerRequest
          * @description A question to the virtual broker (A12.1): the words, and the deal it's about if any.
          */
@@ -8614,6 +8691,8 @@ export type SchemaAddLicenceRequest = components['schemas']['AddLicenceRequest']
 export type SchemaAgentPageRequest = components['schemas']['AgentPageRequest'];
 export type SchemaAnswerQuestionRequest = components['schemas']['AnswerQuestionRequest'];
 export type SchemaAppConfigResource = components['schemas']['AppConfigResource'];
+export type SchemaApprovalActionRequest = components['schemas']['ApprovalActionRequest'];
+export type SchemaApprovalSettingsRequest = components['schemas']['ApprovalSettingsRequest'];
 export type SchemaAskBrokerRequest = components['schemas']['AskBrokerRequest'];
 export type SchemaAskInstructorRequest = components['schemas']['AskInstructorRequest'];
 export type SchemaAskRequest = components['schemas']['AskRequest'];
@@ -9243,6 +9322,199 @@ export interface operations {
                     "application/json": components["schemas"]["AppConfigResource"];
                 };
             };
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "brokerage.approvals": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            brokerage: string;
+                            /** @enum {string} */
+                            scope: "brokerage" | "team";
+                            team: string | null;
+                            fallback_hours: number;
+                            can: {
+                                posts: boolean;
+                                questions: boolean;
+                                settings: boolean;
+                            };
+                            counts: {
+                                posts: number;
+                                pages: number;
+                                questions: number;
+                                overdue: number;
+                            };
+                            items: {
+                                /** @enum {string} */
+                                kind: "post" | "page" | "question";
+                                id: string;
+                                agent: string;
+                                summary: string;
+                                waiting_since: string | null;
+                                hours: number;
+                                overdue: boolean;
+                                detail: {
+                                    [key: string]: unknown;
+                                };
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "brokerage.approvals.act": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                kind: string;
+                item: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ApprovalActionRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            brokerage: string;
+                            /** @enum {string} */
+                            scope: "brokerage" | "team";
+                            team: string | null;
+                            fallback_hours: number;
+                            can: {
+                                posts: boolean;
+                                questions: boolean;
+                                settings: boolean;
+                            };
+                            counts: {
+                                posts: number;
+                                pages: number;
+                                questions: number;
+                                overdue: number;
+                            };
+                            items: {
+                                /** @enum {string} */
+                                kind: "post" | "page" | "question";
+                                id: string;
+                                agent: string;
+                                summary: string;
+                                waiting_since: string | null;
+                                hours: number;
+                                overdue: boolean;
+                                detail: {
+                                    [key: string]: unknown;
+                                };
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "brokerage.approvals.settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ApprovalSettingsRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            brokerage: string;
+                            /** @enum {string} */
+                            scope: "brokerage" | "team";
+                            team: string | null;
+                            fallback_hours: number;
+                            can: {
+                                posts: boolean;
+                                questions: boolean;
+                                settings: boolean;
+                            };
+                            counts: {
+                                posts: number;
+                                pages: number;
+                                questions: number;
+                                overdue: number;
+                            };
+                            items: {
+                                /** @enum {string} */
+                                kind: "post" | "page" | "question";
+                                id: string;
+                                agent: string;
+                                summary: string;
+                                waiting_since: string | null;
+                                hours: number;
+                                overdue: boolean;
+                                detail: {
+                                    [key: string]: unknown;
+                                };
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
             /** @description Too many requests */
             429: {
                 headers: {

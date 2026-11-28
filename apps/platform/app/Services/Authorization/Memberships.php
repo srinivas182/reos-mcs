@@ -102,6 +102,25 @@ final readonly class Memberships
         return User::query()->whereIn('id', $ids)->get();
     }
 
+    /**
+     * Holders of a role in an organisation or any of its teams (A15.3): a
+     * brokerage's agents include those on its teams.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection<int, User>
+     */
+    public function holdersInTree(Role $role, Organisation $organisation): \Illuminate\Database\Eloquent\Collection
+    {
+        $places = [$organisation->id, ...Organisation::query()->where('parent_id', $organisation->id)->pluck('id')->all()];
+        $ids = DB::table('model_has_roles')
+            ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+            ->where('roles.name', $role->value)
+            ->where('model_has_roles.model_type', (new User)->getMorphClass())
+            ->whereIn('model_has_roles.organisation_id', $places)
+            ->pluck('model_has_roles.model_id');
+
+        return User::query()->whereIn('id', $ids)->get();
+    }
+
     /** Give someone a role, audited (the People screen and invitations). */
     public function grant(User $user, Role $role, Organisation $organisation, ?User $actor = null): Membership
     {

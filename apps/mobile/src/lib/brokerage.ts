@@ -102,3 +102,37 @@ export async function addRule(topic: string, text: string): Promise<BrokerageRul
 
   return data ? data.data : fail(error);
 }
+
+export type Approvals = Got<'/organisation/approvals'>['data'];
+export type ApprovalItem = Approvals['items'][number];
+export type ApprovalKind = ApprovalItem['kind'];
+export type ApprovalAction = 'approve' | 'return' | 'answer';
+
+/** One approvals queue (A15.3): posts, public pages and escalated questions, oldest first. */
+export async function loadApprovals(): Promise<Approvals | null> {
+  const { data } = await api().GET('/organisation/approvals');
+
+  return data ? data.data : null;
+}
+
+/** Approve or send back a post or page, or answer a question; returns the queue. */
+export async function clearItem(item: Pick<ApprovalItem, 'kind' | 'id'>, action: ApprovalAction, text: string | null, addToKnowledge = false): Promise<Approvals> {
+  const { data, error } = await api().POST('/organisation/approvals/{kind}/{item}', {
+    params: { path: { kind: item.kind, item: item.id } },
+    body: { action, text: text === null ? null : text.trim(), add_to_knowledge: action === 'answer' && addToKnowledge },
+  });
+
+  return data ? data.data : fail(error);
+}
+
+/** Items to show for a filter. */
+export function itemsFor(queue: Approvals, kind: ApprovalKind | 'all'): ApprovalItem[] {
+  return queue.items.filter((i) => kind === 'all' || i.kind === kind);
+}
+
+/** A string from an item's detail, or null. */
+export function detailText(item: ApprovalItem, key: string): string | null {
+  const v = item.detail[key];
+
+  return typeof v === 'string' && v !== '' ? v : null;
+}

@@ -90,3 +90,5 @@ Schedule::command('reos:social:insights')->hourlyAt(20)->withoutOverlapping()->o
 // The morning brief at each agent's chosen time (A11.1c).
 Schedule::command('reos:agents:briefs')->everyFiveMinutes()->withoutOverlapping()->onOneServer();
 Schedule::command('reos:certificates:prune')->dailyAt('04:25')->onOneServer();
+// Approvals waiting past the brokerage's working hours go to the office admins (A15.3).
+Schedule::command('reos:approvals:fallback')->everyFifteenMinutes()->withoutOverlapping()->onOneServer();

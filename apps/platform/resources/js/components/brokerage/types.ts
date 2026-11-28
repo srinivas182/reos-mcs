@@ -129,3 +129,31 @@ export type StaffPerson = {
     duties: Duty[];
     editable: boolean;
 };
+
+export type ApprovalKind = 'post' | 'page' | 'question';
+
+export type ApprovalItem = {
+    kind: ApprovalKind;
+    id: string;
+    agent: string;
+    summary: string;
+    waiting_since: string | null;
+    hours: number;
+    overdue: boolean;
+    detail: Record<string, unknown>;
+};
+
+export type ApprovalsQueueData = {
+    brokerage: string;
+    scope: 'brokerage' | 'team';
+    team: string | null;
+    fallback_hours: number;
+    can: { posts: boolean; questions: boolean; settings: boolean };
+    counts: {
+        posts: number;
+        pages: number;
+        questions: number;
+        overdue: number;
+    };
+    items: ApprovalItem[];
+};

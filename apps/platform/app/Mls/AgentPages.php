@@ -126,7 +126,7 @@ final readonly class AgentPages
      */
     public function pending(Organisation $brokerage): array
     {
-        $agents = $this->memberships->holdersIn(Role::Agent, $brokerage)->pluck('id')->all();
+        $agents = $this->memberships->holdersInTree(Role::Agent, $brokerage)->pluck('id')->all();
 
         return array_values(AgentPage::query()->whereIn('user_id', $agents)->whereNotNull('approval_requested_at')->with('user')->orderBy('approval_requested_at')->limit(100)->get()
             ->map(static fn (AgentPage $p): array => ['id' => $p->handle, 'agent' => (string) $p->user->name, 'bio' => $p->bio, 'url' => route('agent-pages.show', $p->handle), 'requested_at' => $p->approval_requested_at?->toIso8601String()])->all());
@@ -135,7 +135,7 @@ final readonly class AgentPages
     /** The broker approves a waiting page (it goes live) or sends it back with a note. */
     public function decide(User $broker, Organisation $brokerage, string $handle, bool $approve, ?string $note = null): void
     {
-        $agents = $this->memberships->holdersIn(Role::Agent, $brokerage)->pluck('id')->all();
+        $agents = $this->memberships->holdersInTree(Role::Agent, $brokerage)->pluck('id')->all();
         $page = AgentPage::query()->where('handle', $handle)->whereIn('user_id', $agents)->whereNotNull('approval_requested_at')->with('user')->firstOrFail();
         $page->forceFill(['published' => $approve, 'approval_requested_at' => null, 'approval_note' => $approve ? null : mb_substr(trim((string) $note), 0, 500)])->save();
         $this->audit->record($approve ? 'agent_page.approved' : 'agent_page.returned', 'agent_page', $page->handle, ['agent' => $page->user_id], $broker, $brokerage->id);

@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\Billing\EarningsController;
 use App\Http\Controllers\Api\Billing\EntitlementController;
 use App\Http\Controllers\Api\Billing\MembershipController;
 use App\Http\Controllers\Api\Bookings\BookingController;
+use App\Http\Controllers\Api\Brokerage\ApprovalsController;
 use App\Http\Controllers\Api\Brokerage\BrokerageSetupController;
 use App\Http\Controllers\Api\Brokerage\BrokerVerificationController;
 use App\Http\Controllers\Api\Brokerage\PoliciesController;
@@ -582,6 +583,9 @@ Route::middleware('auth:sanctum')->group(function () {
     // People and permissions, and brokerage rules checked against TREC (A15.2).
     Route::get('organisation/staff', [StaffController::class, 'index'])->name('api.brokerage.staff');
     Route::put('organisation/staff/{member}', [StaffController::class, 'update'])->whereNumber('member')->middleware('throttle:30,1,api-staff')->name('api.brokerage.staff.update');
+    Route::get('organisation/approvals', [ApprovalsController::class, 'index'])->name('api.brokerage.approvals');
+    Route::post('organisation/approvals/{kind}/{item}', [ApprovalsController::class, 'act'])->whereIn('kind', ['post', 'page', 'question'])->where('item', '[A-Za-z0-9-]{1,80}')->middleware('throttle:60,1,api-approvals-act')->name('api.brokerage.approvals.act');
+    Route::put('organisation/approvals/settings', [ApprovalsController::class, 'settings'])->middleware('throttle:20,1,api-approvals-settings')->name('api.brokerage.approvals.settings');
     Route::get('organisation/policies', [PoliciesController::class, 'index'])->name('api.brokerage.policies');
     Route::post('organisation/policies/check', [PoliciesController::class, 'check'])->middleware('throttle:60,1,api-policy-check')->name('api.brokerage.policies.check');
     Route::middleware('throttle:30,1,api-policy-rules')->group(function () {

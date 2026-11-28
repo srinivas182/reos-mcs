@@ -118,6 +118,20 @@
 - **Answers become knowledge:** an answer can be added to the FAQ or as a manual note, with the topic.
 - **Phone:** the broker's Approvals tab, Review a post, and Answer an agent (broker journey screens 7–12).
 - **Done when:** a broker clears the queue on the web and on the phone.
+- **As built, A15.3** (ADR 0072):
+  - **Data:** `approval_fallbacks` (each item passed to the office admins once, with row-level security) and `organisations.approval_settings` (the limit in working hours).
+  - **Services:**
+    - `App\Brokerage\ApprovalsQueue`: for (the queue by duty and team, oldest first), act (approve, return with a note, or answer with "add to knowledge"), and setFallbackHours (designated broker only, audited).
+    - `App\Brokerage\WorkingHours`: 8 AM to 6 PM Central, Monday to Friday.
+    - `App\Brokerage\ApprovalFallbacks` with `reos:approvals:fallback` every 15 minutes, sending the `ApprovalOverdue` notification (kind `approval_overdue`, in the organization group).
+    - `Memberships::holdersInTree`, so team agents' posts and pages reach the brokerage.
+  - **Routes:**
+    - API: `GET /api/v1/organisation/approvals`, `POST /api/v1/organisation/approvals/{kind}/{item}`, and `PUT /api/v1/organisation/approvals/settings`.
+    - Web: the same actions, and `/organisation/approvals`.
+  - **Web:** Brokerage › Approvals (`approvals-queue`): filters, the list and the item side by side, the overdue count, and the fallback setting. Approvals is now in the broker sidebar.
+  - **Phone:** Your brokerage → Approvals (`brokerage/approvals`) and Review (`brokerage/review`: a post with its checks, a page, or a question with the AI's answer).
+  - **Not yet:** coordinator requests, which arrive with transaction coordinators. Answers go to the FAQ; a manual note is written as a brokerage rule on Policies.
+  - **Done when:** a Pest test has the designated broker clear a post, a team agent's page and an escalated question on the web, and a post through the phone's API, leaving the queue empty. Office admins see only their duties, a team leader only their team, and a post sent at noon on Friday is overdue at 9 AM on Monday (7 working hours). The fallback tells the designated broker and the office admin with the duty once. Jest covers the phone's queue calls.
 
 ### B15.1 Categories in onboarding (Team B)
 

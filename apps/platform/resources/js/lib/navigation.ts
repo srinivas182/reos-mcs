@@ -16,6 +16,7 @@ import {
     LayoutGrid,
     Map as MapIcon,
     Megaphone,
+    ClipboardCheck,
     MessageCircleQuestion,
     MessageSquare,
     Palette,
@@ -89,6 +90,7 @@ import { index as recruitingIndex } from '@/routes/recruiting';
 import { index as virtualBroker } from '@/routes/virtual-broker';
 import { index as contractReview } from '@/routes/contracts';
 import { index as brokerVirtualBroker } from '@/routes/organisation/virtual-broker';
+import { index as approvalsIndex } from '@/routes/approvals';
 import { index as policiesIndex } from '@/routes/policies';
 import { index as mentorProgram } from '@/routes/organisation/mentors';
 import { index as mentorWorkspace } from '@/routes/mentoring';
@@ -143,6 +145,7 @@ export type NavLabel =
     | 'virtualBroker'
     | 'contractReview'
     | 'policies'
+    | 'approvals'
     | 'mentorProgram'
     | 'mentorWorkspace'
     | 'podAndChallenges'
@@ -337,7 +340,13 @@ export function roleNavigation(
             home,
             messages,
             announcements,
-            planned('approvals'),
+            // One approvals queue (A15.3, screens 7–12): posts, pages and escalated questions.
+            item(
+                'approvals',
+                ClipboardCheck,
+                approvalsIndex(),
+                '/organisation/approvals',
+            ),
             item('agents', Users, agentsIndex()),
             planned('ceCompliance'),
             // Teach the virtual broker and answer agents (A12.1, screen 34).
