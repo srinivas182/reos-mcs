@@ -87,7 +87,7 @@ describe('the mentor program (A13.1a)', function () {
         expect($paid)->toMatchArray(['status' => 'confirmed', 'price' => 7500, 'paid_with' => 'points', 'points' => 7500])
             ->and(app(Points::class)->balance($this->priya))->toBe(12500);
 
-        // Dana earns her share as for a card payment (REOS funds the points).
+        // Dana earns her share as for a card payment; her brokerage funds the points (A17.1).
         $order = Order::query()->where('gateway', 'points')->sole();
         expect($order->total_cents)->toBe(7500)
             ->and(PayoutLine::query()->where('order_id', $order->id)->where('payee_id', $this->dana->id)->sole()->amount_cents)->toBe(6750);

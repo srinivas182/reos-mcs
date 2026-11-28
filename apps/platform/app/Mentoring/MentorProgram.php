@@ -61,7 +61,7 @@ final readonly class MentorProgram
     /**
      * The broker's view (screen 21): mentors with load, price and rating; agents with their mentor.
      *
-     * @return array{mentors: list<MentorRow>, agents: list<AgentRow>, topics: list<string>, reviews: list<ReviewRow>}
+     * @return array{mentors: list<MentorRow>, agents: list<AgentRow>, topics: list<string>, reviews: list<ReviewRow>, points: array{sessions: int, funded: int}}
      */
     public function program(Organisation $brokerage): array
     {
@@ -93,7 +93,11 @@ final readonly class MentorProgram
 
         usort($agents, static fn (array $a, array $b): int => [$a['mentor'] !== null, $a['name']] <=> [$b['mentor'] !== null, $b['name']]);
 
-        return ['mentors' => $mentors, 'agents' => $agents, 'topics' => self::TOPICS, 'reviews' => $this->reviews($brokerage)];
+        // Points sessions with the brokerage's mentors this month, which the brokerage funds (A17.1).
+        $points = SessionBooking::query()->whereIn('instructor_id', array_column($mentors, 'id'))->where('paid_with', 'points')
+            ->whereNotIn('status', ['refunded', 'cancelled', 'no_show'])->where('created_at', '>=', now()->startOfMonth());
+
+        return ['mentors' => $mentors, 'agents' => $agents, 'topics' => self::TOPICS, 'reviews' => $this->reviews($brokerage), 'points' => ['sessions' => (clone $points)->count(), 'funded' => (int) (clone $points)->sum('points')]];
     }
 
     /**

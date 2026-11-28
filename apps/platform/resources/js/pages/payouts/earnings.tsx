@@ -12,6 +12,7 @@ import { connect } from '@/routes/earnings';
 
 const TONE: Record<EarningLine['status'], string> = {
     pending: 'bg-reos-tone-info-bg text-reos-tone-info-fg',
+    held: 'bg-reos-tone-neutral-bg text-reos-tone-neutral-fg',
     paid: 'bg-reos-tone-success-bg text-reos-tone-success-fg',
     cancelled: 'bg-reos-tone-neutral-bg text-reos-tone-neutral-fg',
     reversed: 'bg-reos-tone-warning-bg text-reos-tone-warning-fg',
@@ -29,6 +30,8 @@ export default function Earnings({
         net_this_month: number;
         fee_percent: number;
         pending: number;
+        /** Points sessions that haven't happened yet (A17.1). */
+        held?: number;
         next_payout: string;
         account: PayoutAccount;
         lines: EarningLine[];
@@ -68,6 +71,16 @@ export default function Earnings({
                         <p className="text-title font-semibold tabular-nums">
                             {money(statement.pending, i18n.language)}
                         </p>
+                        {statement.held ? (
+                            <p className="text-base text-muted-foreground">
+                                {t('payouts.earnings.held', {
+                                    amount: money(
+                                        statement.held,
+                                        i18n.language,
+                                    ),
+                                })}
+                            </p>
+                        ) : null}
                     </div>
                 </div>
                 <div className="grid gap-6 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">

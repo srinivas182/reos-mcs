@@ -79,4 +79,32 @@ final readonly class Points
 
         return true;
     }
+
+    /**
+     * A brokerage funds the points its agent spent on one of its mentors
+     * (A17.1, decision 1): from the brokerage's points account, which goes
+     * negative by what it owes, like campaign bonuses. Once per session.
+     */
+    public function fundSession(Organisation $brokerage, int $points, string $for): bool
+    {
+        if ($points <= 0 || $this->ledger->posted('points_session_funded', 'session', $for)) {
+            return false;
+        }
+
+        $this->ledger->post('points_session_funded', [[$this->ledger->organisation($brokerage, 'points'), -$points], [$this->ledger->platform('points_issued'), $points]], 'session', $for, $for);
+
+        return true;
+    }
+
+    /** The session was refunded: the brokerage no longer funds it. */
+    public function unfundSession(Organisation $brokerage, int $points, string $for): bool
+    {
+        if ($points <= 0 || ! $this->ledger->posted('points_session_funded', 'session', $for) || $this->ledger->posted('points_session_unfunded', 'session', $for)) {
+            return false;
+        }
+
+        $this->ledger->post('points_session_unfunded', [[$this->ledger->platform('points_issued'), -$points], [$this->ledger->organisation($brokerage, 'points'), $points]], 'session', $for, $for);
+
+        return true;
+    }
 }

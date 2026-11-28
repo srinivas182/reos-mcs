@@ -19255,6 +19255,7 @@ export interface operations {
                         net_this_month: number;
                         fee_percent: number;
                         pending: number;
+                        held: number;
                         next_payout: string;
                         account: {
                             /** @enum {string} */
@@ -19270,7 +19271,7 @@ export interface operations {
                             role: "seller" | "instructor" | "mentor";
                             amount: number;
                             /** @enum {string} */
-                            status: "pending" | "paid" | "cancelled" | "reversed";
+                            status: "pending" | "held" | "paid" | "cancelled" | "reversed";
                             date: string | null;
                         }[];
                         payouts: {

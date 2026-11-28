@@ -17,7 +17,7 @@ export type EarningLine = {
     product: string;
     role: 'seller' | 'instructor' | 'mentor';
     amount: number;
-    status: 'pending' | 'paid' | 'cancelled' | 'reversed';
+    status: 'pending' | 'held' | 'paid' | 'cancelled' | 'reversed';
     date: string | null;
 };
 

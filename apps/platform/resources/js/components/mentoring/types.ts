@@ -60,6 +60,8 @@ export type MentorProgramData = {
     agents: AgentRow[];
     topics: Topic[];
     reviews: ReviewRow[];
+    /** Points sessions with the brokerage's mentors this month, which it funds (A17.1). */
+    points?: { sessions: number; funded: number };
 };
 
 export type ReviewRow = {

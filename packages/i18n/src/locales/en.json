@@ -355,8 +355,10 @@
         "pending": "next payout",
         "paid": "paid",
         "cancelled": "refunded",
-        "reversed": "taken back"
-      }
+        "reversed": "taken back",
+        "held": "after the session"
+      },
+      "held": "{{amount}} more once your points sessions happen."
     }
   },
   "tabs": {
@@ -5005,7 +5007,8 @@
       "nextPayout": "Next payout · {{date}}",
       "lines": "What you earned",
       "emptyTitle": "No earnings yet",
-      "empty": "Your share of each course or session sale appears here as soon as it is paid."
+      "empty": "Your share of each course or session sale appears here as soon as it is paid.",
+      "held": "Plus {{amount}} for points sessions, paid once they happen."
     },
     "roles": {
       "seller": "School sale",
@@ -5016,7 +5019,8 @@
       "pending": "Next payout",
       "paid": "Paid",
       "cancelled": "Refunded",
-      "reversed": "Taken back"
+      "reversed": "Taken back",
+      "held": "After the session"
     },
     "simulator": {
       "eyebrow": "Simulator",
@@ -10158,7 +10162,9 @@
       "reviewsHint": "Low ratings with a comment count only once you keep them.",
       "keep": "Keep",
       "hide": "Hide",
-      "noReviews": "No ratings to review"
+      "noReviews": "No ratings to review",
+      "pointsFunded_one": "{{count}} points session with your mentors this month · {{amount}} funded by your brokerage",
+      "pointsFunded_other": "{{count}} points sessions with your mentors this month · {{amount}} funded by your brokerage"
     },
     "agent": {
       "assigned": "Your mentor",

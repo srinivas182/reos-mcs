@@ -113,6 +113,8 @@ final readonly class PayoutStatements
                 && ! in_array($l->status, [PayoutLineStatus::Cancelled, PayoutLineStatus::Reversed], true)), 'amount_cents'),
             'fee_percent' => RevenueSplit::platformFeePercent(),
             'pending' => $this->pending(ConnectedAccount::USER, $user->id),
+            // Points sessions not held yet (A17.1): paid once the session happens.
+            'held' => self::total(PayoutLine::query()->where('payee_type', ConnectedAccount::USER)->where('payee_id', $user->id)->where('status', PayoutLineStatus::Held)->get(['amount_cents']), 'amount_cents'),
             'next_payout' => self::nextPayout()->toDateString(),
             'account' => $this->accounts->summary($user),
             'lines' => array_values($lines->map(static fn (PayoutLine $l): array => [

@@ -9,6 +9,8 @@ enum PayoutLineStatus: string
 {
     /** Earned; goes out in the next weekly payout once the payee's Stripe account can take payouts. */
     case Pending = 'pending';
+    /** Waiting for the session it pays for to happen (a points session, A17.1); then pending. */
+    case Held = 'held';
     case Paid = 'paid';
     /** Refunded before it was paid out. */
     case Cancelled = 'cancelled';

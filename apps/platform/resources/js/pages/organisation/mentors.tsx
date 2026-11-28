@@ -9,6 +9,7 @@ import {
 import type { MatchRow, MentorProgramData } from '@/components/mentoring/types';
 import { ReviewQueue } from '@/components/mentoring/workspace';
 import { PageHeader } from '@/components/page-header';
+import { money } from '@/lib/billing';
 import { Button } from '@/components/ui/button';
 import { assign, matches, review, update } from '@/routes/organisation/mentors';
 import { index as agentsIndex } from '@/routes/agents';
@@ -19,7 +20,7 @@ import { index as agentsIndex } from '@/routes/agents';
  * Assign from the best matches. Agents only see this brokerage's mentors.
  */
 export default function MentorProgramPage(props: MentorProgramData) {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const [busy, setBusy] = useState(false);
     const done = { preserveScroll: true, onFinish: () => setBusy(false) };
 
@@ -39,6 +40,14 @@ export default function MentorProgramPage(props: MentorProgramData) {
                         </Button>
                     }
                 />
+                {props.points && props.points.sessions > 0 ? (
+                    <p className="rounded-reos-lg border border-border bg-card p-5 text-base">
+                        {t('mentoring.program.pointsFunded', {
+                            count: props.points.sessions,
+                            amount: money(props.points.funded, i18n.language),
+                        })}
+                    </p>
+                ) : null}
                 <section aria-labelledby="mentors-title" className="space-y-3">
                     <h2 id="mentors-title" className="text-lg font-semibold">
                         {t('mentoring.program.mentors')}

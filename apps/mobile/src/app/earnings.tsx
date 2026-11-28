@@ -39,11 +39,9 @@ export default function EarningsScreen() {
             <Text variant="headline" style={styles.light}>
               {money(earnings.net_this_month, i18n.language)}
             </Text>
-            <Text style={styles.muted}>
-              {ready
-                ? t('mobile.earnings.nextPayout', { day: nextDay, amount: money(earnings.pending, i18n.language) })
-                : t('mobile.earnings.notSetUp', { amount: money(earnings.pending, i18n.language) })}
-            </Text>
+            <Text style={styles.muted}>{ready ? t('mobile.earnings.nextPayout', { day: nextDay, amount: money(earnings.pending, i18n.language) }) : t('mobile.earnings.notSetUp', { amount: money(earnings.pending, i18n.language) })}</Text>
+            {/* Points sessions not held yet (A17.1). */}
+            {earnings.held > 0 ? <Text style={styles.muted}>{t('mobile.earnings.held', { amount: money(earnings.held, i18n.language) })}</Text> : null}
           </HeroCard>
 
           {groups.length === 0 ? (
