@@ -102,7 +102,8 @@
     "approvals": "Approvals",
     "providerJoin": "Joining",
     "serviceProviders": "Service providers",
-    "oversight": "Agents and deals"
+    "oversight": "Agents and deals",
+    "ceCompliance": "CE compliance"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -2372,7 +2373,11 @@
         "provider.profile_published": "Provider profile published",
         "provider.profile_blocked": "Provider profile held for wording",
         "oversight.settings": "Changed when agents are flagged",
-        "oversight.profile_viewed": "Viewed an agent's summary"
+        "oversight.profile_viewed": "Viewed an agent's summary",
+        "ce.reminded": "Reminded agents about CE",
+        "ce.course_assigned": "Assigned a course",
+        "sponsorship.released": "Released an agent",
+        "sponsorship.confirmed": "Sponsorship confirmed by TREC"
       }
     }
   },
@@ -5693,7 +5698,9 @@
       "new_lead": "New leads",
       "referral": "Referrals",
       "invite_reward": "Invite rewards",
-      "approval_overdue": "Approvals waiting too long"
+      "approval_overdue": "Approvals waiting too long",
+      "course_assigned": "Courses your brokerage assigns",
+      "sponsorship": "Sponsorship changes"
     },
     "digest": {
       "subject": {
@@ -11302,6 +11309,105 @@
         "none": "You're not with a brokerage."
       },
       "onTrack": "On track"
+    },
+    "ce": {
+      "title": "CE compliance",
+      "purpose": "Every agent's renewal, hours left and SAE, from TREC's rules and records.",
+      "teamPurpose": "Renewals, hours left and SAE for {{team}}.",
+      "counts": "{{due}} of {{agents}} agents due · {{done}} done",
+      "remindAll": "Remind all due agents",
+      "reminded": "Reminded {{count}} agents.",
+      "remindedNone": "No one to remind: everyone due was reminded this week.",
+      "skipped_one": "{{count}} was already reminded this week.",
+      "skipped_other": "{{count}} were already reminded this week.",
+      "statuses": {
+        "done": "Done",
+        "on_track": "On track",
+        "due": "Due soon",
+        "behind": "Behind",
+        "overdue": "Overdue",
+        "no_licence": "No Texas licence"
+      },
+      "columns": {
+        "agent": "Agent",
+        "status": "Status",
+        "renewal": "Renewal",
+        "hours": "Hours",
+        "assigned": "Assigned",
+        "reminded": "Reminded"
+      },
+      "hours": "{{left}} left of {{required}}",
+      "sae": "SAE",
+      "never": "Not yet",
+      "emptyTitle": "No agents yet",
+      "empty": "Agents appear here once they join your brokerage.",
+      "assign": {
+        "title": "Assign a course",
+        "course": "Course",
+        "who": "Who",
+        "due": "Everyone due",
+        "selected": "Agents I choose",
+        "pick": "Choose agents",
+        "dueOn": "Due by (optional)",
+        "submit": "Assign",
+        "assigned_one": "Assigned to {{count}} agent.",
+        "assigned_other": "Assigned to {{count}} agents.",
+        "noCourses": "No live courses to assign yet.",
+        "notifyTitle": "New course from your brokerage: {{course}}",
+        "notifyBody": "{{brokerage}} assigned it to you.",
+        "notifyDue": "{{brokerage}} assigned it to you, due by {{date}}.",
+        "open": "Open the course",
+        "done": "Done",
+        "errors": {
+          "course": "Choose a live course.",
+          "agents": "Choose at least one agent."
+        }
+      },
+      "notify": {
+        "title": "{{broker}} reminded you about CE",
+        "body": "You have {{hours}} hours left before your renewal on {{date}}.",
+        "sae": "You have {{hours}} SAE hours left before your first renewal on {{date}}. SAE can't be deferred."
+      }
+    },
+    "sponsorship": {
+      "title": "Sponsorship",
+      "purpose": "Agents joining and leaving your brokerage, confirmed against TREC's records.",
+      "kinds": {
+        "join": "Joined",
+        "release": "Released"
+      },
+      "statuses": {
+        "recorded": "Waiting for the date",
+        "done": "Waiting for TREC",
+        "confirmed": "Confirmed by TREC"
+      },
+      "joinWaiting": "Waiting for TREC",
+      "release": "Release an agent",
+      "agent": "Agent",
+      "date": "Release date",
+      "handover": "Hand open deals to",
+      "openDeals_one": "{{count}} open deal",
+      "openDeals_other": "{{count}} open deals",
+      "noDeals": "No open deals",
+      "submit": "Release",
+      "released": "{{agent}} is released on {{date}}.",
+      "row": "{{kind}} · {{agent}} · {{date}}",
+      "handedOver_one": "{{count}} deal to {{to}}",
+      "handedOver_other": "{{count}} deals to {{to}}",
+      "emptyTitle": "No changes yet",
+      "empty": "Joins and releases appear here.",
+      "noTrec": "Add your TREC brokerage licence to confirm changes against TREC's records.",
+      "errors": {
+        "date": "Choose a date from today up to {{days}} days ahead.",
+        "handover": "Choose who takes the {{count}} open deals.",
+        "already": "This agent's release is already recorded."
+      },
+      "notify": {
+        "releasedTitle": "{{brokerage}} is releasing your sponsorship",
+        "releasedBody": "Your sponsorship ends on {{date}}. Your licence, CE and contacts stay with you; open deals stay with the brokerage.",
+        "handoverTitle": "{{agent}}'s open deals are now yours",
+        "handoverBody": "{{count}} open deals were handed to you. {{agent}}'s release is on {{date}}."
+      }
     }
   }
 }

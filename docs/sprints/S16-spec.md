@@ -86,6 +86,32 @@
 - **Assign a course** to an agent, a team or everyone due.
 - **Sponsorship:** join and release with the date. The release has a **handover** of open deals to another agent or the broker. It's confirmed when TREC's file shows the change.
 - **Done when:** the broker reminds all due agents in one action.
+- **As built, A16.2** (ADR 0077):
+  - **Data:** `course_assignments`, `ce_broker_reminders` and `sponsorship_changes`, all with row-level security.
+  - **Services:**
+    - `App\Brokerage\CeCompliance`: table (status per agent), remindDue (once a week per agent, audited), assign (chosen agents or everyone due), markCompleted.
+    - `App\Brokerage\Sponsorships`:
+      - board;
+      - release, with the date and the handover;
+      - joined, from accepted invitations;
+      - run: `reos:sponsorships` daily after TREC's import, which ends roles on the date and confirms changes against TREC's file.
+    - Notifications: `CeBrokerReminder`, `CourseAssigned` (kind `course_assigned`) and `SponsorshipChanged` (kind `sponsorship`).
+  - **Routes:**
+    - API: `GET /api/v1/organisation/ce`, `POST /api/v1/organisation/ce/remind`, `POST /api/v1/organisation/ce/assign`, `GET /api/v1/organisation/sponsorships` and `POST /api/v1/organisation/sponsorships/release`.
+    - Web: the same actions, and `/organisation/ce`.
+  - **Web:** Brokerage › CE compliance (`ce-compliance`): the table with status, SAE, renewal, hours, assignments and the last reminder; Remind all due agents; Assign a course; and Sponsorship, with changes and their TREC status, and Release with a handover. CE compliance is now in the broker sidebar.
+  - **Phone:** Your brokerage → CE compliance (`brokerage/ce`: Remind all, assign to everyone due) and Sponsorship (`brokerage/sponsorship`).
+  - **Done when:** a Pest test shows Linda Park three agents:
+    - James Miller, renewing in a month with 18 hours to do: behind;
+    - Priya Shah, on SAE: behind;
+    - Dana Brooks: on track.
+
+    One "Remind all due agents" reaches James and Priya, the reminders naming Linda, but not Dana. A second the same week is skipped, and a week later it goes again. Other tests cover:
+    - a course assigned to everyone due, once, and marked done when completed;
+    - the duty and team scope;
+    - James released with his deal handed to Dana, his role ended, and confirmed once TREC's file no longer lists him;
+    - a future release taking effect on its date;
+    - a join confirmed against TREC.
 
 ### A16.3 Announcements, training and reports (Team A)
 

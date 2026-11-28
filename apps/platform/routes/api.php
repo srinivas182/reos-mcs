@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\Bookings\BookingController;
 use App\Http\Controllers\Api\Brokerage\ApprovalsController;
 use App\Http\Controllers\Api\Brokerage\BrokerageSetupController;
 use App\Http\Controllers\Api\Brokerage\BrokerVerificationController;
+use App\Http\Controllers\Api\Brokerage\CeComplianceController;
 use App\Http\Controllers\Api\Brokerage\OversightController;
 use App\Http\Controllers\Api\Brokerage\PoliciesController;
 use App\Http\Controllers\Api\Brokerage\RosterController;
@@ -614,6 +615,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('organisation/oversight/agents/{member}', [OversightController::class, 'show'])->whereNumber('member')->name('api.brokerage.oversight.agent');
     Route::put('organisation/oversight/settings', [OversightController::class, 'settings'])->middleware('throttle:20,1,api-oversight-settings')->name('api.brokerage.oversight.settings');
     Route::get('me/broker-view', [OversightController::class, 'mine'])->name('api.me.broker-view');
+    // CE compliance and sponsorship (A16.2).
+    Route::get('organisation/ce', [CeComplianceController::class, 'index'])->name('api.brokerage.ce');
+    Route::post('organisation/ce/remind', [CeComplianceController::class, 'remind'])->middleware('throttle:5,1,api-ce-remind')->name('api.brokerage.ce.remind');
+    Route::post('organisation/ce/assign', [CeComplianceController::class, 'assign'])->middleware('throttle:20,1,api-ce-assign')->name('api.brokerage.ce.assign');
+    Route::get('organisation/sponsorships', [CeComplianceController::class, 'sponsorships'])->name('api.brokerage.sponsorships');
+    Route::post('organisation/sponsorships/release', [CeComplianceController::class, 'release'])->middleware('throttle:10,1,api-sponsorship-release')->name('api.brokerage.sponsorships.release');
     Route::get('organisation/approvals', [ApprovalsController::class, 'index'])->name('api.brokerage.approvals');
     Route::post('organisation/approvals/{kind}/{item}', [ApprovalsController::class, 'act'])->whereIn('kind', ['post', 'page', 'question'])->where('item', '[A-Za-z0-9-]{1,80}')->middleware('throttle:60,1,api-approvals-act')->name('api.brokerage.approvals.act');
     Route::put('organisation/approvals/settings', [ApprovalsController::class, 'settings'])->middleware('throttle:20,1,api-approvals-settings')->name('api.brokerage.approvals.settings');

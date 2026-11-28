@@ -93,6 +93,7 @@ import { index as virtualBroker } from '@/routes/virtual-broker';
 import { index as contractReview } from '@/routes/contracts';
 import { index as brokerVirtualBroker } from '@/routes/organisation/virtual-broker';
 import { index as approvalsIndex } from '@/routes/approvals';
+import { index as ceComplianceIndex } from '@/routes/ce-compliance';
 import { index as oversightIndex } from '@/routes/oversight';
 import { index as policiesIndex } from '@/routes/policies';
 import { show as providerJoin } from '@/routes/provider-join';
@@ -153,6 +154,7 @@ export type NavLabel =
     | 'policies'
     | 'approvals'
     | 'oversight'
+    | 'ceCompliance'
     | 'providerJoin'
     | 'serviceProviders'
     | 'profile'
@@ -368,7 +370,13 @@ export function roleNavigation(
                 oversightIndex(),
                 '/organisation/oversight',
             ),
-            planned('ceCompliance'),
+            // CE compliance and sponsorship (A16.2).
+            item(
+                'ceCompliance',
+                GraduationCap,
+                ceComplianceIndex(),
+                '/organisation/ce',
+            ),
             // Teach the virtual broker and answer agents (A12.1, screen 34).
             item(
                 'virtualBroker',

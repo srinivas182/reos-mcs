@@ -234,3 +234,59 @@ export type OversightProfile = {
         expires_on: string | null;
     }[];
 };
+
+export type CeStatus =
+    | 'done'
+    | 'on_track'
+    | 'due'
+    | 'behind'
+    | 'overdue'
+    | 'no_licence';
+
+export type CeRow = {
+    id: number;
+    name: string;
+    team: string | null;
+    licence: string | null;
+    status: CeStatus;
+    due_on: string | null;
+    days_left: number | null;
+    hours_required: number;
+    hours_done: number;
+    hours_left: number;
+    sae: boolean;
+    reminded_at: string | null;
+    assignments: { course: string; due_on: string | null; done: boolean }[];
+};
+
+export type CeTable = {
+    brokerage: string;
+    scope: 'brokerage' | 'team';
+    team: string | null;
+    counts: { agents: number; due: number; done: number };
+    rows: CeRow[];
+    courses: {
+        id: number;
+        title: string;
+        type: string;
+        hours: string | null;
+    }[];
+};
+
+export type SponsorshipBoard = {
+    brokerage: string;
+    trec_number: string | null;
+    changes: {
+        id: string;
+        kind: 'join' | 'release';
+        agent: string;
+        agent_id: number;
+        effective_on: string;
+        handover_to: string | null;
+        deals: number;
+        status: 'recorded' | 'done' | 'confirmed';
+        confirmed_at: string | null;
+    }[];
+    agents: { id: number; name: string; open_deals: number }[];
+    handover: { id: number; name: string }[];
+};

@@ -1038,6 +1038,106 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/organisation/ce": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * CE compliance
+         * @description Every agent's licence, renewal date, hours left and SAE status, the courses that can be assigned, and when each agent was last reminded.
+         */
+        get: operations["brokerage.ce"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organisation/ce/remind": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Remind all due agents
+         * @description One action: agents due, behind or overdue who weren't reminded in the last 7 days get a reminder from the broker.
+         */
+        post: operations["brokerage.ce.remind"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organisation/ce/assign": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Assign a course
+         * @description A live CE, qualifying or elective course for some agents or everyone due, with an optional due date.
+         */
+        post: operations["brokerage.ce.assign"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organisation/sponsorships": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Sponsorships
+         * @description Joins and releases with their TREC confirmation, the agents who can be released, and who can take a handover.
+         */
+        get: operations["brokerage.sponsorships"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organisation/sponsorships/release": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Release an agent
+         * @description On a date up to 30 days ahead, handing their open deals to another agent or broker of the brokerage. Their role ends on the date; TREC's file confirms it later.
+         */
+        post: operations["brokerage.sponsorships.release"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/me/ce": {
         parameters: {
             query?: never;
@@ -7388,6 +7488,18 @@ export interface components {
             thread?: string | null;
         };
         /**
+         * AssignCourseRequest
+         * @description Assign a course to agents, or to everyone due (A16.2).
+         */
+        AssignCourseRequest: {
+            course_id: number;
+            /** @description Agents' ids; leave out with `due: true` for everyone due. */
+            agents?: number[];
+            due?: boolean;
+            /** Format: date-time */
+            due_on?: string | null;
+        };
+        /**
          * AssistantQuestionRequest
          * @description A question to the assistant (A12.3; screen 60), in a new chat or one of mine.
          */
@@ -8644,6 +8756,17 @@ export interface components {
             client_agreed?: "yes" | "on" | "1" | 1 | "true" | true;
         };
         /**
+         * ReleaseRequest
+         * @description Release an agent's sponsorship (A16.2): the date, and who takes their open deals.
+         */
+        ReleaseRequest: {
+            agent_id: number;
+            /** Format: date-time */
+            effective_on: string;
+            /** @description The agent or broker who takes the open deals; needed when there are any. */
+            handover_to?: number | null;
+        };
+        /**
          * RenewalRequest
          * @description "I've renewed with TREC" on the renewal checklist, or Undo (A11.2).
          */
@@ -9227,6 +9350,7 @@ export type SchemaApprovalSettingsRequest = components['schemas']['ApprovalSetti
 export type SchemaAskBrokerRequest = components['schemas']['AskBrokerRequest'];
 export type SchemaAskInstructorRequest = components['schemas']['AskInstructorRequest'];
 export type SchemaAskRequest = components['schemas']['AskRequest'];
+export type SchemaAssignCourseRequest = components['schemas']['AssignCourseRequest'];
 export type SchemaAssistantQuestionRequest = components['schemas']['AssistantQuestionRequest'];
 export type SchemaBookSessionRequest = components['schemas']['BookSessionRequest'];
 export type SchemaBriefSettingsRequest = components['schemas']['BriefSettingsRequest'];
@@ -9314,6 +9438,7 @@ export type SchemaRateAgentRequest = components['schemas']['RateAgentRequest'];
 export type SchemaReadCertificateRequest = components['schemas']['ReadCertificateRequest'];
 export type SchemaRecordingAnswerRequest = components['schemas']['RecordingAnswerRequest'];
 export type SchemaReferralRequest = components['schemas']['ReferralRequest'];
+export type SchemaReleaseRequest = components['schemas']['ReleaseRequest'];
 export type SchemaRenewalRequest = components['schemas']['RenewalRequest'];
 export type SchemaReportRequest = components['schemas']['ReportRequest'];
 export type SchemaReviewVideoRequest = components['schemas']['ReviewVideoRequest'];
@@ -12295,6 +12420,328 @@ export interface operations {
                 };
                 content: {
                     "application/json": 201;
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "brokerage.ce": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            brokerage: string;
+                            /** @enum {string} */
+                            scope: "brokerage" | "team";
+                            team: string | null;
+                            counts: {
+                                agents: number;
+                                due: number;
+                                done: number;
+                            };
+                            rows: {
+                                id: number;
+                                name: string;
+                                team: string | null;
+                                licence: string | null;
+                                /** @enum {string} */
+                                status: "done" | "on_track" | "due" | "behind" | "overdue" | "no_licence";
+                                due_on: string | null;
+                                days_left: number | null;
+                                hours_required: number;
+                                hours_done: number;
+                                hours_left: number;
+                                sae: boolean;
+                                reminded_at: string | null;
+                                assignments: {
+                                    course: string;
+                                    due_on: string | null;
+                                    done: boolean;
+                                }[];
+                            }[];
+                            courses: {
+                                id: number;
+                                title: string;
+                                type: string;
+                                hours: string | null;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "brokerage.ce.remind": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            sent: number;
+                            skipped: number;
+                            table: {
+                                brokerage: string;
+                                /** @enum {string} */
+                                scope: "brokerage" | "team";
+                                team: string | null;
+                                counts: {
+                                    agents: number;
+                                    due: number;
+                                    done: number;
+                                };
+                                rows: {
+                                    id: number;
+                                    name: string;
+                                    team: string | null;
+                                    licence: string | null;
+                                    /** @enum {string} */
+                                    status: "done" | "on_track" | "due" | "behind" | "overdue" | "no_licence";
+                                    due_on: string | null;
+                                    days_left: number | null;
+                                    hours_required: number;
+                                    hours_done: number;
+                                    hours_left: number;
+                                    sae: boolean;
+                                    reminded_at: string | null;
+                                    assignments: {
+                                        course: string;
+                                        due_on: string | null;
+                                        done: boolean;
+                                    }[];
+                                }[];
+                                courses: {
+                                    id: number;
+                                    title: string;
+                                    type: string;
+                                    hours: string | null;
+                                }[];
+                            };
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "brokerage.ce.assign": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AssignCourseRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            assigned: number;
+                            table: {
+                                brokerage: string;
+                                /** @enum {string} */
+                                scope: "brokerage" | "team";
+                                team: string | null;
+                                counts: {
+                                    agents: number;
+                                    due: number;
+                                    done: number;
+                                };
+                                rows: {
+                                    id: number;
+                                    name: string;
+                                    team: string | null;
+                                    licence: string | null;
+                                    /** @enum {string} */
+                                    status: "done" | "on_track" | "due" | "behind" | "overdue" | "no_licence";
+                                    due_on: string | null;
+                                    days_left: number | null;
+                                    hours_required: number;
+                                    hours_done: number;
+                                    hours_left: number;
+                                    sae: boolean;
+                                    reminded_at: string | null;
+                                    assignments: {
+                                        course: string;
+                                        due_on: string | null;
+                                        done: boolean;
+                                    }[];
+                                }[];
+                                courses: {
+                                    id: number;
+                                    title: string;
+                                    type: string;
+                                    hours: string | null;
+                                }[];
+                            };
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "brokerage.sponsorships": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            brokerage: string;
+                            trec_number: string | null;
+                            changes: {
+                                id: string;
+                                /** @enum {string} */
+                                kind: "join" | "release";
+                                agent: string;
+                                agent_id: number;
+                                effective_on: string;
+                                handover_to: string | null;
+                                deals: number;
+                                /** @enum {string} */
+                                status: "recorded" | "done" | "confirmed";
+                                confirmed_at: string | null;
+                            }[];
+                            agents: {
+                                id: number;
+                                name: string;
+                                open_deals: number;
+                            }[];
+                            handover: {
+                                id: number;
+                                name: string;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "brokerage.sponsorships.release": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReleaseRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            brokerage: string;
+                            trec_number: string | null;
+                            changes: {
+                                id: string;
+                                /** @enum {string} */
+                                kind: "join" | "release";
+                                agent: string;
+                                agent_id: number;
+                                effective_on: string;
+                                handover_to: string | null;
+                                deals: number;
+                                /** @enum {string} */
+                                status: "recorded" | "done" | "confirmed";
+                                confirmed_at: string | null;
+                            }[];
+                            agents: {
+                                id: number;
+                                name: string;
+                                open_deals: number;
+                            }[];
+                            handover: {
+                                id: number;
+                                name: string;
+                            }[];
+                        };
+                    };
                 };
             };
             401: components["responses"]["AuthenticationException"];

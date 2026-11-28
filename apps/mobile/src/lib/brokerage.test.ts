@@ -1,4 +1,4 @@
-import { loadBrokerView, needingHelp, type OversightBoard, checkRule, chooseSeats, clearItem, detailText, firstOpen, inviteAll, itemsFor, lookupLicence, ready, type Approvals } from './brokerage';
+import { dueRows, remindAllDue, type CeTable, loadBrokerView, needingHelp, type OversightBoard, checkRule, chooseSeats, clearItem, detailText, firstOpen, inviteAll, itemsFor, lookupLicence, ready, type Approvals } from './brokerage';
 
 const mockApi = { GET: jest.fn(), POST: jest.fn(), PUT: jest.fn() };
 jest.mock('@/lib/api', () => ({ api: () => mockApi }));
@@ -87,5 +87,22 @@ describe('agents and deals on the phone (A16.1)', () => {
     mockApi.GET.mockResolvedValueOnce({ data: { data: null } });
     await expect(loadBrokerView()).resolves.toBeNull();
     expect(mockApi.GET).toHaveBeenLastCalledWith('/me/broker-view');
+  });
+});
+
+describe('CE compliance on the phone (A16.2)', () => {
+  it('counts who a reminder reaches, and reminds them in one call', async () => {
+    const table = {
+      rows: [
+        { id: 1, status: 'behind' },
+        { id: 2, status: 'on_track' },
+        { id: 3, status: 'overdue' },
+        { id: 4, status: 'due' },
+      ],
+    } as unknown as CeTable;
+    expect(dueRows(table).map((r) => r.id)).toEqual([1, 3, 4]);
+    mockApi.POST.mockResolvedValueOnce({ data: { data: { sent: 3, skipped: 0, table } } });
+    await expect(remindAllDue()).resolves.toMatchObject({ sent: 3 });
+    expect(mockApi.POST).toHaveBeenLastCalledWith('/organisation/ce/remind');
   });
 });

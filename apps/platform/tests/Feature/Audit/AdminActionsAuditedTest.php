@@ -1072,6 +1072,25 @@ function adminActions(): array
 
             return auditCase($linda, 'PUT', "/organisation/staff/{$office->id}", ['duties' => ['approve_posts']], $lone->id);
         },
+        // Broker: CE compliance and sponsorship (A16.2).
+        'ce-compliance.remind' => function () {
+            [$lone, $linda] = auditBrokerage();
+
+            return auditCase($linda, 'POST', '/organisation/ce/remind', [], $lone->id);
+        },
+        'ce-compliance.assign' => function () {
+            [$lone, $linda] = auditBrokerage();
+            $james = User::factory()->withRole(Role::Agent, $lone)->create(['name' => 'James Miller']);
+            $course = Course::query()->create(['title' => 'Legal Update I', 'slug' => 'legal-update-1', 'type' => 'ce', 'states' => ['TX'], 'status' => 'live']);
+
+            return auditCase($linda, 'POST', '/organisation/ce/assign', ['course_id' => $course->id, 'agents' => [$james->id]], $lone->id);
+        },
+        'sponsorships.release' => function () {
+            [$lone, $linda] = auditBrokerage();
+            $james = User::factory()->withRole(Role::Agent, $lone)->create(['name' => 'James Miller']);
+
+            return auditCase($linda, 'POST', '/organisation/sponsorships/release', ['agent_id' => $james->id, 'effective_on' => now()->addDays(5)->toDateString()], $lone->id);
+        },
         // Broker: when agents are flagged (A16.1).
         'oversight.settings' => function () {
             [$lone, $linda] = auditBrokerage();
