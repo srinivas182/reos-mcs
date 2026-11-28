@@ -6,7 +6,9 @@ namespace App\Http\Controllers\Provider;
 
 use App\Http\Controllers\Controller;
 use App\Models\ProviderCategory;
+use App\Models\ProviderProfile;
 use App\Models\User;
+use App\ProviderNetwork\AgentDirectory;
 use App\ProviderNetwork\ProviderProfiles;
 use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\Request;
@@ -25,7 +27,7 @@ final class ProfilePagesController extends Controller
         return Inertia::render('provider/profile', ['builder' => $profiles->builder($user)]);
     }
 
-    public function index(Request $request, ProviderProfiles $profiles): Response
+    public function index(Request $request, #[CurrentUser] User $user, ProviderProfiles $profiles, AgentDirectory $directory): Response
     {
         $category = $request->query('category');
         $place = $request->query('place');
@@ -35,12 +37,17 @@ final class ProfilePagesController extends Controller
         return Inertia::render('providers/index', [
             'providers' => $profiles->directory($category, $place, app()->getLocale()),
             'filters' => ['category' => $category, 'place' => $place],
+            // Providers near you, with ratings and connections (B16.3).
+            'near' => $directory->near($user, $category),
             'categories' => ProviderCategory::query()->where('status', 'live')->orderBy('name')->get(['key', 'name'])->map(static fn (ProviderCategory $c): array => ['key' => $c->key, 'name' => $c->name])->values()->all(),
         ]);
     }
 
-    public function show(int $profile, #[CurrentUser] User $user, ProviderProfiles $profiles): Response
+    public function show(int $profile, #[CurrentUser] User $user, ProviderProfiles $profiles, AgentDirectory $directory): Response
     {
-        return Inertia::render('providers/show', ['provider' => $profiles->show($user, $profile, app()->getLocale())]);
+        $card = $profiles->show($user, $profile, app()->getLocale());
+
+        // Reviews, my connection, and Request to connect (B16.3); none for a provider's own preview.
+        return Inertia::render('providers/show', ['provider' => $card, 'network' => $card['live'] && $user->id !== ProviderProfile::query()->whereKey($profile)->value('user_id') ? $directory->forProfile($user, $profile) : null]);
     }
 }

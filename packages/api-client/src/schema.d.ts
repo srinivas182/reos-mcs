@@ -28,6 +28,83 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/providers/near": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Providers near you
+         * @description Live, verified providers serving the cities where I work (from my deals and MLS listings in 12 months), near first, with ratings and whether I'm connected; and each category's count.
+         */
+        get: operations["providers.near"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/providers/{profile}/network": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Reviews and my connection with a provider */
+        get: operations["providers.network"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/providers/{profile}/connect": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Request to connect (agent)
+         * @description Connected at once, with a private chat in Messages. Contacts still need both to press Share. If the provider already asked, this accepts. Never counts toward the provider's monthly limit.
+         */
+        post: operations["providers.connect"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/providers/{profile}/reviews": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Review a provider
+         * @description After 30 days connected; one review per agent per provider (a second replaces the first). No contact details in the note.
+         */
+        post: operations["providers.review"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/feedback": {
         parameters: {
             query?: never;
@@ -9122,6 +9199,14 @@ export interface components {
             block?: boolean;
         };
         /**
+         * ReviewProviderRequest
+         * @description A review of a provider (B16.3): 1 to 5 stars and an optional note.
+         */
+        ReviewProviderRequest: {
+            rating: number;
+            body?: string | null;
+        };
+        /**
          * ReviewVideoRequest
          * @description A recording to review (A14.1b): its kind, the words and its length. The video itself is never sent.
          */
@@ -9795,6 +9880,7 @@ export type SchemaReferralRequest = components['schemas']['ReferralRequest'];
 export type SchemaReleaseRequest = components['schemas']['ReleaseRequest'];
 export type SchemaRenewalRequest = components['schemas']['RenewalRequest'];
 export type SchemaReportRequest = components['schemas']['ReportRequest'];
+export type SchemaReviewProviderRequest = components['schemas']['ReviewProviderRequest'];
 export type SchemaReviewVideoRequest = components['schemas']['ReviewVideoRequest'];
 export type SchemaRole = components['schemas']['Role'];
 export type SchemaRosterContactsRequest = components['schemas']['RosterContactsRequest'];
@@ -9857,6 +9943,244 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["MeResource"];
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "providers.near": {
+        parameters: {
+            query?: {
+                category?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        cities: string[];
+                        categories: {
+                            key: string;
+                            name: string;
+                            count: number;
+                        }[];
+                        providers: {
+                            id: number;
+                            name: string;
+                            category: string | null;
+                            category_key: string | null;
+                            photo_url: string | null;
+                            licence_verified: boolean;
+                            areas: string[];
+                            response_hours: number | null;
+                            tier: string | null;
+                            rating: {
+                                average: number | null;
+                                count: number;
+                            };
+                            near: boolean;
+                            connection: string | null;
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "providers.network": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                profile: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            rating: {
+                                average: number | null;
+                                count: number;
+                            };
+                            reviews: {
+                                id: string;
+                                rating: number;
+                                body: string | null;
+                                agent: string;
+                                at: string;
+                            }[];
+                            connection: {
+                                id: string;
+                                status: string;
+                            } | null;
+                            can_connect: boolean;
+                            can_review: boolean;
+                            review_from: string | null;
+                            my_review: {
+                                rating: number;
+                                body: string | null;
+                            } | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "providers.connect": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                profile: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            /** @enum {string} */
+                            side: "agent" | "provider";
+                            with: string;
+                            provider: {
+                                id: number;
+                                name: string;
+                                category: string | null;
+                                photo_url: string | null;
+                            };
+                            connected_at: string | null;
+                            i_shared: boolean;
+                            they_shared: boolean;
+                            contacts: {
+                                email: string | null;
+                                phone: string | null;
+                            } | null;
+                            conversation: string | null;
+                            blocked: boolean;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "providers.review": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                profile: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReviewProviderRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            rating: {
+                                average: number | null;
+                                count: number;
+                            };
+                            reviews: {
+                                id: string;
+                                rating: number;
+                                body: string | null;
+                                agent: string;
+                                at: string;
+                            }[];
+                            connection: {
+                                id: string;
+                                status: string;
+                            } | null;
+                            can_connect: boolean;
+                            can_review: boolean;
+                            review_from: string | null;
+                            my_review: {
+                                rating: number;
+                                body: string | null;
+                            } | null;
+                        };
+                    };
                 };
             };
             401: components["responses"]["AuthenticationException"];

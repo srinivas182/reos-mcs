@@ -202,6 +202,48 @@
 - **Providers near you:** categories, profiles, reviews.
 - **Request to connect** in two taps.
 - **Done when:** an agent connects with a lender in two taps.
+- **As built, B16.3** (ADR 0081):
+  - **Data:** `provider_requests.initiated_by` (provider or agent), and `provider_reviews` (one per agent per provider).
+  - **Services:** `App\ProviderNetwork\AgentDirectory`:
+    - near: the agent's cities and ZIP codes from deals and confirmed MLS listings in 12 months, near first, with category counts, ratings and connections;
+    - forProfile: rating, reviews, connection, can connect, and can review from 30 days;
+    - connect: connected at once with a private chat. It accepts a waiting provider request, returns an existing connection, is for agents only, and never counts toward the provider's limit;
+    - review: 30 days connected, one per agent (a second replaces the first), 1 to 5 stars, a note without contact details.
+
+    Notification `AgentAskedToConnect` (kind `provider_request`).
+  - **Routes:**
+    - API: `GET /api/v1/providers/near?category=`, `GET /api/v1/providers/{id}/network`, `POST /api/v1/providers/{id}/connect` and `POST /api/v1/providers/{id}/reviews`.
+    - Web: the same two actions, `near` on `/providers` and `network` on `/providers/{id}`.
+  - **Web:**
+    - Service providers (`providers/index`) opens with Providers near you: cities, category buttons with counts, Near you badges and ratings.
+    - A provider's profile (`providers/show`) has Request to connect (the second tap), reviews, and the review form once allowed.
+  - **Phone:** Service providers starts with Providers near you (category pills). A provider's screen has Request to connect, reviews and the review form.
+  - **Done when:** a Pest test has James (working in Katy) open Chen Home Lending from Providers near you (tap one) and press Request to connect (tap two). He's connected with the chat open and Maya notified, and none of Maya's Listed requests are used. Other tests cover:
+    - near first and the category filter;
+    - accepting a waiting request by connecting;
+    - agents only, and live providers only;
+    - reviews: not connected, too soon, no contact details, one per agent;
+    - the web pages.
+
+## 7. Sprint 16 wrap-up (28 November 2026)
+
+- **Built:** A16.1–A16.3 (Team A) and B16.1–B16.3 (Team B), each its own PR with green CI. ADRs 0076–0081.
+- **Definition of done:**
+  - Every endpoint is in `/api/v1` with Pest feature tests, and the api-client is regenerated.
+  - Every string is in English and Spanish.
+  - Every new shared component has a story passing axe.
+  - **Security tests:**
+    - a broker never sees an agent's clients, contacts or notes: oversight, the profile, the morning brief (A16.1, A16.3);
+    - a team leader sees only their team: oversight, CE, reports (A16.1–A16.3);
+    - a provider sees an agent's contact details only after both press Share, never across a block, and never sees an opted-out agent (B16.1, B16.2);
+    - request limits hold, under a lock, and reset on the 1st (B16.1).
+- **Changed on purpose:** agents are now in the provider network by default and can turn it off, for all providers or by category (decision 4). Candidates already were.
+- **Carried forward:**
+  - commission splits and payouts per closing, on the closings report (Sprint 18 back office);
+  - moderation tools for provider reviews (Sprint 18); until then REOS's team handles reports through Messages;
+  - provider "results" (responses and connections over time), in the provider journey;
+  - states other than Texas confirming sponsorship changes, once their regulator files are in;
+  - opening `provider_network` per state after the RESPA counsel review.
 
 ## 4. Definition of done (whole sprint)
 

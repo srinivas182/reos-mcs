@@ -312,3 +312,38 @@ export function sharingState(c: ProviderConnection): 'both' | 'waiting_them' | '
 
   return c.they_shared ? 'waiting_me' : 'none';
 }
+
+export type NearYou = Got<'/providers/near'>;
+export type NearProvider = NearYou['providers'][number];
+export type ProviderNetworkInfo = Got<'/providers/{profile}/network'>['data'];
+
+/** Providers near you (B16.3): serving the cities where I work, near first. */
+export async function loadNearYou(category: string | null = null): Promise<NearYou | null> {
+  const { data } = await api().GET('/providers/near', { params: { query: category ? { category } : {} } });
+
+  return data ?? null;
+}
+
+export async function loadProviderNetwork(id: number): Promise<ProviderNetworkInfo | null> {
+  const { data } = await api().GET('/providers/{profile}/network', { params: { path: { profile: id } } });
+
+  return data ? data.data : null;
+}
+
+/** Request to connect: connected at once, with a private chat (the second tap). */
+export async function connectWithProvider(id: number): Promise<ProviderConnection> {
+  const { data, error } = await api().POST('/providers/{profile}/connect', { params: { path: { profile: id } } });
+
+  return data ? data.data : fail(error);
+}
+
+export async function reviewProvider(id: number, rating: number, body: string): Promise<ProviderNetworkInfo> {
+  const { data, error } = await api().POST('/providers/{profile}/reviews', { params: { path: { profile: id } }, body: { rating, body: body.trim() === '' ? null : body.trim() } });
+
+  return data ? data.data : fail(error);
+}
+
+/** "4.8 ★ (12)", or null with no reviews yet. */
+export function ratingText(rating: { average: number | null; count: number }): string | null {
+  return rating.average === null || rating.count === 0 ? null : `${rating.average.toFixed(1)} ★ (${rating.count})`;
+}

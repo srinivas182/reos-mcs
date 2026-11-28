@@ -43,6 +43,7 @@ use App\Http\Controllers\Api\Practice\PracticeController as ApiPracticeControlle
 use App\Http\Controllers\Api\Practice\ReportController;
 use App\Http\Controllers\Api\Practice\SpeedRoundController;
 use App\Http\Controllers\Api\Practice\StudyGroupController;
+use App\Http\Controllers\Api\Providers\AgentDirectoryController;
 use App\Http\Controllers\Api\Providers\AgentsInAreaController;
 use App\Http\Controllers\Api\Providers\JoiningController;
 use App\Http\Controllers\Api\Providers\ProviderNetworkController;
@@ -555,6 +556,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('providers/preferences', [ProviderNetworkController::class, 'preferences'])->middleware('throttle:30,1,provider-network')->name('provider-network.preferences');
     Route::put('provider-connections/{providerRequest}/share', [ProviderNetworkController::class, 'share'])->whereUuid('providerRequest')->middleware('throttle:30,1,provider-network')->name('provider-network.share');
     Route::post('provider-connections/{providerRequest}/block', [ProviderNetworkController::class, 'block'])->whereUuid('providerRequest')->middleware('throttle:30,1,provider-network')->name('provider-network.block');
+    // Providers near you (B16.3): Request to connect and reviews, the same actions as the API.
+    Route::post('providers/{profile}/connect', [AgentDirectoryController::class, 'connect'])->whereNumber('profile')->middleware('throttle:20,1,providers-connect')->name('providers.connect');
+    Route::post('providers/{profile}/reviews', [AgentDirectoryController::class, 'review'])->whereNumber('profile')->middleware('throttle:10,1,providers-review')->name('providers.review');
     Route::get('providers', [ProfilePagesController::class, 'index'])->name('providers.index');
     Route::get('providers/{profile}', [ProfilePagesController::class, 'show'])->whereNumber('profile')->name('providers.show');
 });

@@ -2388,7 +2388,9 @@
         "provider.request_declined": "Rechazó una solicitud de contacto",
         "provider.contacts_shared": "Compartió sus contactos con una conexión",
         "provider.contacts_unshared": "Dejó de compartir sus contactos con una conexión",
-        "provider.blocked": "Bloqueó una conexión"
+        "provider.blocked": "Bloqueó una conexión",
+        "provider.agent_connected": "Se conectó con un proveedor",
+        "provider.reviewed": "Reseñó a un proveedor"
       }
     }
   },
@@ -8914,7 +8916,52 @@
       "resources": "Recursos gratuitos",
       "sessions": "Sesiones con expertos",
       "about": "Acerca de",
-      "licenceNumber": "Licencia {{number}}"
+      "licenceNumber": "Licencia {{number}}",
+      "near": {
+        "title": "Proveedores cerca de usted",
+        "serving": "Atienden {{cities}}",
+        "none": "Agregue operaciones o confirme su registro del MLS para ver quién atiende sus zonas. Por ahora se muestran todos los proveedores verificados.",
+        "badge": "Cerca de usted",
+        "all": "Todas las categorías",
+        "category": "{{name}} ({{count}})",
+        "empty": "Aún no hay proveedores verificados aquí",
+        "emptyHint": "Pruebe otra categoría. Cada semana se unen nuevos proveedores.",
+        "open": "Abrir {{name}}"
+      },
+      "connect": {
+        "button": "Solicitar contacto",
+        "buttonFor": "Solicitar contacto con {{name}}",
+        "connected": "Conectado con {{name}}. Su conversación está en Mensajes.",
+        "already": "Ya están conectados. Los contactos aparecen cuando ambos pulsen Compartir.",
+        "open": "Abrir conexión",
+        "hello": "Hola, soy {{name}}. Me gustaría ponerme en contacto.",
+        "notifyTitle": "{{name}} se conectó con usted",
+        "notifyBody": "Un agente se conectó desde Proveedores cerca de usted. Su conversación está abierta en Mensajes.",
+        "blocked": "No puede conectarse con este proveedor."
+      },
+      "reviews": {
+        "title": "Reseñas de agentes",
+        "none": "Aún no hay reseñas",
+        "noneHint": "Los agentes pueden reseñar a un proveedor 30 días después de conectarse.",
+        "average_one": "{{average}} de 5 · {{count}} reseña",
+        "average_other": "{{average}} de 5 · {{count}} reseñas",
+        "stars_one": "{{count}} estrella",
+        "stars_other": "{{count}} estrellas",
+        "by": "{{agent}} · {{date}}",
+        "write": "Escribir una reseña",
+        "edit": "Actualizar mi reseña",
+        "rating": "Su calificación",
+        "body": "¿Cómo fue trabajar con ellos? (opcional)",
+        "bodyHint": "Sin teléfonos, correos ni enlaces.",
+        "submit": "Publicar reseña",
+        "saved": "Gracias. Su reseña está publicada.",
+        "from": "Podrá reseñar el {{date}}, 30 días después de conectarse.",
+        "errors": {
+          "notConnected": "Solo los agentes conectados con este proveedor pueden reseñarlo.",
+          "tooSoon": "Podrá reseñar el {{date}}, 30 días después de conectarse.",
+          "contact": "No incluya teléfonos, correos ni enlaces."
+        }
+      }
     },
     "agents": {
       "title": "Agentes en mis zonas",

@@ -1,4 +1,6 @@
 import {
+  connectWithProvider,
+  ratingText,
   declineRequest,
   sharingState,
   shareContacts,
@@ -145,5 +147,15 @@ describe('the private network on the phone (B16.2)', () => {
     mockApi.POST.mockResolvedValueOnce({ data: { declined: true } });
     await declineRequest('r-1', true);
     expect(mockApi.POST).toHaveBeenLastCalledWith('/me/provider-requests/{providerRequest}/decline', { params: { path: { providerRequest: 'r-1' } }, body: { block: true } });
+  });
+});
+
+describe('providers near you on the phone (B16.3)', () => {
+  it('connects in one call and shows ratings', async () => {
+    mockApi.POST.mockResolvedValueOnce({ data: { data: { id: 'c-9', side: 'agent' } } });
+    await expect(connectWithProvider(3)).resolves.toMatchObject({ id: 'c-9' });
+    expect(mockApi.POST).toHaveBeenLastCalledWith('/providers/{profile}/connect', { params: { path: { profile: 3 } } });
+    expect(ratingText({ average: 4.75, count: 12 })).toBe('4.8 ★ (12)');
+    expect(ratingText({ average: null, count: 0 })).toBeNull();
   });
 });

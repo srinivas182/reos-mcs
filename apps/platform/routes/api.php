@@ -79,6 +79,7 @@ use App\Http\Controllers\Api\Practice\SpeedRoundController;
 use App\Http\Controllers\Api\Practice\StudyGroupController;
 use App\Http\Controllers\Api\Practice\TopicPlanController;
 use App\Http\Controllers\Api\Privacy\ConsentController;
+use App\Http\Controllers\Api\Providers\AgentDirectoryController;
 use App\Http\Controllers\Api\Providers\AgentsInAreaController;
 use App\Http\Controllers\Api\Providers\JoiningController;
 use App\Http\Controllers\Api\Providers\ProviderLicenceController;
@@ -512,6 +513,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('provider-connections/{providerRequest}', [ProviderNetworkController::class, 'show'])->whereUuid('providerRequest')->name('api.provider-network.show');
     Route::put('provider-connections/{providerRequest}/share', [ProviderNetworkController::class, 'share'])->whereUuid('providerRequest')->middleware('throttle:30,1,api-provider-network')->name('api.provider-network.share');
     Route::post('provider-connections/{providerRequest}/block', [ProviderNetworkController::class, 'block'])->whereUuid('providerRequest')->middleware('throttle:30,1,api-provider-network')->name('api.provider-network.block');
+    // Providers near you (B16.3): near first, reviews, and Request to connect in two taps.
+    Route::get('providers/near', [AgentDirectoryController::class, 'near'])->middleware('throttle:60,1,api-providers')->name('api.providers.near');
+    Route::get('providers/{profile}/network', [AgentDirectoryController::class, 'network'])->whereNumber('profile')->middleware('throttle:120,1,api-providers')->name('api.providers.network');
+    Route::post('providers/{profile}/connect', [AgentDirectoryController::class, 'connect'])->whereNumber('profile')->middleware('throttle:20,1,api-providers-connect')->name('api.providers.connect');
+    Route::post('providers/{profile}/reviews', [AgentDirectoryController::class, 'review'])->whereNumber('profile')->middleware('throttle:10,1,api-providers-review')->name('api.providers.review');
     Route::get('providers', [ProvidersController::class, 'index'])->middleware('throttle:60,1,api-providers')->name('api.providers.index');
     Route::get('providers/{profile}', [ProvidersController::class, 'show'])->whereNumber('profile')->middleware('throttle:120,1,api-providers')->name('api.providers.show');
     // CMAs for my listings and my public page (B10.2b).

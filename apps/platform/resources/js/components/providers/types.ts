@@ -236,3 +236,43 @@ export type AgentNetwork = {
     connections: ProviderConnection[];
     preferences: ProviderPreferences;
 };
+
+/** Providers near you (B16.3). */
+export type ProviderRating = { average: number | null; count: number };
+
+export type NearProvider = {
+    id: number;
+    name: string;
+    category: string | null;
+    category_key: string | null;
+    photo_url: string | null;
+    licence_verified: boolean;
+    areas: string[];
+    response_hours: number | null;
+    tier: string | null;
+    rating: ProviderRating;
+    near: boolean;
+    connection: string | null;
+};
+
+export type NearYouData = {
+    cities: string[];
+    categories: { key: string; name: string; count: number }[];
+    providers: NearProvider[];
+};
+
+export type ProviderNetworkInfo = {
+    rating: ProviderRating;
+    reviews: {
+        id: string;
+        rating: number;
+        body: string | null;
+        agent: string;
+        at: string;
+    }[];
+    connection: { id: string; status: string } | null;
+    can_connect: boolean;
+    can_review: boolean;
+    review_from: string | null;
+    my_review: { rating: number; body: string | null } | null;
+};
