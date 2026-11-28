@@ -1,4 +1,4 @@
-import { checkRule, chooseSeats, firstOpen, inviteAll, lookupLicence, ready } from './brokerage';
+import { checkRule, chooseSeats, clearItem, detailText, firstOpen, inviteAll, itemsFor, lookupLicence, ready, type Approvals } from './brokerage';
 
 const mockApi = { GET: jest.fn(), POST: jest.fn(), PUT: jest.fn() };
 jest.mock('@/lib/api', () => ({ api: () => mockApi }));
@@ -39,5 +39,37 @@ describe('brokerage rules on the phone (A15.2)', () => {
     expect(mockApi.POST).not.toHaveBeenCalled();
     mockApi.POST.mockResolvedValueOnce({ data: { data: { conflict: { rule: 'brokerage.compensation', citation: '22 TAC §535.3', url: null, excerpt: 'x', rule_text: 'y' } } } });
     await expect(checkRule('Agents may accept fees directly.')).resolves.toMatchObject({ citation: '22 TAC §535.3' });
+  });
+});
+
+describe('approvals on the phone (A15.3)', () => {
+  const queue = {
+    brokerage: 'Lone Star Realty',
+    scope: 'brokerage',
+    team: null,
+    fallback_hours: 4,
+    can: { posts: true, questions: true, settings: true },
+    counts: { posts: 1, pages: 0, questions: 1, overdue: 1 },
+    items: [
+      { kind: 'post', id: 'p1', agent: 'James Miller', summary: 'Open house Saturday.', waiting_since: null, hours: 7, overdue: true, detail: { body: 'Open house Saturday.' } },
+      { kind: 'question', id: 'q1', agent: 'James Miller', summary: 'Can I pay a referral fee?', waiting_since: null, hours: 0, overdue: false, detail: { question: 'Can I pay a referral fee?', answer: '' } },
+    ],
+  } as Approvals;
+
+  it('filters the queue and reads an item\'s detail', () => {
+    expect(itemsFor(queue, 'question').map((i) => i.id)).toEqual(['q1']);
+    expect(itemsFor(queue, 'all')).toHaveLength(2);
+    expect(detailText(queue.items[0], 'body')).toBe('Open house Saturday.');
+    expect(detailText(queue.items[1], 'answer')).toBeNull();
+  });
+
+  it('answers a question into the knowledge, and sends a note back trimmed', async () => {
+    mockApi.POST.mockResolvedValueOnce({ data: { data: { ...queue, items: [] } } });
+    await expect(clearItem(queue.items[1], 'answer', ' No, through the brokerage. ', true)).resolves.toMatchObject({ items: [] });
+    expect(mockApi.POST).toHaveBeenLastCalledWith('/organisation/approvals/{kind}/{item}', { params: { path: { kind: 'question', item: 'q1' } }, body: { action: 'answer', text: 'No, through the brokerage.', add_to_knowledge: true } });
+
+    mockApi.POST.mockResolvedValueOnce({ data: undefined, error: { errors: { text: ['Add a note so the agent knows what to change.'] } } });
+    await expect(clearItem(queue.items[0], 'return', '', true)).rejects.toThrow('Add a note so the agent knows what to change.');
+    expect(mockApi.POST).toHaveBeenLastCalledWith('/organisation/approvals/{kind}/{item}', { params: { path: { kind: 'post', item: 'p1' } }, body: { action: 'return', text: '', add_to_knowledge: false } });
   });
 });

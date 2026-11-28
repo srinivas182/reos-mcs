@@ -35,7 +35,7 @@ final readonly class PostApprovals
     /** @return list<PendingRow> */
     public function pending(Organisation $brokerage): array
     {
-        $agents = $this->memberships->holdersIn(Role::Agent, $brokerage)->pluck('id')->all();
+        $agents = $this->memberships->holdersInTree(Role::Agent, $brokerage)->pluck('id')->all();
         $rows = [];
 
         foreach (SocialPost::query()->whereIn('user_id', $agents)->where('status', 'approval')->with(['targets', 'user'])->orderBy('approval_requested_at')->limit(100)->get() as $post) {
@@ -95,7 +95,7 @@ final readonly class PostApprovals
     {
         $post = SocialPost::query()->where('uuid', $uuid)->with('user')->firstOrFail();
 
-        if (! $this->memberships->holdersIn(Role::Agent, $brokerage)->contains('id', $post->user_id)) {
+        if (! $this->memberships->holdersInTree(Role::Agent, $brokerage)->contains('id', $post->user_id)) {
             throw new NotFoundHttpException;
         }
 

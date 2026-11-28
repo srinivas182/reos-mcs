@@ -1476,6 +1476,556 @@
                 "security": []
             }
         },
+        "/organisation/approvals": {
+            "get": {
+                "operationId": "brokerage.approvals",
+                "description": "What the signed-in broker can clear: everything for the designated broker; an office admin's duties; a team leader's team. Each item says how many working hours it has waited and whether it's past the brokerage's limit.",
+                "summary": "The approvals queue",
+                "tags": [
+                    "Approvals"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "brokerage": {
+                                                    "type": "string"
+                                                },
+                                                "scope": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "brokerage",
+                                                        "team"
+                                                    ]
+                                                },
+                                                "team": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "fallback_hours": {
+                                                    "type": "integer"
+                                                },
+                                                "can": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "posts": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "questions": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "settings": {
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "posts",
+                                                        "questions",
+                                                        "settings"
+                                                    ]
+                                                },
+                                                "counts": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "posts": {
+                                                            "type": "integer"
+                                                        },
+                                                        "pages": {
+                                                            "type": "integer"
+                                                        },
+                                                        "questions": {
+                                                            "type": "integer"
+                                                        },
+                                                        "overdue": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "posts",
+                                                        "pages",
+                                                        "questions",
+                                                        "overdue"
+                                                    ]
+                                                },
+                                                "items": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "kind": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "post",
+                                                                    "page",
+                                                                    "question"
+                                                                ]
+                                                            },
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "agent": {
+                                                                "type": "string"
+                                                            },
+                                                            "summary": {
+                                                                "type": "string"
+                                                            },
+                                                            "waiting_since": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "hours": {
+                                                                "type": "number"
+                                                            },
+                                                            "overdue": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "detail": {
+                                                                "type": "object",
+                                                                "additionalProperties": {}
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "kind",
+                                                            "id",
+                                                            "agent",
+                                                            "summary",
+                                                            "waiting_since",
+                                                            "hours",
+                                                            "overdue",
+                                                            "detail"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "brokerage",
+                                                "scope",
+                                                "team",
+                                                "fallback_hours",
+                                                "can",
+                                                "counts",
+                                                "items"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/organisation/approvals/{kind}/{item}": {
+            "post": {
+                "operationId": "brokerage.approvals.act",
+                "description": "Approve or return (with a note) a post or page; answer a question, optionally adding the answer to the brokerage's knowledge. Returns the queue.",
+                "summary": "Clear one item",
+                "tags": [
+                    "Approvals"
+                ],
+                "parameters": [
+                    {
+                        "name": "kind",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "item",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ApprovalActionRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "brokerage": {
+                                                    "type": "string"
+                                                },
+                                                "scope": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "brokerage",
+                                                        "team"
+                                                    ]
+                                                },
+                                                "team": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "fallback_hours": {
+                                                    "type": "integer"
+                                                },
+                                                "can": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "posts": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "questions": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "settings": {
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "posts",
+                                                        "questions",
+                                                        "settings"
+                                                    ]
+                                                },
+                                                "counts": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "posts": {
+                                                            "type": "integer"
+                                                        },
+                                                        "pages": {
+                                                            "type": "integer"
+                                                        },
+                                                        "questions": {
+                                                            "type": "integer"
+                                                        },
+                                                        "overdue": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "posts",
+                                                        "pages",
+                                                        "questions",
+                                                        "overdue"
+                                                    ]
+                                                },
+                                                "items": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "kind": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "post",
+                                                                    "page",
+                                                                    "question"
+                                                                ]
+                                                            },
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "agent": {
+                                                                "type": "string"
+                                                            },
+                                                            "summary": {
+                                                                "type": "string"
+                                                            },
+                                                            "waiting_since": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "hours": {
+                                                                "type": "number"
+                                                            },
+                                                            "overdue": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "detail": {
+                                                                "type": "object",
+                                                                "additionalProperties": {}
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "kind",
+                                                            "id",
+                                                            "agent",
+                                                            "summary",
+                                                            "waiting_since",
+                                                            "hours",
+                                                            "overdue",
+                                                            "detail"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "brokerage",
+                                                "scope",
+                                                "team",
+                                                "fallback_hours",
+                                                "can",
+                                                "counts",
+                                                "items"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/organisation/approvals/settings": {
+            "put": {
+                "operationId": "brokerage.approvals.settings",
+                "description": "How many working hours (8 AM to 6 PM Central, Monday to Friday) an item may wait before the office admins are told. The designated broker only.",
+                "summary": "Set the fallback limit",
+                "tags": [
+                    "Approvals"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ApprovalSettingsRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "brokerage": {
+                                                    "type": "string"
+                                                },
+                                                "scope": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "brokerage",
+                                                        "team"
+                                                    ]
+                                                },
+                                                "team": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "fallback_hours": {
+                                                    "type": "integer"
+                                                },
+                                                "can": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "posts": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "questions": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "settings": {
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "posts",
+                                                        "questions",
+                                                        "settings"
+                                                    ]
+                                                },
+                                                "counts": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "posts": {
+                                                            "type": "integer"
+                                                        },
+                                                        "pages": {
+                                                            "type": "integer"
+                                                        },
+                                                        "questions": {
+                                                            "type": "integer"
+                                                        },
+                                                        "overdue": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "posts",
+                                                        "pages",
+                                                        "questions",
+                                                        "overdue"
+                                                    ]
+                                                },
+                                                "items": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "kind": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "post",
+                                                                    "page",
+                                                                    "question"
+                                                                ]
+                                                            },
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "agent": {
+                                                                "type": "string"
+                                                            },
+                                                            "summary": {
+                                                                "type": "string"
+                                                            },
+                                                            "waiting_since": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "hours": {
+                                                                "type": "number"
+                                                            },
+                                                            "overdue": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "detail": {
+                                                                "type": "object",
+                                                                "additionalProperties": {}
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "kind",
+                                                            "id",
+                                                            "agent",
+                                                            "summary",
+                                                            "waiting_since",
+                                                            "hours",
+                                                            "overdue",
+                                                            "detail"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "brokerage",
+                                                "scope",
+                                                "team",
+                                                "fallback_hours",
+                                                "can",
+                                                "counts",
+                                                "items"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
         "/ask/threads": {
             "get": {
                 "operationId": "ask.index",
@@ -64591,6 +65141,49 @@
                     "preview"
                 ],
                 "title": "AppConfigResource"
+            },
+            "ApprovalActionRequest": {
+                "type": "object",
+                "description": "Clear one item in the approvals queue (A15.3): approve, return with a note, or answer.",
+                "properties": {
+                    "action": {
+                        "type": "string",
+                        "enum": [
+                            "approve",
+                            "return",
+                            "answer"
+                        ]
+                    },
+                    "text": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 4000
+                    },
+                    "add_to_knowledge": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "action"
+                ],
+                "title": "ApprovalActionRequest"
+            },
+            "ApprovalSettingsRequest": {
+                "type": "object",
+                "description": "How many working hours an item may wait before the office admins are told (A15.3).",
+                "properties": {
+                    "fallback_hours": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 40
+                    }
+                },
+                "required": [
+                    "fallback_hours"
+                ],
+                "title": "ApprovalSettingsRequest"
             },
             "AskBrokerRequest": {
                 "type": "object",

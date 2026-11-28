@@ -98,7 +98,8 @@
     "videoPractice": "Video practice",
     "openHouses": "Open houses",
     "referrals": "Referrals",
-    "farming": "Farming"
+    "farming": "Farming",
+    "approvals": "Approvals"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -2354,7 +2355,9 @@
         "policy_rule.added": "Brokerage rule added",
         "policy_rule.changed": "Brokerage rule changed",
         "policy_rule.removed": "Brokerage rule removed",
-        "policy_rule.restored": "Brokerage rule restored"
+        "policy_rule.restored": "Brokerage rule restored",
+        "approvals.settings": "Changed the approvals fallback",
+        "approvals.fallback": "Passed a waiting item to office admins"
       }
     }
   },
@@ -5654,7 +5657,8 @@
       "agent_feedback": "Feedback from agents",
       "new_lead": "New leads",
       "referral": "Referrals",
-      "invite_reward": "Invite rewards"
+      "invite_reward": "Invite rewards",
+      "approval_overdue": "Approvals waiting too long"
     },
     "digest": {
       "subject": {
@@ -10872,6 +10876,83 @@
       "trecSource": "Read the TREC rule",
       "ok": "No conflict with TREC rules.",
       "readOnly": "Your designated broker manages policies."
+    },
+    "approvals": {
+      "title": "Approvals",
+      "purpose": "Agents' posts, public pages and questions waiting for you, oldest first.",
+      "teamPurpose": "Posts, public pages and questions from {{team}}, oldest first.",
+      "filters": {
+        "all": "All",
+        "post": "Posts",
+        "page": "Pages",
+        "question": "Questions"
+      },
+      "filterLabel": "Show",
+      "counts": "{{posts}} posts · {{pages}} pages · {{questions}} questions",
+      "overdueCount_one": "{{count}} past your {{hours}}-hour limit",
+      "overdueCount_other": "{{count}} past your {{hours}}-hour limit",
+      "kinds": {
+        "post": "Post",
+        "page": "Public page",
+        "question": "Question"
+      },
+      "waited": "Waiting {{hours}} working hours",
+      "waitedNew": "Just arrived",
+      "overdue": "Past the limit",
+      "emptyTitle": "Nothing waiting",
+      "empty": "When an agent sends a post, a public page or a question your way, it shows here.",
+      "chooseTitle": "Choose an item",
+      "choose": "Pick an item from the list to review it here.",
+      "from": "From {{agent}}",
+      "channels": "Going to: {{channels}}",
+      "scheduled": "Scheduled for {{date}}",
+      "issues": "Advertising checks",
+      "noIssues": "No advertising issues found.",
+      "agentReason": "{{agent}}'s reason: {{reason}}",
+      "openPage": "Open the page",
+      "aiAnswer": "The virtual broker's answer",
+      "reason": "Why it came to you",
+      "deal": "About: {{property}}",
+      "approve": "Approve",
+      "return": "Send back",
+      "note": "Note for the agent",
+      "noteHint": "Say what to change. The agent sees this note.",
+      "answer": "Your answer",
+      "answerHint": "The agent sees your answer with the question.",
+      "send": "Send answer",
+      "addToKnowledge": "Add this answer to the brokerage's knowledge so the virtual broker can use it",
+      "approved": "Approved. It's on its way.",
+      "returned": "Sent back to {{agent}}.",
+      "answered": "Answer sent to {{agent}}.",
+      "settings": {
+        "title": "Office admin fallback",
+        "purpose": "If an item waits longer than this, REOS tells you and the office admins who handle it.",
+        "hours": "Working hours to wait",
+        "hoursHint": "Working hours are 8 AM to 6 PM Central, Monday to Friday.",
+        "save": "Save",
+        "saved": "Fallback set to {{count}} working hours."
+      },
+      "errors": {
+        "action": "That action doesn't fit this item.",
+        "note": "Add a note so the agent knows what to change.",
+        "answer": "Write your answer first."
+      },
+      "notify": {
+        "title": {
+          "post": "{{agent}}'s post is still waiting",
+          "page": "{{agent}}'s public page is still waiting",
+          "question": "{{agent}}'s question is still waiting"
+        },
+        "body": "It has waited more than {{hours}} working hours. Open Approvals to clear it.",
+        "open": "Open Approvals"
+      },
+      "phone": {
+        "title": "Approvals",
+        "waiting_one": "{{count}} waiting",
+        "waiting_other": "{{count}} waiting",
+        "review": "Review",
+        "back": "Approvals"
+      }
     }
   }
 }

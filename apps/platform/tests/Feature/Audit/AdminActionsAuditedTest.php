@@ -1072,6 +1072,19 @@ function adminActions(): array
 
             return auditCase($linda, 'PUT', "/organisation/staff/{$office->id}", ['duties' => ['approve_posts']], $lone->id);
         },
+        // Broker: one approvals queue (A15.3).
+        'approvals.act' => function () {
+            [$lone, $linda] = auditBrokerage();
+            $james = User::factory()->withRole(Role::Agent, $lone)->create(['name' => 'James Miller']);
+            AgentPage::query()->create(['user_id' => $james->id, 'handle' => 'james-miller', 'published' => false, 'bio' => 'Katy homes.'])->forceFill(['approval_requested_at' => now()])->save();
+
+            return auditCase($linda, 'POST', '/organisation/approvals/page/james-miller', ['action' => 'approve'], $lone->id);
+        },
+        'approvals.settings' => function () {
+            [$lone, $linda] = auditBrokerage();
+
+            return auditCase($linda, 'PUT', '/organisation/approvals/settings', ['fallback_hours' => 6], $lone->id);
+        },
         'policies.rules.store' => function () {
             [$lone, $linda] = auditBrokerage();
 
