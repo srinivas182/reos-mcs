@@ -8,8 +8,10 @@ use App\Http\Controllers\Api\Agents\TodayController;
 use App\Http\Controllers\Api\Ask\AskController;
 use App\Http\Controllers\Api\Bookings\BookingController;
 use App\Http\Controllers\Api\Brokerage\BrokerVerificationController;
+use App\Http\Controllers\Api\Brokerage\PoliciesController;
 use App\Http\Controllers\Api\Brokerage\RosterController;
 use App\Http\Controllers\Api\Brokerage\SeatsController;
+use App\Http\Controllers\Api\Brokerage\StaffController;
 use App\Http\Controllers\Api\Ce\CeWalletController;
 use App\Http\Controllers\Api\Classes\ClassesController;
 use App\Http\Controllers\Api\Compliance\ComplianceController;
@@ -107,6 +109,7 @@ use App\Http\Controllers\Organisation\BrandingController;
 use App\Http\Controllers\Organisation\BrokerageIntegrationsController;
 use App\Http\Controllers\Organisation\DomainController;
 use App\Http\Controllers\Organisation\InvitationController;
+use App\Http\Controllers\Organisation\PoliciesPageController;
 use App\Http\Controllers\Organisation\SettingsController;
 use App\Http\Controllers\Organisation\SsoController;
 use App\Http\Controllers\Payouts\EarningsController;
@@ -150,6 +153,8 @@ Route::get('social/media/{path}', [SocialController::class, 'file'])->where('pat
 // The public site (web journey screen 1) and each audience's landing page.
 Route::get('/', [PublicSiteController::class, 'home'])->name('home');
 // Brokerages and schools sign up and pay on the web (A6.1b, the Sprint 6 gate).
+// Checking a brokerage rule's words against TREC as they're typed (A15.2): changes nothing.
+Route::post('organisation/policies/check', [PoliciesController::class, 'check'])->middleware(['auth', 'verified', 'throttle:60,1,policy-check'])->name('policies.check');
 // The designated broker's TREC check comes first (A15.1a, broker journey screen 2).
 Route::middleware(['auth', 'verified', 'throttle:20,1,broker-verify'])->prefix('start/brokerage/verify')->name('start.verify.')->group(function () {
     Route::post('lookup', [BrokerVerificationController::class, 'lookup'])->name('lookup');
@@ -516,6 +521,15 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisat
     Route::post('organisation/roster/contacts', [RosterController::class, 'contacts'])->middleware('throttle:10,1,roster-contacts')->name('roster.contacts');
     Route::post('organisation/roster/invite', [RosterController::class, 'invite'])->middleware('throttle:5,1,roster-invite')->name('roster.invite');
     Route::put('organisation/seats', [SeatsController::class, 'update'])->middleware('throttle:20,1,seats-update')->name('seats.update');
+    // People and permissions, and Brokerage › Policies (A15.2): the page, and the same actions as the API.
+    Route::put('organisation/staff/{member}', [StaffController::class, 'update'])->whereNumber('member')->middleware('throttle:30,1,staff-update')->name('staff.update');
+    Route::get('organisation/policies', PoliciesPageController::class)->name('policies.index');
+    Route::middleware('throttle:30,1,policy-rules')->group(function () {
+        Route::post('organisation/policies/rules', [PoliciesController::class, 'store'])->name('policies.rules.store');
+        Route::put('organisation/policies/rules/{rule}', [PoliciesController::class, 'update'])->whereNumber('rule')->name('policies.rules.update');
+        Route::delete('organisation/policies/rules/{rule}', [PoliciesController::class, 'destroy'])->whereNumber('rule')->name('policies.rules.destroy');
+        Route::post('organisation/policies/rules/{rule}/restore', [PoliciesController::class, 'restore'])->whereNumber('rule')->name('policies.rules.restore');
+    });
     Route::get('agents/export', [AgentsController::class, 'export'])->middleware('throttle:10,1,agents-export')->name('agents.export');
     Route::post('organisation/invites', [InvitationController::class, 'store'])->middleware('throttle:20,1,invites-store')->name('invites.store');
     Route::post('organisation/invites/{invitation}/resend', [InvitationController::class, 'resend'])->whereNumber('invitation')->middleware('throttle:30,1,invites-resend')->name('invites.resend');

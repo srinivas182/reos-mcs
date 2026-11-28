@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\VirtualBroker;
 
+use App\Brokerage\BrokerageStaff;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\VirtualBroker\BrokerReplyRequest;
 use App\Http\Requests\VirtualBroker\PolicyManualRequest;
@@ -36,39 +37,45 @@ final class BrokerVirtualBrokerController extends Controller
         ]);
     }
 
-    public function manual(PolicyManualRequest $request, #[CurrentUser] User $user, VirtualBroker $broker, PolicyKnowledge $knowledge): RedirectResponse
+    public function manual(PolicyManualRequest $request, #[CurrentUser] User $user, VirtualBroker $broker, PolicyKnowledge $knowledge, BrokerageStaff $staff): RedirectResponse
     {
         $file = $request->file('file');
         abort_unless($file instanceof UploadedFile, 422);
-        $manual = $knowledge->upload($broker->brokerageOfBroker($user), $file, $user);
+        $brokerage = $broker->brokerageOfBroker($user);
+        $staff->allow($user, $brokerage, 'manage_policies');
+        $manual = $knowledge->upload($brokerage, $file, $user);
 
         return back()->with('success', __('virtualBroker.broker.uploaded', ['version' => (string) $manual->version]));
     }
 
-    public function settings(VirtualBrokerSettingsRequest $request, #[CurrentUser] User $user, VirtualBroker $broker): RedirectResponse
+    public function settings(VirtualBrokerSettingsRequest $request, #[CurrentUser] User $user, VirtualBroker $broker, BrokerageStaff $staff): RedirectResponse
     {
         $answerer = $request->integer('answerer_id');
+        $staff->allow($user, $broker->brokerageOfBroker($user), 'manage_policies');
         $broker->saveSettings($broker->brokerageOfBroker($user), $answerer > 0 ? $answerer : null, $request->integer('reply_hours'), $user);
 
         return back()->with('success', __('virtualBroker.broker.saved'));
     }
 
-    public function reply(BrokerReplyRequest $request, string $question, #[CurrentUser] User $user, VirtualBroker $broker): RedirectResponse
+    public function reply(BrokerReplyRequest $request, string $question, #[CurrentUser] User $user, VirtualBroker $broker, BrokerageStaff $staff): RedirectResponse
     {
+        $staff->allow($user, $broker->brokerageOfBroker($user), 'answer_escalations');
         $broker->reply($broker->brokerageQuestion($user, $question), $user, $request->string('answer')->toString(), $request->boolean('add_to_knowledge'));
 
         return back()->with('success', __('virtualBroker.broker.sent'));
     }
 
-    public function removeFaq(int $entry, #[CurrentUser] User $user, VirtualBroker $broker, PolicyKnowledge $knowledge): RedirectResponse
+    public function removeFaq(int $entry, #[CurrentUser] User $user, VirtualBroker $broker, PolicyKnowledge $knowledge, BrokerageStaff $staff): RedirectResponse
     {
+        $staff->allow($user, $broker->brokerageOfBroker($user), 'manage_policies');
         $knowledge->removeFaq($broker->brokerageOfBroker($user), $entry, false, $user);
 
         return back();
     }
 
-    public function restoreFaq(int $entry, #[CurrentUser] User $user, VirtualBroker $broker, PolicyKnowledge $knowledge): RedirectResponse
+    public function restoreFaq(int $entry, #[CurrentUser] User $user, VirtualBroker $broker, PolicyKnowledge $knowledge, BrokerageStaff $staff): RedirectResponse
     {
+        $staff->allow($user, $broker->brokerageOfBroker($user), 'manage_policies');
         $knowledge->removeFaq($broker->brokerageOfBroker($user), $entry, true, $user);
 
         return back();

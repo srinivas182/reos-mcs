@@ -96,6 +96,20 @@
 - **People and permissions:** designated broker, office admin and team leader. Each office admin or team leader has duties the designated broker turns on: approve posts, answer escalations, manage policies, sponsor and release agents. Only the designated broker changes roles and policies.
 - **Policies:** Brokerage › Policies brings the manual (A12.1) and the advertising policy (B12.1) together. A brokerage rule written or changed in REOS (an advertising rule, a manual note) is checked against the TREC rules at once and a conflict is flagged with its TREC source.
 - **Done when:** a conflicting rule is flagged with its TREC source.
+- **As built, A15.2** (ADR 0071):
+  - **Data:** `brokerage_staff` (title and duties per person, with row-level security; the first broker of each existing brokerage is backfilled as designated), `policy_passages.conflict`, and passages of kind `policy`.
+  - **Services:**
+    - `App\Brokerage\BrokerageStaff`: list (designated, office admins and team leaders with duties), setDuties (designated broker only), makeDesignated (at sign-up), can, allow and designatedOnly.
+    - `App\Brokerage\BrokerageRules`: view, check, add, update and remove/restore (all audited).
+    - `TexasConflicts::first`, used by `PolicyKnowledge::addFaq` too.
+    - Policy search includes brokerage rules, and `withTexasFirst` puts TREC first for a conflicting rule or FAQ answer.
+  - **Enforcement:** the advertising policy and approvals, the virtual broker's manual, settings, FAQ and replies, roster contacts and Invite all, invitations, and seats.
+  - **Routes:**
+    - API: `GET /api/v1/organisation/staff`, `PUT /api/v1/organisation/staff/{member}`, `GET /api/v1/organisation/policies`, `POST /api/v1/organisation/policies/check`, `POST /api/v1/organisation/policies/rules`, `PUT` and `DELETE /api/v1/organisation/policies/rules/{rule}`, and `POST /api/v1/organisation/policies/rules/{rule}/restore`.
+    - Web: the same actions, and `/organisation/policies`.
+  - **Web:** Brokerage › Policies (the manual, advertising and rules with the live TREC check, `brokerage-rules`). Brokerage settings shows People and permissions (`staff-permissions`). Policies in the broker sidebar now opens this page.
+  - **Phone:** Your brokerage → Policies (`brokerage/policies`: the manual and advertising at a glance, the rules with conflicts, add a rule with the live check).
+  - **Done when:** a Pest test checks "Agents may accept referral fees directly from title companies.", which is flagged as 22 TAC §535.3 with its source. Saved, the rule keeps the flag; rewritten, the flag goes. An agent's question about earnest money, with a conflicting rule in place, gets TREC's rule first. An office admin without duties is refused policies, the manual, advertising, Invite all, seats and duties; once given "manage policies" they can add rules, but still can't change seats.
 
 ### A15.3 Approvals and escalations (Team A)
 

@@ -2349,7 +2349,12 @@
         "brokerage.verified": "Brokerage verified with TREC",
         "tenant.seats_chosen": "Seats and who pays chosen",
         "roster.contacts_added": "Agent contacts added for the TREC roster",
-        "roster.invited": "Agents invited from the TREC roster"
+        "roster.invited": "Agents invited from the TREC roster",
+        "brokerage.duties_changed": "Permissions changed",
+        "policy_rule.added": "Brokerage rule added",
+        "policy_rule.changed": "Brokerage rule changed",
+        "policy_rule.removed": "Brokerage rule removed",
+        "policy_rule.restored": "Brokerage rule restored"
       }
     }
   },
@@ -10813,6 +10818,60 @@
       "save": "Save",
       "saved": "Saved",
       "more": "Buy more seats on reos.com"
+    },
+    "staff": {
+      "title": "People and permissions",
+      "purpose": "Who runs the brokerage and what each person may do. Only the designated broker changes these.",
+      "titles": {
+        "designated_broker": "Designated broker",
+        "office_admin": "Office admin",
+        "team_leader": "Team leader"
+      },
+      "duties": {
+        "approve_posts": "Approve posts",
+        "answer_escalations": "Answer agents' questions",
+        "manage_policies": "Manage policies",
+        "sponsor_agents": "Bring in and invite agents"
+      },
+      "team": "Team: {{team}}",
+      "all": "Can do everything",
+      "saved": "Permissions saved",
+      "designatedAll": "The designated broker can always do everything.",
+      "notAllowed": "Your designated broker hasn't given you this permission.",
+      "designatedOnly": "Only the designated broker can do this.",
+      "none": "Only you run the brokerage so far."
+    },
+    "policies": {
+      "title": "Policies",
+      "purpose": "Your policy manual, advertising policy and brokerage rules, checked against TREC's rules.",
+      "manual": "Policy manual",
+      "manualVersion": "Version {{version}} · {{file}}",
+      "manualConflicts_one": "{{count}} conflict with TREC rules",
+      "manualConflicts_other": "{{count}} conflicts with TREC rules",
+      "noManual": "No manual uploaded yet.",
+      "advertising": "Advertising policy",
+      "approvalNew": "New agents' posts need approval",
+      "approvalAll": "Every post needs approval",
+      "approvalNone": "Posts go out after the checks",
+      "banned_one": "{{count}} banned phrase",
+      "banned_other": "{{count}} banned phrases",
+      "open": "Open",
+      "rules": "Brokerage rules",
+      "rulesHint": "Rules you write here are checked against TREC as you type, and the virtual broker answers from them.",
+      "topic": "Topic",
+      "text": "Rule",
+      "add": "Add rule",
+      "save": "Save rule",
+      "edit": "Edit",
+      "remove": "Remove",
+      "removed": "Rule removed",
+      "none": "No brokerage rules yet",
+      "noneHint": "Add rules your agents ask about, such as how listings reach the office.",
+      "conflict": "Conflicts with {{citation}}",
+      "conflictHint": "TREC's rule wins: answers on this topic give TREC's rule first.",
+      "trecSource": "Read the TREC rule",
+      "ok": "No conflict with TREC rules.",
+      "readOnly": "Your designated broker manages policies."
     }
   }
 }

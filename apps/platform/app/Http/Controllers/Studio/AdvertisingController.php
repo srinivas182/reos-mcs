@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Studio;
 
+use App\Brokerage\BrokerageStaff;
 use App\Http\Controllers\Controller;
 use App\Mls\AgentPages;
 use App\Models\User;
@@ -63,6 +64,7 @@ final class AdvertisingController extends Controller
             'banned.*' => ['nullable', 'string', 'max:80'],
         ]);
         $banned = array_values(array_filter(is_array($data['banned']) ? $data['banned'] : [], is_string(...)));
+        app(BrokerageStaff::class)->allow($user, $approvals->brokerageOf($user), 'manage_policies');
         $policy->save($approvals->brokerageOf($user), $request->boolean('approval_new_agents'), $request->boolean('approval_all'), $banned, $user);
 
         return back()->with('success', __('studio.policy.saved'));
@@ -70,6 +72,7 @@ final class AdvertisingController extends Controller
 
     public function approve(string $post, #[CurrentUser] User $user, PostApprovals $approvals): RedirectResponse
     {
+        app(BrokerageStaff::class)->allow($user, $approvals->brokerageOf($user), 'approve_posts');
         $approvals->approve($user, $approvals->brokerageOf($user), $post);
 
         return back()->with('success', __('studio.policy.approved'));
@@ -78,6 +81,7 @@ final class AdvertisingController extends Controller
     public function sendBack(Request $request, string $post, #[CurrentUser] User $user, PostApprovals $approvals): RedirectResponse
     {
         $request->validate(['note' => ['required', 'string', 'min:3', 'max:500']]);
+        app(BrokerageStaff::class)->allow($user, $approvals->brokerageOf($user), 'approve_posts');
         $approvals->sendBack($user, $approvals->brokerageOf($user), $post, $request->string('note')->toString());
 
         return back()->with('success', __('studio.policy.returned'));
@@ -85,6 +89,7 @@ final class AdvertisingController extends Controller
 
     public function approvePage(string $page, #[CurrentUser] User $user, PostApprovals $approvals, AgentPages $pages): RedirectResponse
     {
+        app(BrokerageStaff::class)->allow($user, $approvals->brokerageOf($user), 'approve_posts');
         $pages->decide($user, $approvals->brokerageOf($user), $page, true);
 
         return back()->with('success', __('studio.policy.approved'));
@@ -93,6 +98,7 @@ final class AdvertisingController extends Controller
     public function returnPage(Request $request, string $page, #[CurrentUser] User $user, PostApprovals $approvals, AgentPages $pages): RedirectResponse
     {
         $request->validate(['note' => ['required', 'string', 'min:3', 'max:500']]);
+        app(BrokerageStaff::class)->allow($user, $approvals->brokerageOf($user), 'approve_posts');
         $pages->decide($user, $approvals->brokerageOf($user), $page, false, $request->string('note')->toString());
 
         return back()->with('success', __('studio.policy.returned'));

@@ -16,12 +16,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $id
  * @property int $organisation_id
  * @property int|null $policy_manual_id
- * @property string $kind manual or faq
+ * @property string $kind manual, faq or policy (a brokerage rule written in REOS, A15.2)
  * @property string|null $heading
  * @property int|null $page
  * @property int $position
  * @property string $content
  * @property int|null $broker_question_id
+ * @property array{rule: string, citation: string, url: string|null, excerpt: string, rule_text: string}|null $conflict The TREC rule it contradicts (A15.2)
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
  * @property CarbonImmutable|null $deleted_at
@@ -34,13 +35,17 @@ final class PolicyPassage extends Model
 
     public const FAQ = 'faq';
 
-    protected $fillable = ['organisation_id', 'policy_manual_id', 'kind', 'heading', 'page', 'position', 'content', 'broker_question_id'];
+    /** A brokerage rule typed in REOS (A15.2). */
+    public const POLICY = 'policy';
+
+    protected $fillable = ['organisation_id', 'policy_manual_id', 'kind', 'heading', 'page', 'position', 'content', 'broker_question_id', 'conflict'];
 
     protected function casts(): array
     {
         return [
             'page' => 'integer',
             'position' => 'integer',
+            'conflict' => 'array',
             'created_at' => 'immutable_datetime',
             'updated_at' => 'immutable_datetime',
             'deleted_at' => 'immutable_datetime',

@@ -8,6 +8,7 @@ use App\Billing\Plans;
 use App\Billing\PriceInterval;
 use App\Billing\ProductStatus;
 use App\Billing\SponsorCodes;
+use App\Brokerage\BrokerageRules;
 use App\Content\Ai\LessonPipeline;
 use App\Content\Avatars\AvatarConsents;
 use App\Content\MediaKind;
@@ -1064,6 +1065,36 @@ function adminActions(): array
             [$lone, $linda] = auditBrokerage();
 
             return auditCase($linda, 'POST', '/organisation/roster/invite', tenant: $lone->id);
+        },
+        'staff.update' => function () {
+            [$lone, $linda] = auditBrokerage();
+            $office = User::factory()->withRole(Role::Broker, $lone)->withTwoFactor()->create(['name' => 'Ana Office']);
+
+            return auditCase($linda, 'PUT', "/organisation/staff/{$office->id}", ['duties' => ['approve_posts']], $lone->id);
+        },
+        'policies.rules.store' => function () {
+            [$lone, $linda] = auditBrokerage();
+
+            return auditCase($linda, 'POST', '/organisation/policies/rules', ['topic' => 'Listings', 'text' => 'Send every new listing to the office first.'], $lone->id);
+        },
+        'policies.rules.update' => function () {
+            [$lone, $linda] = auditBrokerage();
+            $rule = app(BrokerageRules::class)->add($lone, $linda, 'Listings', 'Send every new listing to the office first.');
+
+            return auditCase($linda, 'PUT', "/organisation/policies/rules/{$rule['id']}", ['topic' => 'Listings', 'text' => 'Send every new listing to the office within a day.'], $lone->id);
+        },
+        'policies.rules.destroy' => function () {
+            [$lone, $linda] = auditBrokerage();
+            $rule = app(BrokerageRules::class)->add($lone, $linda, 'Listings', 'Send every new listing to the office first.');
+
+            return auditCase($linda, 'DELETE', "/organisation/policies/rules/{$rule['id']}", tenant: $lone->id);
+        },
+        'policies.rules.restore' => function () {
+            [$lone, $linda] = auditBrokerage();
+            $rule = app(BrokerageRules::class)->add($lone, $linda, 'Listings', 'Send every new listing to the office first.');
+            app(BrokerageRules::class)->remove($lone, $linda, $rule['id']);
+
+            return auditCase($linda, 'POST', "/organisation/policies/rules/{$rule['id']}/restore", tenant: $lone->id);
         },
         'seats.update' => function () {
             [$lone, $linda] = auditBrokerage();

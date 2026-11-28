@@ -8,6 +8,7 @@ use App\Authorization\Role;
 use App\Billing\Buyer;
 use App\Billing\ProductKind;
 use App\Billing\ProductStatus;
+use App\Brokerage\BrokerageStaff;
 use App\Enums\OrganisationType;
 use App\Models\BrokerVerification;
 use App\Models\Order;
@@ -137,6 +138,8 @@ final readonly class TenantSignups
 
             if ($verification !== null) {
                 $tenant->forceFill(['trec_number' => $verification->brokerage_number])->save();
+                // Its designated broker (A15.2): the person TREC lists, who set it up.
+                app(BrokerageStaff::class)->makeDesignated($tenant, $owner);
                 $verification->forceFill(['used_at' => now()])->save();
             }
 

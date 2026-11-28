@@ -6,10 +6,12 @@ import { BrandTile } from '@/components/brand-tile';
 import { CustomDomainCard } from '@/components/custom-domain-card';
 import { InviteSheet } from '@/components/invite-sheet';
 import { SeatsCard } from '@/components/brokerage/seats-card';
-import type { SeatsPlan } from '@/components/brokerage/types';
+import { StaffPermissions } from '@/components/brokerage/staff-permissions';
+import type { SeatsPlan, StaffPerson } from '@/components/brokerage/types';
 import { PageHeader } from '@/components/page-header';
 import { index as billingIndex } from '@/routes/billing';
 import { update as updateSeats } from '@/routes/seats';
+import { update as updateStaff } from '@/routes/staff';
 import { Button } from '@/components/ui/button';
 import { roleName } from '@/lib/roles';
 import { cn } from '@/lib/utils';
@@ -45,6 +47,8 @@ type Props = {
     people: Person[];
     /** Seats and who pays (A15.1b): brokerages only. */
     seatsPlan?: SeatsPlan | null;
+    /** People and permissions (A15.2). */
+    staff?: { people: StaffPerson[]; designated: boolean } | null;
     invite: InviteOptions;
 };
 
@@ -64,6 +68,7 @@ export default function BrokerageSettings({
     people,
     invite,
     seatsPlan = null,
+    staff = null,
 }: Props) {
     const { t } = useTranslation();
     const [inviting, setInviting] = useState(false);
@@ -85,6 +90,13 @@ export default function BrokerageSettings({
                 />
 
                 <div className="grid gap-4 xl:grid-cols-2">
+                    {staff ? (
+                        <StaffPermissions
+                            people={staff.people}
+                            designated={staff.designated}
+                            route={(id) => updateStaff(id).url}
+                        />
+                    ) : null}
                     {seatsPlan ? (
                         <SeatsCard
                             plan={seatsPlan}

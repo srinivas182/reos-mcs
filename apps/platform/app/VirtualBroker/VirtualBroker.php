@@ -378,6 +378,19 @@ final readonly class VirtualBroker
         // The manual passage the answer would quote (the best one close to the top).
         $hit = array_values(array_filter($hits, static fn (array $h): bool => $h['kind'] === 'manual' && $h['score'] >= max(0.34, $best - 0.2)))[0] ?? null;
 
+        // The brokerage's own rule or answer that contradicts TREC (A15.2): TREC goes first.
+        $own = array_values(array_filter($hits, static fn (array $h): bool => $h['kind'] === 'faq' && ($h['conflict'] ?? null) !== null && $h['score'] >= max(0.34, $best - 0.2)))[0] ?? null;
+
+        if ($own !== null) {
+            $rule = $this->search->stateRules(($brokerage->states ?? [])[0] ?? 'TX')[(string) $own['conflict']] ?? null;
+
+            if ($rule !== null) {
+                $first = [...PolicySearch::ruleHit($rule, max($own['score'], 0.6)), 'trec_wins' => true];
+
+                return [$first, ...array_values(array_filter($hits, static fn (array $h): bool => $h['id'] !== $first['id']))];
+            }
+        }
+
         // Only when that passage is one that contradicts TREC.
         if ($hit !== null) {
             foreach ($manual->conflicts ?? [] as $conflict) {

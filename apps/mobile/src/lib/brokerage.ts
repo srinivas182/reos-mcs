@@ -77,3 +77,28 @@ export async function chooseSeats(payer: Payer, pooled: boolean): Promise<SeatsP
 
   return data ? data.data : fail(error);
 }
+
+export type Policies = Got<'/organisation/policies'>['data'];
+export type BrokerageRule = Policies['rules'][number];
+export type TrecConflict = NonNullable<BrokerageRule['conflict']>;
+
+/** Brokerage › Policies (A15.2): the manual, the advertising policy and the brokerage's rules. */
+export async function loadPolicies(): Promise<Policies | null> {
+  const { data } = await api().GET('/organisation/policies');
+
+  return data ? data.data : null;
+}
+
+/** The TREC rule the words contradict, if any, as the broker types. */
+export async function checkRule(text: string): Promise<TrecConflict | null> {
+  if (text.trim().length < 5) return null;
+  const { data } = await api().POST('/organisation/policies/check', { body: { text } });
+
+  return data ? data.data.conflict : null;
+}
+
+export async function addRule(topic: string, text: string): Promise<BrokerageRule> {
+  const { data, error } = await api().POST('/organisation/policies/rules', { body: { topic: topic.trim(), text: text.trim() } });
+
+  return data ? data.data : fail(error);
+}

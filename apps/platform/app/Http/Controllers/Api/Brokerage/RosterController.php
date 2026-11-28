@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api\Brokerage;
 
 use App\Brokerage\BrokerageAccess;
+use App\Brokerage\BrokerageStaff;
 use App\Brokerage\Roster;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Brokerage\RosterContactsRequest;
@@ -35,9 +36,10 @@ final class RosterController extends Controller
      *
      * @response array{data: array{saved: int, refused: list<string>, roster: array{trec_number: string|null, counts: array{sponsored: int, member: int, invited: int, on_reos: int, contact: int, needs_contact: int}, agents: list<array{licence: string, name: string, type: string, expires_on: string|null, state: 'member'|'invited'|'on_reos'|'contact'|'needs_contact', contact: string|null}>}}}
      */
-    public function contacts(RosterContactsRequest $request, #[CurrentUser] User $user, BrokerageAccess $access, Roster $roster): JsonResponse
+    public function contacts(RosterContactsRequest $request, #[CurrentUser] User $user, BrokerageAccess $access, Roster $roster, BrokerageStaff $staff): JsonResponse
     {
         $brokerage = $access->brokerage($user);
+        $staff->allow($user, $brokerage, 'sponsor_agents');
         $result = $roster->contacts($brokerage, $user, $request->string('lines')->toString());
 
         return response()->json(['data' => [...$result, 'roster' => $roster->for($brokerage)]]);
@@ -50,9 +52,10 @@ final class RosterController extends Controller
      *
      * @response array{data: array{sent: int, skipped: int, needs_contact: int, roster: array{trec_number: string|null, counts: array{sponsored: int, member: int, invited: int, on_reos: int, contact: int, needs_contact: int}, agents: list<array{licence: string, name: string, type: string, expires_on: string|null, state: 'member'|'invited'|'on_reos'|'contact'|'needs_contact', contact: string|null}>}}}
      */
-    public function invite(Request $request, #[CurrentUser] User $user, BrokerageAccess $access, Roster $roster): JsonResponse
+    public function invite(Request $request, #[CurrentUser] User $user, BrokerageAccess $access, Roster $roster, BrokerageStaff $staff): JsonResponse
     {
         $brokerage = $access->brokerage($user);
+        $staff->allow($user, $brokerage, 'sponsor_agents');
         $result = $roster->inviteAll($brokerage, $user, $user->locale->value);
 
         return response()->json(['data' => [...$result, 'roster' => $roster->for($brokerage)]]);

@@ -87,3 +87,45 @@ export type SeatsPlan = {
     teams: number;
     chosen: boolean;
 };
+
+export type TrecConflict = {
+    rule: string;
+    citation: string;
+    url: string | null;
+    excerpt: string;
+    rule_text: string;
+};
+
+export type BrokerageRule = {
+    id: number;
+    topic: string;
+    text: string;
+    conflict: TrecConflict | null;
+    updated_at: string | null;
+};
+
+export type PoliciesData = {
+    manual: { version: number; file_name: string; conflicts: number } | null;
+    advertising: {
+        approval_new_agents: boolean;
+        approval_all: boolean;
+        banned: number;
+    };
+    rules: BrokerageRule[];
+    can_manage: boolean;
+};
+
+export type Duty =
+    | 'approve_posts'
+    | 'answer_escalations'
+    | 'manage_policies'
+    | 'sponsor_agents';
+
+export type StaffPerson = {
+    user_id: number;
+    name: string;
+    title: 'designated_broker' | 'office_admin' | 'team_leader';
+    team: string | null;
+    duties: Duty[];
+    editable: boolean;
+};

@@ -2349,7 +2349,12 @@
         "brokerage.verified": "Agencia verificada con TREC",
         "tenant.seats_chosen": "Se eligieron los puestos y quién paga",
         "roster.contacts_added": "Se agregaron contactos de agentes a la lista de TREC",
-        "roster.invited": "Se invitó a agentes de la lista de TREC"
+        "roster.invited": "Se invitó a agentes de la lista de TREC",
+        "brokerage.duties_changed": "Se cambiaron los permisos",
+        "policy_rule.added": "Se agregó una regla de la agencia",
+        "policy_rule.changed": "Se cambió una regla de la agencia",
+        "policy_rule.removed": "Se quitó una regla de la agencia",
+        "policy_rule.restored": "Se restauró una regla de la agencia"
       }
     }
   },
@@ -10813,6 +10818,60 @@
       "save": "Guardar",
       "saved": "Guardado",
       "more": "Comprar más puestos en reos.com"
+    },
+    "staff": {
+      "title": "Personas y permisos",
+      "purpose": "Quién dirige la agencia y qué puede hacer cada persona. Solo el bróker designado los cambia.",
+      "titles": {
+        "designated_broker": "Bróker designado",
+        "office_admin": "Administrador de oficina",
+        "team_leader": "Líder de equipo"
+      },
+      "duties": {
+        "approve_posts": "Aprobar publicaciones",
+        "answer_escalations": "Responder preguntas de los agentes",
+        "manage_policies": "Administrar políticas",
+        "sponsor_agents": "Traer e invitar agentes"
+      },
+      "team": "Equipo: {{team}}",
+      "all": "Puede hacer todo",
+      "saved": "Permisos guardados",
+      "designatedAll": "El bróker designado siempre puede hacer todo.",
+      "notAllowed": "Su bróker designado no le ha dado este permiso.",
+      "designatedOnly": "Solo el bróker designado puede hacer esto.",
+      "none": "Por ahora solo usted dirige la agencia."
+    },
+    "policies": {
+      "title": "Políticas",
+      "purpose": "Su manual de políticas, su política de publicidad y las reglas de la agencia, revisados con las reglas de TREC.",
+      "manual": "Manual de políticas",
+      "manualVersion": "Versión {{version}} · {{file}}",
+      "manualConflicts_one": "{{count}} conflicto con las reglas de TREC",
+      "manualConflicts_other": "{{count}} conflictos con las reglas de TREC",
+      "noManual": "Todavía no ha subido un manual.",
+      "advertising": "Política de publicidad",
+      "approvalNew": "Las publicaciones de agentes nuevos necesitan aprobación",
+      "approvalAll": "Toda publicación necesita aprobación",
+      "approvalNone": "Las publicaciones salen después de las revisiones",
+      "banned_one": "{{count}} frase prohibida",
+      "banned_other": "{{count}} frases prohibidas",
+      "open": "Abrir",
+      "rules": "Reglas de la agencia",
+      "rulesHint": "Las reglas que escriba aquí se revisan con las de TREC mientras escribe, y el bróker virtual responde a partir de ellas.",
+      "topic": "Tema",
+      "text": "Regla",
+      "add": "Agregar regla",
+      "save": "Guardar regla",
+      "edit": "Editar",
+      "remove": "Quitar",
+      "removed": "Regla quitada",
+      "none": "Aún no hay reglas de la agencia",
+      "noneHint": "Agregue las reglas sobre las que preguntan sus agentes, como la forma de enviar propiedades a la oficina.",
+      "conflict": "En conflicto con {{citation}}",
+      "conflictHint": "Gana la regla de TREC: las respuestas sobre este tema dan primero la regla de TREC.",
+      "trecSource": "Leer la regla de TREC",
+      "ok": "Sin conflicto con las reglas de TREC.",
+      "readOnly": "Su bróker designado administra las políticas."
     }
   }
 }

@@ -41908,6 +41908,600 @@
                 }
             }
         },
+        "/organisation/policies": {
+            "get": {
+                "operationId": "brokerage.policies",
+                "description": "The current manual and its TREC conflicts, the advertising policy, and the brokerage's own rules, each with the TREC rule it contradicts if any.",
+                "summary": "The brokerage's policies",
+                "tags": [
+                    "Policies"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "manual": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "version": {
+                                                            "type": "integer"
+                                                        },
+                                                        "file_name": {
+                                                            "type": "string"
+                                                        },
+                                                        "conflicts": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "version",
+                                                        "file_name",
+                                                        "conflicts"
+                                                    ]
+                                                },
+                                                "advertising": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "approval_new_agents": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "approval_all": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "banned": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "approval_new_agents",
+                                                        "approval_all",
+                                                        "banned"
+                                                    ]
+                                                },
+                                                "rules": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "topic": {
+                                                                "type": "string"
+                                                            },
+                                                            "text": {
+                                                                "type": "string"
+                                                            },
+                                                            "conflict": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "properties": {
+                                                                    "rule": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "citation": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "url": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "excerpt": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "rule_text": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "rule",
+                                                                    "citation",
+                                                                    "url",
+                                                                    "excerpt",
+                                                                    "rule_text"
+                                                                ]
+                                                            },
+                                                            "updated_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "topic",
+                                                            "text",
+                                                            "conflict",
+                                                            "updated_at"
+                                                        ]
+                                                    }
+                                                },
+                                                "can_manage": {
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "required": [
+                                                "manual",
+                                                "advertising",
+                                                "rules",
+                                                "can_manage"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/organisation/policies/check": {
+            "post": {
+                "operationId": "brokerage.policies.check",
+                "description": "The first TREC rule the words contradict, with its source, or null. Used while a rule is being written.",
+                "summary": "Check words against TREC",
+                "tags": [
+                    "Policies"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PolicyCheckRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "conflict": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "rule": {
+                                                            "type": "string"
+                                                        },
+                                                        "citation": {
+                                                            "type": "string"
+                                                        },
+                                                        "url": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "excerpt": {
+                                                            "type": "string"
+                                                        },
+                                                        "rule_text": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "rule",
+                                                        "citation",
+                                                        "url",
+                                                        "excerpt",
+                                                        "rule_text"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "conflict"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/organisation/policies/rules": {
+            "post": {
+                "operationId": "brokerage.policies.rules.store",
+                "description": "Checked against TREC at once. A conflicting rule is kept and flagged; in answers on that topic the TREC rule goes first.",
+                "summary": "Add a brokerage rule",
+                "tags": [
+                    "Policies"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BrokerageRuleRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "topic": {
+                                                    "type": "string"
+                                                },
+                                                "text": {
+                                                    "type": "string"
+                                                },
+                                                "conflict": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "rule": {
+                                                            "type": "string"
+                                                        },
+                                                        "citation": {
+                                                            "type": "string"
+                                                        },
+                                                        "url": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "excerpt": {
+                                                            "type": "string"
+                                                        },
+                                                        "rule_text": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "rule",
+                                                        "citation",
+                                                        "url",
+                                                        "excerpt",
+                                                        "rule_text"
+                                                    ]
+                                                },
+                                                "updated_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "topic",
+                                                "text",
+                                                "conflict",
+                                                "updated_at"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/organisation/policies/rules/{rule}": {
+            "put": {
+                "operationId": "brokerage.policies.rules.update",
+                "summary": "Change a brokerage rule",
+                "tags": [
+                    "Policies"
+                ],
+                "parameters": [
+                    {
+                        "name": "rule",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BrokerageRuleRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "topic": {
+                                                    "type": "string"
+                                                },
+                                                "text": {
+                                                    "type": "string"
+                                                },
+                                                "conflict": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "rule": {
+                                                            "type": "string"
+                                                        },
+                                                        "citation": {
+                                                            "type": "string"
+                                                        },
+                                                        "url": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "excerpt": {
+                                                            "type": "string"
+                                                        },
+                                                        "rule_text": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "rule",
+                                                        "citation",
+                                                        "url",
+                                                        "excerpt",
+                                                        "rule_text"
+                                                    ]
+                                                },
+                                                "updated_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "topic",
+                                                "text",
+                                                "conflict",
+                                                "updated_at"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "brokerage.policies.rules.destroy",
+                "summary": "Remove a brokerage rule",
+                "tags": [
+                    "Policies"
+                ],
+                "parameters": [
+                    {
+                        "name": "rule",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/organisation/policies/rules/{rule}/restore": {
+            "post": {
+                "operationId": "brokerage.policies.rules.restore",
+                "summary": "Put a removed brokerage rule back (Undo)",
+                "tags": [
+                    "Policies"
+                ],
+                "parameters": [
+                    {
+                        "name": "rule",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/me/study": {
             "get": {
                 "operationId": "practice.today",
@@ -49264,7 +49858,7 @@
             },
             "put": {
                 "operationId": "brokerage.seats.update",
-                "description": "The brokerage, each agent, or split (the brokerage pays the seat, agents their own extras), and whether AI credits are pooled across seats.",
+                "description": "The brokerage, each agent, or split (the brokerage pays the seat, agents their own extras), and whether AI credits are pooled across seats. The designated broker only.",
                 "summary": "Choose who pays",
                 "tags": [
                     "Seats"
@@ -55796,6 +56390,222 @@
                                                 "best",
                                                 "record",
                                                 "misses"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/organisation/staff": {
+            "get": {
+                "operationId": "brokerage.staff",
+                "description": "Each person with the broker role in the brokerage or its teams: designated broker, office admin or team leader, with their duties.",
+                "summary": "Who runs the brokerage",
+                "tags": [
+                    "Staff"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "people": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "user_id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "title": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "designated_broker",
+                                                                    "office_admin",
+                                                                    "team_leader"
+                                                                ]
+                                                            },
+                                                            "team": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "duties": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "editable": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "user_id",
+                                                            "name",
+                                                            "title",
+                                                            "team",
+                                                            "duties",
+                                                            "editable"
+                                                        ]
+                                                    }
+                                                },
+                                                "designated": {
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "required": [
+                                                "people",
+                                                "designated"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/organisation/staff/{member}": {
+            "put": {
+                "operationId": "brokerage.staff.update",
+                "description": "Approve posts, answer escalated questions, manage policies, sponsor agents. The designated broker only.",
+                "summary": "Change someone's duties",
+                "tags": [
+                    "Staff"
+                ],
+                "parameters": [
+                    {
+                        "name": "member",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DutiesRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "people": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "user_id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "title": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "designated_broker",
+                                                                    "office_admin",
+                                                                    "team_leader"
+                                                                ]
+                                                            },
+                                                            "team": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "duties": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "editable": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "user_id",
+                                                            "name",
+                                                            "title",
+                                                            "team",
+                                                            "duties",
+                                                            "editable"
+                                                        ]
+                                                    }
+                                                },
+                                                "designated": {
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "required": [
+                                                "people",
+                                                "designated"
                                             ]
                                         }
                                     },
@@ -64032,6 +64842,27 @@
                 ],
                 "title": "BrokerRole"
             },
+            "BrokerageRuleRequest": {
+                "type": "object",
+                "description": "A brokerage rule (A15.2): its topic and words.",
+                "properties": {
+                    "topic": {
+                        "type": "string",
+                        "minLength": 2,
+                        "maxLength": 120
+                    },
+                    "text": {
+                        "type": "string",
+                        "minLength": 5,
+                        "maxLength": 4000
+                    }
+                },
+                "required": [
+                    "topic",
+                    "text"
+                ],
+                "title": "BrokerageRuleRequest"
+            },
             "CalendarEventResource": {
                 "type": "object",
                 "properties": {
@@ -65362,6 +66193,29 @@
                     "current"
                 ],
                 "title": "DeviceResource"
+            },
+            "DutiesRequest": {
+                "type": "object",
+                "description": "The duties an office admin or team leader has (A15.2).",
+                "properties": {
+                    "duties": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "approve_posts",
+                                "answer_escalations",
+                                "manage_policies",
+                                "sponsor_agents"
+                            ]
+                        },
+                        "maxItems": 4
+                    }
+                },
+                "required": [
+                    "duties"
+                ],
+                "title": "DutiesRequest"
             },
             "ExchangeSignInRequest": {
                 "type": "object",
@@ -67032,6 +67886,21 @@
                     "done"
                 ],
                 "title": "PlanTaskRequest"
+            },
+            "PolicyCheckRequest": {
+                "type": "object",
+                "description": "Words to check against TREC's rules as a brokerage rule is typed (A15.2).",
+                "properties": {
+                    "text": {
+                        "type": "string",
+                        "minLength": 5,
+                        "maxLength": 4000
+                    }
+                },
+                "required": [
+                    "text"
+                ],
+                "title": "PolicyCheckRequest"
             },
             "PostRequest": {
                 "type": "object",
