@@ -81,6 +81,10 @@ enum NotificationKind: string
     case AgentFeedback = 'agent_feedback';
     /** Someone signed in at an open house or wrote from the agent's page (B14.3a). */
     case NewLead = 'new_lead';
+    /** A referral from another agent, or their answer to one (B14.3b). */
+    case Referral = 'referral';
+    /** Someone you invited got their license: points (B14.3b). */
+    case InviteReward = 'invite_reward';
 
     public const INBOX = 'inbox';
 
@@ -107,7 +111,7 @@ enum NotificationKind: string
             self::Announcement => [self::INBOX, self::PUSH],
             // A tap opens the brief; email would arrive after the morning has started.
             self::MorningBrief => [self::PUSH],
-            self::Celebration, self::AgentFeedback => [self::INBOX, self::PUSH],
+            self::Celebration, self::AgentFeedback, self::InviteReward => [self::INBOX, self::PUSH],
             default => [self::INBOX, self::PUSH, self::EMAIL],
         };
     }
@@ -140,7 +144,7 @@ enum NotificationKind: string
             self::SessionBooked, self::SessionStarting, self::ClassCheck, self::ClassReport, self::ExamReminder, self::PassNews, self::BrokerOffer, self::LicenceFound, self::CeRenewal, self::StateRulesChanged, self::StateWentLive, self::WeeklyReport, self::Challenge, self::StudentQuestion, self::InstructorAnswer, self::Mentoring => 'learning',
             self::Invitation, self::SeatsRequested, self::BrokerAsked, self::SupportAccess, self::ApprovalExpiring, self::AvatarConsentEnded, self::ContentReview, self::PolicyQuestion, self::PostApproval => 'organisation',
             self::IntegrationPaused, self::FlagRolledBack, self::ConnectionNeedsReconnect => 'tools',
-            self::DealDeadline, self::SignatureCompleted, self::MorningBrief, self::PolicyAnswer, self::ContractReview, self::PostDecision, self::Celebration, self::AgentFeedback, self::NewLead => 'deals',
+            self::DealDeadline, self::SignatureCompleted, self::MorningBrief, self::PolicyAnswer, self::ContractReview, self::PostDecision, self::Celebration, self::AgentFeedback, self::NewLead, self::Referral, self::InviteReward => 'deals',
         };
     }
 

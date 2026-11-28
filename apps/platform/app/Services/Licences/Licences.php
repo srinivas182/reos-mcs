@@ -7,6 +7,7 @@ namespace App\Services\Licences;
 use App\Enums\BrokerRole;
 use App\Enums\LicenceStatus;
 use App\Enums\LicenceType;
+use App\Leads\Invites;
 use App\Licences\LicenceLookups;
 use App\Licences\LicenceRecord;
 use App\Models\Licence;
@@ -34,7 +35,7 @@ final readonly class Licences
 {
     public const AUDIT_SUBJECT = 'licence';
 
-    public function __construct(private LicenceLookups $lookups, private AuditLogger $audit, private PersonStates $states) {}
+    public function __construct(private LicenceLookups $lookups, private AuditLogger $audit, private PersonStates $states, private Invites $invites) {}
 
     /** @return Collection<int, Licence> Live states first, then by state. */
     public function of(User $user): Collection
@@ -119,6 +120,11 @@ final readonly class Licences
             'check' => $check->value,
         ], $user);
 
+        // Invite and earn (B14.3b): a verified license earns whoever invited them their points.
+        if ($licence->status === LicenceStatus::Active && $licence->verified_at !== null) {
+            $this->invites->licensed($user);
+        }
+
         return [$licence->load('state'), $check, $lookup?->source()];
     }
 
@@ -188,6 +194,7 @@ final readonly class Licences
             'reviewed_by' => $reviewer->id,
         ])->save();
         $this->audit->record('licence.approved', self::AUDIT_SUBJECT, (string) $licence->id, ['state' => $licence->state_code, 'person' => $licence->user_id], $reviewer);
+        $this->invites->licensed($licence->user);
 
         return $licence;
     }

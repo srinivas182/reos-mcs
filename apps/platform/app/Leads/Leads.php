@@ -28,7 +28,7 @@ final readonly class Leads
     /**
      * @param  array{name: string, email: string|null, phone: string|null}  $person
      * @param  list<string>  $tags
-     * @param  'open_house'|'page'  $kind
+     * @param  'open_house'|'page'|'referral'  $kind
      */
     public function add(User $agent, array $person, string $note, string $draft, bool $hasAgent, array $tags, string $kind): Contact
     {
@@ -44,7 +44,10 @@ final readonly class Leads
         $this->crm->note($contact, $note, $agent);
         $this->crm->note($contact, self::tr($hasAgent ? 'leads.followUp.hasAgent' : 'leads.followUp.draft', ['draft' => $draft], $lang), $agent);
         $this->crm->task($contact, self::tr($hasAgent ? 'leads.followUp.taskHasAgent' : 'leads.followUp.task', ['name' => $first ?? $person['name']], $lang), CarbonImmutable::now('America/Chicago')->addDay(), $agent);
-        $agent->notify(new NewLeadReceived($kind, $person['name'], $contact->uuid));
+        // An accepted referral needs no alert: the agent just took it.
+        if ($kind !== 'referral') {
+            $agent->notify(new NewLeadReceived($kind, $person['name'], $contact->uuid));
+        }
 
         return $contact;
     }

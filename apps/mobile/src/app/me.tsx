@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
-import { ArrowLeftRight, Bell, Camera, Compass, DoorOpen, Download, GraduationCap, IdCard, Languages, Map, Megaphone, Plug, ShieldCheck, Users, Wallet } from 'lucide-react-native';
+import { ArrowLeftRight, Bell, Camera, Compass, DoorOpen, Download, Gift, GraduationCap, IdCard, Languages, Map, Megaphone, Plug, ShieldCheck, Users, Wallet } from 'lucide-react-native';
 import { useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -93,6 +93,8 @@ export default function MeScreen() {
         {current?.role === 'agent' ? <MenuRow icon={Compass} title={t('agents.modes.title')} onPress={() => router.push('/agent/goal')} /> : null}
         {/* Open houses (B14.3a): QR and phone sign-in, each visitor a contact. */}
         {current?.role === 'agent' ? <MenuRow icon={DoorOpen} title={t('leads.openHouse.pageTitle')} onPress={() => router.push('/open-houses')} /> : null}
+        {/* Referrals and invites (B14.3b): referrals between brokers; invite and earn for everyone. */}
+        <MenuRow icon={Gift} title={t('leads.referrals.title')} onPress={() => router.push('/referrals')} />
         {/* My posts and results (B11, screen 169). */}
         {current?.role === 'agent' ? <MenuRow icon={Megaphone} title={t('social.posts.title')} onPress={() => router.push('/social')} /> : null}
         {current?.role === 'agent' ? <MenuRow icon={Camera} title={t('studio.brand.title')} onPress={() => router.push('/social/brand')} /> : null}

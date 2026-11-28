@@ -47,6 +47,9 @@ use Spatie\Permission\Traits\HasRoles;
  * @property Appearance $appearance
  * @property TextSize $text_size
  * @property Locale $locale
+ * @property string|null $invite_code Invite and earn (B14.3b): the person's own link code
+ * @property int|null $invited_by_id Who invited them (B14.3b)
+ * @property Carbon|null $invited_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read Collection<int, SocialAccount> $socialAccounts
@@ -114,6 +117,7 @@ class User extends Authenticatable implements HasLocalePreference, MustVerifyEma
         return [
             'email_verified_at' => 'datetime',
             'phone_verified_at' => 'datetime',
+            'invited_at' => 'datetime',
             'deletion_requested_at' => 'datetime',
             'exam_month' => 'date',
             'minutes_per_day' => 'integer',
