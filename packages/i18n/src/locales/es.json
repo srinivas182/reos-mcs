@@ -95,7 +95,8 @@
     "complianceLog": "Registro de cumplimiento",
     "candidateStudio": "Estudio para candidatos",
     "rolePlay": "Juego de roles",
-    "videoPractice": "Práctica en video"
+    "videoPractice": "Práctica en video",
+    "openHouses": "Casas abiertas"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -5631,7 +5632,8 @@
       "post_approval": "Aprobación de publicaciones",
       "post_decision": "Decisiones de su bróker sobre publicaciones",
       "celebration": "Publicaciones de celebración",
-      "agent_feedback": "Opiniones de agentes"
+      "agent_feedback": "Opiniones de agentes",
+      "new_lead": "Nuevos clientes potenciales"
     },
     "digest": {
       "subject": {
@@ -10433,6 +10435,92 @@
       "noneHint": "Agregue un cliente para compartir la transacción.",
       "en": "Inglés",
       "es": "Español"
+    }
+  },
+  "leads": {
+    "openHouse": {
+      "title": "Casa abierta: {{address}}",
+      "purpose": "Regístrese en la casa abierta de {{agent}}.",
+      "welcome": "Bienvenido a la casa abierta",
+      "hostedBy": "Presentada por {{agent}}",
+      "thanks": "Gracias por registrarse. ¡Disfrute la casa!",
+      "signIn": "Registrarme",
+      "note": "Se registró en la casa abierta de {{address}} el {{date}}. {{agent}} {{approved}} Plazo: {{timeline}}.",
+      "hasAgent": "Ya trabaja con un agente.",
+      "noAgent": "No trabaja con un agente.",
+      "approved": "Tiene preaprobación de préstamo.",
+      "notApproved": "Todavía no tiene preaprobación.",
+      "draft": "Hola, {{name}}. Gracias por visitar {{address}} hoy. ¿Tiene alguna pregunta sobre la casa o quiere ver casas parecidas cerca? {{agent}}",
+      "tag": "Casa abierta",
+      "pageTitle": "Casas abiertas",
+      "pagePurpose": "Active el registro de una casa abierta: los visitantes escanean el código QR o se registran en su teléfono, y cada uno llega a sus contactos con un seguimiento.",
+      "start": "Activar el registro",
+      "address": "Dirección",
+      "city": "Ciudad",
+      "startsAt": "Empieza",
+      "endsAt": "Termina",
+      "open": "Registro abierto",
+      "closed": "Registro cerrado",
+      "visits_one": "{{count}} visitante",
+      "visits_other": "{{count}} visitantes",
+      "qrAlt": "Código QR para registrarse en {{address}}",
+      "link": "Enlace de registro",
+      "visitors": "Quién se registró",
+      "none": "Todavía no hay casas abiertas",
+      "noneHint": "Active el registro antes de su próxima casa abierta.",
+      "noVisits": "Nadie se ha registrado todavía.",
+      "kiosk": "Registro en este teléfono",
+      "kioskHint": "Pásele su teléfono a los visitantes. Los registros se guardan en el teléfono y se envían cuando hay conexión.",
+      "waiting_one": "{{count}} registro esperando enviarse",
+      "waiting_other": "{{count}} registros esperando enviarse",
+      "next": "Siguiente visitante",
+      "saved": "¡Gracias! Guardado.",
+      "withAgent": "Tiene agente",
+      "preApproved": "Con preaprobación",
+      "openContact": "Abrir contacto",
+      "startNow": "El registro se abre ahora y se cierra tres horas después.",
+      "sendNow": "Enviar ahora",
+      "allSent": "Se enviaron todos los registros.",
+      "done": "Listo"
+    },
+    "page": {
+      "title": "Hágale una pregunta a {{name}}",
+      "send": "Enviar",
+      "thanks": "Gracias. {{name}} le responderá pronto.",
+      "note": "Escribió desde su página: “{{message}}”",
+      "draft": "Hola, {{name}}. Gracias por su mensaje. Con gusto le ayudo. ¿Cuándo le queda bien que hablemos? {{agent}}",
+      "tag": "Página del agente"
+    },
+    "form": {
+      "name": "Su nombre",
+      "email": "Correo",
+      "phone": "Teléfono",
+      "oneOf": "Un correo o un teléfono, para que el agente pueda comunicarse con usted.",
+      "timeline": "¿Cuándo espera mudarse?",
+      "choose": "Elija una opción",
+      "hasAgent": "Ya trabajo con un agente de bienes raíces",
+      "preApproved": "Tengo preaprobación de préstamo",
+      "consent": "{{agent}} puede comunicarse conmigo sobre esta casa y casas parecidas. Puedo pedirle que deje de hacerlo en cualquier momento.",
+      "message": "Su pregunta"
+    },
+    "timelines": {
+      "now": "Ahora",
+      "3_months": "En 3 meses",
+      "6_months": "En 6 meses",
+      "later": "Más adelante",
+      "just_looking": "Solo estoy mirando"
+    },
+    "followUp": {
+      "draft": "Primer mensaje sugerido: {{draft}}",
+      "hasAgent": "Trabaja con otro agente: envíe solo lo que pidió. Mensaje sugerido: {{draft}}",
+      "task": "Dar seguimiento a {{name}}",
+      "taskHasAgent": "Enviarle a {{name}} lo que pidió"
+    },
+    "notify": {
+      "open_house": "{{name}} se registró en su casa abierta",
+      "page": "{{name}} le escribió desde su página",
+      "body": "Ya está en sus contactos, con un seguimiento para mañana.",
+      "open": "Abrir contacto"
     }
   }
 }

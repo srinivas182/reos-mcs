@@ -3827,6 +3827,48 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/open-houses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My open houses
+         * @description Newest first, with the sign-in link and QR code, whether sign-in is open (an hour before to six hours after), and how many signed in.
+         */
+        get: operations["open-houses.index"];
+        put?: never;
+        /** Start an open house */
+        post: operations["open-houses.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/open-houses/{openHouse}/visits": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Who signed in */
+        get: operations["open-houses.visits"];
+        put?: never;
+        /**
+         * Send kiosk sign-ins
+         * @description Sign-ins made on my phone or tablet in kiosk mode, possibly offline. Each lands once, by its `client_id`, in my CRM with a follow-up.
+         */
+        post: operations["open-houses.sync"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/licence-journey/news": {
         parameters: {
             query?: never;
@@ -7246,6 +7288,18 @@ export interface components {
             };
         };
         /**
+         * OpenHouseRequest
+         * @description An open house to run sign-in for (B14.3a).
+         */
+        OpenHouseRequest: {
+            address: string;
+            city?: string | null;
+            /** Format: date-time */
+            starts_at: string;
+            /** Format: date-time */
+            ends_at: string;
+        };
+        /**
          * OrganisationType
          * @description Kinds of organisation (tenant) a role can belong to (A3.2, A4.1).
          *     | |
@@ -7785,6 +7839,27 @@ export interface components {
          */
         StateStatus: "live" | "in_preparation" | "waitlist" | "not_planned";
         /**
+         * SyncVisitsRequest
+         * @description Sign-ins from kiosk mode on the agent's phone or tablet, possibly made offline (B14.3a).
+         */
+        SyncVisitsRequest: {
+            visits: {
+                client_id: string;
+                name: string;
+                /** Format: email */
+                email?: string | null;
+                phone?: string | null;
+                has_agent?: boolean;
+                pre_approved?: boolean;
+                /** @enum {string|null} */
+                timeline?: "now" | "3_months" | "6_months" | "later" | "just_looking" | null;
+                /** @enum {unknown} */
+                consent?: "yes" | "on" | "1" | 1 | "true" | true;
+                /** Format: date-time */
+                signed_in_at?: string | null;
+            }[];
+        };
+        /**
          * TextNumberRequest
          * @description A mobile number for text alerts (B6.2c), and the code sent to it when verifying.
          */
@@ -8022,6 +8097,7 @@ export type SchemaNotificationSettingsRequest = components['schemas']['Notificat
 export type SchemaOnboardingPath = components['schemas']['OnboardingPath'];
 export type SchemaOnboardingRequest = components['schemas']['OnboardingRequest'];
 export type SchemaOnboardingResource = components['schemas']['OnboardingResource'];
+export type SchemaOpenHouseRequest = components['schemas']['OpenHouseRequest'];
 export type SchemaOrganisationType = components['schemas']['OrganisationType'];
 export type SchemaParseVoiceRequest = components['schemas']['ParseVoiceRequest'];
 export type SchemaPhoneContactsRequest = components['schemas']['PhoneContactsRequest'];
@@ -8061,6 +8137,7 @@ export type SchemaStartReviewRequest = components['schemas']['StartReviewRequest
 export type SchemaStartRolePlayRequest = components['schemas']['StartRolePlayRequest'];
 export type SchemaStateResource = components['schemas']['StateResource'];
 export type SchemaStateStatus = components['schemas']['StateStatus'];
+export type SchemaSyncVisitsRequest = components['schemas']['SyncVisitsRequest'];
 export type SchemaTextNumberRequest = components['schemas']['TextNumberRequest'];
 export type SchemaTextSwitchRequest = components['schemas']['TextSwitchRequest'];
 export type SchemaTodoResource = components['schemas']['TodoResource'];
@@ -20425,6 +20502,168 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["OnboardingResource"];
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "open-houses.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            address: string;
+                            city: string | null;
+                            starts_at: string;
+                            ends_at: string;
+                            open: boolean;
+                            url: string;
+                            qr_url: string;
+                            visits: number;
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "open-houses.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OpenHouseRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            address: string;
+                            city: string | null;
+                            starts_at: string;
+                            ends_at: string;
+                            open: boolean;
+                            url: string;
+                            qr_url: string;
+                            visits: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "open-houses.visits": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                openHouse: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            name: string;
+                            email: string | null;
+                            phone: string | null;
+                            has_agent: boolean;
+                            pre_approved: boolean;
+                            /** @enum {string|null} */
+                            timeline: "now" | "3_months" | "6_months" | "later" | "just_looking" | null;
+                            /** @enum {string} */
+                            source: "qr" | "kiosk";
+                            signed_in_at: string;
+                            contact: string | null;
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "open-houses.sync": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                openHouse: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SyncVisitsRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            added: number;
+                            duplicates: number;
+                        };
+                    };
                 };
             };
             401: components["responses"]["AuthenticationException"];

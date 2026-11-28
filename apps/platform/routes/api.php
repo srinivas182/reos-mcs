@@ -31,6 +31,7 @@ use App\Http\Controllers\Api\Deals\SignatureController;
 use App\Http\Controllers\Api\Feedback\AgentFeedbackController;
 use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\Instructor\QuestionController as InstructorQuestionController;
+use App\Http\Controllers\Api\Leads\OpenHouseController;
 use App\Http\Controllers\Api\Learn\LearnController;
 use App\Http\Controllers\Api\Learn\OfflineController;
 use App\Http\Controllers\Api\Learn\PlayerController;
@@ -556,6 +557,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('deals/transactions', [DealController::class, 'transactions'])->name('api.deals.transactions');
     Route::post('deals', [DealController::class, 'store'])->middleware('throttle:30,1,api-deals')->name('api.deals.store');
     Route::get('deals/{deal}', [DealController::class, 'show'])->whereUuid('deal')->name('api.deals.show');
+    // Open house sign-in (B14.3a): visitors land in the agent's CRM; kiosk sign-ins sync once each.
+    Route::get('open-houses', [OpenHouseController::class, 'index'])->name('api.open-houses.index');
+    Route::post('open-houses', [OpenHouseController::class, 'store'])->middleware('throttle:20,1,api-open-houses')->name('api.open-houses.store');
+    Route::get('open-houses/{openHouse}/visits', [OpenHouseController::class, 'visits'])->whereUuid('openHouse')->name('api.open-houses.visits');
+    Route::post('open-houses/{openHouse}/visits', [OpenHouseController::class, 'sync'])->whereUuid('openHouse')->middleware('throttle:30,1,api-open-houses-sync')->name('api.open-houses.sync');
     // The client portal (B14.2): share the deal with a client through their own link.
     Route::get('deals/{deal}/portals', [ClientPortalController::class, 'index'])->whereUuid('deal')->name('api.deals.portals.index');
     Route::post('deals/{deal}/portals', [ClientPortalController::class, 'store'])->whereUuid('deal')->middleware('throttle:30,1,api-portals')->name('api.deals.portals.store');

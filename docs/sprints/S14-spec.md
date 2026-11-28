@@ -217,6 +217,27 @@
 - Lead forms on the public page into the CRM.
 - Agent-to-agent referrals between brokers; invite and earn; farming market updates.
 - **Done when:** an open house sign-in lands in the CRM.
+- **As built, B14.3a** (ADR 0066):
+  - **Data:** `open_houses` (an 8-character code, start and end) and `open_house_visits` (unique `client_id` per open house), both with row-level security.
+  - **Services:**
+    - `App\Leads\Leads::add`: the contact (through `CrmWriteBack::addPerson`, tagged), the visit note, the suggested message, a to-do for tomorrow and the `new_lead` notification. Someone with an agent gets "send what they asked for" only.
+    - `App\Leads\OpenHouses`: list, start, visits, sync (idempotent by `client_id`), byCode (open from an hour before the start to six hours after the end), signIn and qr.
+    - `App\Leads\PageLeads`.
+  - **Routes:**
+    - Public:
+      - `/open-house/{code}`: the Blade form;
+      - `qr.svg`;
+      - `POST` sign-in, 20 a minute;
+      - `POST /agent/{handle}/contact`, 5 a minute;
+      - all with a honeypot.
+    - API: `GET` and `POST /api/v1/open-houses`, plus `GET` and `POST /api/v1/open-houses/{id}/visits` (kiosk sync).
+    - Web: `/open-houses`.
+  - **Web:** "Open houses" in the agent sidebar (`components/open-houses/open-houses-view`): start sign-in, QR code and link, open houses, visitors with links to their contacts.
+  - **Agent page:** "Ask {name} a question" form.
+  - **Phone:**
+    - Me → Open houses: start at the door (from now, for three hours), the QR code and share sheet, visitors.
+    - Kiosk sign-in: saved on the phone (MMKV) and sent when online, with "Send now" for any still waiting.
+  - **Done when:** a Pest test signs Rosa in by QR and finds her contact in Maria's CRM, with the visit note, the suggested message, the "Follow up with Rosa" to-do and the notification. Kiosk sign-ins sent twice are added once.
 
 ## 4. Definition of done (whole sprint)
 

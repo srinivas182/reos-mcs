@@ -97,7 +97,7 @@ final readonly class CrmWriteBack
      * in the default CRM (screen 24) unless it already knows them. Returns
      * the contact and the CRM's name, or null when it stays in REOS.
      *
-     * @param  array{first_name: string|null, last_name: string|null, emails: list<string>, phones: list<string>, stage: string|null}  $person
+     * @param  array{first_name: string|null, last_name: string|null, emails: list<string>, phones: list<string>, stage: string|null, tags?: list<string>}  $person
      * @return array{0: Contact, 1: string|null}
      */
     public function addPerson(User $agent, array $person): array
