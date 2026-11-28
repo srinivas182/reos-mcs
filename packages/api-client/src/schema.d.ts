@@ -608,6 +608,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/brokerage/verify/lookup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Look up a broker licence
+         * @description TREC's record for the licence (name, status, expiry), whether it's in my name, and the brokerages I'm the designated broker of, with the number of agents TREC lists under each.
+         */
+        post: operations["brokerage.verify.lookup"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/brokerage/verify/confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Confirm the brokerage and my role
+         * @description A designated broker gets a verification to start the brokerage with (valid for a day). An office admin or team leader gets none: the designated broker invites them.
+         */
+        post: operations["brokerage.verify.confirm"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/challenges": {
         parameters: {
             query?: never;
@@ -662,6 +702,26 @@ export interface paths {
          * @description I leave its boards (Undo joins again).
          */
         post: operations["challenges.leave"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organisation/setup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Setup checklist
+         * @description Each step (TREC check, agents, seats, policy manual, advertising policy, mentors) with whether it's done and where to do it. For the brokerage's brokers only.
+         */
+        get: operations["brokerage.setup"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -6658,6 +6718,16 @@ export interface components {
             sections: ("todos" | "appointments" | "deadlines" | "leads" | "ce")[];
         };
         /**
+         * BrokerLicenceRequest
+         * @description A broker licence to check against TREC, and, to confirm, the brokerage and the person's role (A15.1a).
+         */
+        BrokerLicenceRequest: {
+            licence: string;
+            brokerage?: string | null;
+            /** @enum {string|null} */
+            role?: "designated_broker" | "office_admin" | "team_leader" | null;
+        };
+        /**
          * BrokerRole
          * @description Supervising duties that change a licence's CE (A5.2): in Texas, Broker Responsibility is required for brokers who sponsor agents, designated brokers of sponsoring entities and delegated supervisors (22 TAC §535.92(a)(4)).
          * @enum {string}
@@ -8293,6 +8363,7 @@ export type SchemaAskRequest = components['schemas']['AskRequest'];
 export type SchemaAssistantQuestionRequest = components['schemas']['AssistantQuestionRequest'];
 export type SchemaBookSessionRequest = components['schemas']['BookSessionRequest'];
 export type SchemaBriefSettingsRequest = components['schemas']['BriefSettingsRequest'];
+export type SchemaBrokerLicenceRequest = components['schemas']['BrokerLicenceRequest'];
 export type SchemaBrokerRole = components['schemas']['BrokerRole'];
 export type SchemaCalendarEventResource = components['schemas']['CalendarEventResource'];
 export type SchemaCalendarMode = components['schemas']['CalendarMode'];
@@ -10245,6 +10316,107 @@ export interface operations {
             401: components["responses"]["AuthenticationException"];
         };
     };
+    "brokerage.verify.lookup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BrokerLicenceRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            licence: {
+                                number: string;
+                                name: string;
+                                status: string | null;
+                                active: boolean;
+                                expires_on: string | null;
+                            };
+                            name_matches: boolean;
+                            brokerages: {
+                                number: string;
+                                name: string;
+                                /** @enum {string} */
+                                kind: "entity" | "individual";
+                                sponsored: number;
+                                on_reos: boolean;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "brokerage.verify.confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BrokerLicenceRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            verification: string | null;
+                            /** @enum {string} */
+                            role: "designated_broker" | "office_admin" | "team_leader";
+                            brokerage: string | null;
+                            sponsored: number | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
     "challenges.index": {
         parameters: {
             query?: never;
@@ -10415,6 +10587,39 @@ export interface operations {
                     };
                 };
             };
+        };
+    };
+    "brokerage.setup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            trec_number: string | null;
+                            done: number;
+                            total: number;
+                            steps: {
+                                /** @enum {string} */
+                                key: "verify" | "agents" | "seats" | "manual" | "advertising" | "mentors";
+                                done: boolean;
+                                href: string;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
         };
     };
     "calendar.index": {

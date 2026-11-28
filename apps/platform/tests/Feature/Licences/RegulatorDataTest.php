@@ -67,7 +67,7 @@ describe("regulators' public data (B10.3, decision 8)", function () {
             ->and(RegulatorRecord::query()->where('authority', 'TDI')->where('number', '1234567')->sole())
             ->name->toBe('Ava Thompson')->npn->toBe('17654321')->qualification->toBe('Property; Casualty')->active->toBeTrue()
             ->and(RegulatorRecord::query()->where('authority', 'TDI')->where('number', '3456789')->sole()->active)->toBeFalse()
-            ->and(RegulatorImport::query()->where('integration', 'trec-licence')->sole())->rows->toBe(8)->source->toBe('simulator')->error->toBeNull();
+            ->and(RegulatorImport::query()->where('integration', 'trec-licence')->sole())->rows->toBe(11)->source->toBe('simulator')->error->toBeNull();
     });
 
     it('downloads the live files, replaces the last import, and keeps it when a file comes back short', function () {

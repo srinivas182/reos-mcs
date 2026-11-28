@@ -2344,7 +2344,8 @@
         "referral.sent": "Referencia enviada",
         "referral.accepted": "Referencia aceptada",
         "invite.claimed": "Invitación registrada",
-        "farm.sent": "Actualización del mercado enviada"
+        "farm.sent": "Actualización del mercado enviada",
+        "brokerage.verified": "Agencia verificada con TREC"
       }
     }
   },
@@ -10698,6 +10699,61 @@
       "remove": "Quitar zona",
       "removed": "Zona quitada",
       "nextSend": "La próxima actualización puede salir el {{date}}."
+    }
+  },
+  "brokerage": {
+    "verify": {
+      "title": "Verifique su agencia",
+      "purpose": "Solo el bróker designado puede configurar una agencia en REOS. Comprobamos su licencia de bróker con los registros de TREC.",
+      "licence": "Su número de licencia de bróker de TREC",
+      "lookup": "Comprobar con TREC",
+      "checking": "Comprobando…",
+      "found": "Registro de TREC encontrado",
+      "status": "Estado: {{status}}",
+      "active": "Activa",
+      "inactive": "Esta licencia de bróker no está activa en TREC, así que no puede configurar una agencia.",
+      "expires": "Vence el {{date}}",
+      "nameOk": "El nombre de la licencia coincide con su cuenta.",
+      "nameOther": "El nombre de esta licencia es {{name}}, no el de su cuenta.",
+      "brokerages": "Agencias de las que usted es el bróker designado",
+      "entity": "Entidad comercial",
+      "individual": "Su propia licencia (patrocina agentes usted mismo)",
+      "sponsored_one": "{{count}} agente patrocinado en TREC",
+      "sponsored_other": "{{count}} agentes patrocinados en TREC",
+      "onReos": "Ya está en REOS",
+      "role": "Su función",
+      "roles": {
+        "designated_broker": "Bróker designado",
+        "office_admin": "Administrador de oficina",
+        "team_leader": "Líder de equipo"
+      },
+      "continue": "Continuar",
+      "verified": "Verificada: {{name}}, {{count}} agentes en TREC.",
+      "change": "Comprobar otra licencia",
+      "askBroker": "El bróker designado invita a los administradores de oficina y líderes de equipo. Pida al bróker designado de {{brokerage}} que le invite desde REOS.",
+      "notFound": "TREC no tiene una licencia con ese número. Revise el número e inténtelo de nuevo.",
+      "notBroker": "Esa no es una licencia de bróker. Solo un bróker designado puede configurar una agencia; pida al suyo que le invite.",
+      "otherName": "El nombre de esta licencia es {{name}}. Si es usted, actualice el nombre de su cuenta o comuníquese con el soporte de REOS para revisarlo.",
+      "notYours": "TREC no le muestra como bróker designado de esa agencia.",
+      "claimed": "{{name}} ya está en REOS. Pida a su bróker designado que le invite.",
+      "needed": "Primero verifique su agencia con TREC.",
+      "texas": "Una agencia verificada con TREC incluye Texas."
+    },
+    "setup": {
+      "title": "Configure su agencia",
+      "progress": "{{done}} de {{total}} listos",
+      "trec": "Licencia de TREC {{number}}",
+      "steps": {
+        "verify": "Verificada con TREC",
+        "agents": "Traiga a sus agentes",
+        "seats": "Elija quién paga los puestos",
+        "manual": "Suba su manual de políticas",
+        "advertising": "Defina su política de publicidad",
+        "mentors": "Agregue mentores"
+      },
+      "do": "Empezar",
+      "done": "Listo",
+      "complete": "Su agencia está configurada."
     }
   }
 }

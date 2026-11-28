@@ -22,6 +22,7 @@ use Illuminate\Support\Carbon;
  * @property int $price_id
  * @property int|null $order_id
  * @property int|null $created_organisation_id
+ * @property int|null $broker_verification_id The designated broker's TREC check (A15.1a)
  * @property string $status pending, completed or cancelled
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -31,7 +32,7 @@ use Illuminate\Support\Carbon;
  */
 final class TenantSignup extends Model
 {
-    protected $fillable = ['uuid', 'user_id', 'type', 'name', 'states', 'price_id', 'order_id', 'created_organisation_id', 'status'];
+    protected $fillable = ['uuid', 'user_id', 'type', 'name', 'states', 'price_id', 'order_id', 'created_organisation_id', 'status', 'broker_verification_id'];
 
     protected function casts(): array
     {

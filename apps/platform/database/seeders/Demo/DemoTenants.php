@@ -55,6 +55,9 @@ final class DemoTenants
             $loneStar->forceFill(['parent_id' => $texas->id])->save();
         }
 
+        // Verified with TREC (A15.1a): Linda Park's own broker license, which sponsors James and Dana.
+        $loneStar?->forceFill(['trec_number' => '9012345'])->save();
+
         if ($loneStar !== null) {
             Organisation::query()->firstOrCreate(
                 ['name' => 'Okoye Team', 'type' => OrganisationType::Team],

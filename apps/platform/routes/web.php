@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\Agents\ModeController;
 use App\Http\Controllers\Api\Agents\TodayController;
 use App\Http\Controllers\Api\Ask\AskController;
 use App\Http\Controllers\Api\Bookings\BookingController;
+use App\Http\Controllers\Api\Brokerage\BrokerVerificationController;
 use App\Http\Controllers\Api\Ce\CeWalletController;
 use App\Http\Controllers\Api\Classes\ClassesController;
 use App\Http\Controllers\Api\Compliance\ComplianceController;
@@ -147,6 +148,11 @@ Route::get('social/media/{path}', [SocialController::class, 'file'])->where('pat
 // The public site (web journey screen 1) and each audience's landing page.
 Route::get('/', [PublicSiteController::class, 'home'])->name('home');
 // Brokerages and schools sign up and pay on the web (A6.1b, the Sprint 6 gate).
+// The designated broker's TREC check comes first (A15.1a, broker journey screen 2).
+Route::middleware(['auth', 'verified', 'throttle:20,1,broker-verify'])->prefix('start/brokerage/verify')->name('start.verify.')->group(function () {
+    Route::post('lookup', [BrokerVerificationController::class, 'lookup'])->name('lookup');
+    Route::post('confirm', [BrokerVerificationController::class, 'confirm'])->name('confirm');
+});
 Route::middleware(['auth', 'verified'])->prefix('start/{kind}')->whereIn('kind', array_keys(TenantSignups::TYPES))->name('start.')->group(function () {
     Route::get('/', [TenantSignupController::class, 'show'])->name('show');
     Route::post('/', [TenantSignupController::class, 'store'])->middleware('throttle:10,1,tenant-signup')->name('store');

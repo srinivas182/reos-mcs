@@ -26,6 +26,8 @@ beforeEach(function () {
     $this->owner = User::factory()->create(['name' => 'Linda Park']);
     $this->starter = Price::query()->whereHas('product', fn ($q) => $q->where('key', 'brokerage-starter'))->sole();
     $this->school = Price::query()->whereHas('product', fn ($q) => $q->where('key', 'school-essentials'))->sole();
+    // TREC's records (Simulator): Linda Park holds broker license 9012345 (A15.1a).
+    $this->artisan('reos:regulators:import')->assertSuccessful();
 });
 
 it('done when: a brokerage signs up and pays on the web on its own', function () {
@@ -36,7 +38,12 @@ it('done when: a brokerage signs up and pays on the web on its own', function ()
         ->where('plans.0.product', 'Brokerage Starter')
         ->where('plans.0.seats', 25));
 
-    $this->post('/start/brokerage', ['name' => 'Bluebonnet Realty', 'states' => ['TX'], 'price_id' => $this->starter->id])
+    // The designated broker's TREC check comes first (A15.1a).
+    $this->post('/start/brokerage', ['name' => 'Bluebonnet Realty', 'states' => ['TX'], 'price_id' => $this->starter->id])->assertSessionHasErrors('verification');
+    $verification = $this->postJson('/start/brokerage/verify/confirm', ['licence' => '9012345', 'brokerage' => '9012345', 'role' => 'designated_broker'])->assertOk()->json('data.verification');
+    $this->get('/start/brokerage')->assertInertia(fn (Assert $page) => $page->where('verification.brokerage', 'Linda Park')->where('verification.sponsored', 2));
+
+    $this->post('/start/brokerage', ['name' => 'Bluebonnet Realty', 'states' => ['TX'], 'price_id' => $this->starter->id, 'verification' => $verification])
         ->assertRedirect();
     $signup = TenantSignup::query()->sole();
     expect($signup->status)->toBe('pending');
@@ -54,6 +61,7 @@ it('done when: a brokerage signs up and pays on the web on its own', function ()
     expect($tenant->type)->toBe(OrganisationType::Brokerage)
         ->and($tenant->states)->toBe(['TX'])
         ->and($tenant->tenantLimits()->seats)->toBe(25)
+        ->and($tenant->trec_number)->toBe('9012345')
         ->and($signup->refresh())->status->toBe('completed')->created_organisation_id->toBe($tenant->id)
         ->and(collect(app(Memberships::class)->of($this->owner))->contains(fn ($m) => $m->role === Role::Broker && $m->organisation->id === $tenant->id))->toBeTrue()
         ->and(app(ActiveRole::class)->for($this->owner->refresh())?->organisation->id)->toBe($tenant->id)

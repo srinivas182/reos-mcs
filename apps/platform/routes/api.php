@@ -15,6 +15,8 @@ use App\Http\Controllers\Api\Billing\EarningsController;
 use App\Http\Controllers\Api\Billing\EntitlementController;
 use App\Http\Controllers\Api\Billing\MembershipController;
 use App\Http\Controllers\Api\Bookings\BookingController;
+use App\Http\Controllers\Api\Brokerage\BrokerageSetupController;
+use App\Http\Controllers\Api\Brokerage\BrokerVerificationController;
 use App\Http\Controllers\Api\Calendar\CalendarController;
 use App\Http\Controllers\Api\Catalogue\CatalogueController;
 use App\Http\Controllers\Api\Ce\CeWalletController;
@@ -565,6 +567,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('open-houses', [OpenHouseController::class, 'store'])->middleware('throttle:20,1,api-open-houses')->name('api.open-houses.store');
     Route::get('open-houses/{openHouse}/visits', [OpenHouseController::class, 'visits'])->whereUuid('openHouse')->name('api.open-houses.visits');
     Route::post('open-houses/{openHouse}/visits', [OpenHouseController::class, 'sync'])->whereUuid('openHouse')->middleware('throttle:30,1,api-open-houses-sync')->name('api.open-houses.sync');
+    // The brokerage's setup checklist (A15.1a).
+    Route::get('organisation/setup', BrokerageSetupController::class)->name('api.brokerage.setup');
+    // Verify your brokerage (A15.1a): the designated broker's TREC check before the brokerage is created.
+    Route::middleware('throttle:20,1,api-broker-verify')->group(function () {
+        Route::post('brokerage/verify/lookup', [BrokerVerificationController::class, 'lookup'])->name('api.brokerage.verify.lookup');
+        Route::post('brokerage/verify/confirm', [BrokerVerificationController::class, 'confirm'])->name('api.brokerage.verify.confirm');
+    });
     // Referrals between agents (B14.3b): between brokers; REOS takes no fee.
     Route::get('referrals', [ReferralController::class, 'index'])->name('api.referrals.index');
     Route::post('referrals', [ReferralController::class, 'store'])->middleware('throttle:20,1,api-referrals')->name('api.referrals.store');
