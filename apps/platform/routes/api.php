@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\ActiveRoleController;
 use App\Http\Controllers\Api\Agents\BriefController;
 use App\Http\Controllers\Api\Agents\ModeController;
+use App\Http\Controllers\Api\Agents\MoveController;
 use App\Http\Controllers\Api\Agents\TodayController;
 use App\Http\Controllers\Api\AppConfigController;
 use App\Http\Controllers\Api\Ask\AskController;
@@ -128,6 +129,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('me/onboarding', [OnboardingController::class, 'update'])->middleware('throttle:30,1,api-me-onboarding')->name('api.me.onboarding');
     Route::post('me/quiz-attempts', [FreeQuizController::class, 'store'])->middleware('throttle:30,1,api-me-quiz-attempts')->name('api.me.quiz-attempts');
     Route::delete('me', [MeController::class, 'destroy'])->middleware('throttle:sign-in')->name('api.me.destroy');
+    // Joining another brokerage or team with an invite code (A14.3): what moves, then join.
+    Route::post('me/moves/preview', [MoveController::class, 'preview'])->middleware('throttle:10,1,api-me-moves')->name('api.me.moves.preview');
+    Route::post('me/moves', [MoveController::class, 'accept'])->middleware('throttle:10,1,api-me-moves')->name('api.me.moves.accept');
     Route::put('me/active-role', ActiveRoleController::class)->middleware('throttle:30,1,api-me-active-role')->name('api.me.active-role');
     Route::get('me/devices', [MeController::class, 'devices'])->name('api.me.devices');
     Route::delete('me/devices/{device}', [MeController::class, 'revokeDevice'])->whereNumber('device')->name('api.me.devices.destroy');

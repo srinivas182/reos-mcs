@@ -87,6 +87,8 @@ export default function MeScreen() {
 
       <MenuGroup>
         {licensed ? <MenuRow icon={IdCard} title={t('mobile.me.licences')} onPress={() => router.push('/licences')} /> : null}
+        {/* Join another brokerage or team (A14.3): with an invite code. */}
+        {current?.role === 'agent' ? <MenuRow icon={ArrowLeftRight} title={t('moves.phone.title')} onPress={() => router.push('/me/move')} /> : null}
         {/* My goal (A11.1a, screen 146): the agent's mode and flags. */}
         {current?.role === 'agent' ? <MenuRow icon={Compass} title={t('agents.modes.title')} onPress={() => router.push('/agent/goal')} /> : null}
         {/* My posts and results (B11, screen 169). */}

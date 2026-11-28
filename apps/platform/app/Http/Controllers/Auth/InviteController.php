@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Auth;
 
+use App\Agents\BrokerageMoves;
 use App\Concerns\PasswordValidationRules;
 use App\Http\Controllers\Controller;
 use App\Models\Invitation;
@@ -27,7 +28,7 @@ final class InviteController extends Controller
 {
     use PasswordValidationRules;
 
-    public function show(string $token, Request $request, Invitations $invitations): SymfonyResponse
+    public function show(string $token, Request $request, Invitations $invitations, BrokerageMoves $moves): SymfonyResponse
     {
         $invitation = $invitations->findByToken($token);
         $user = $request->user();
@@ -58,17 +59,20 @@ final class InviteController extends Controller
                 default => 'new',
             },
             'signedInAs' => $user instanceof User ? ($user->email ?? $user->name) : null,
+            // Joining as an agent elsewhere moves them (A14.3): what moves, stays and ends.
+            'move' => $user instanceof User && $invitations->isFor($invitation, $user) && $invitation->state() === Invitation::PENDING ? $moves->preview($user, $invitation) : null,
         ])->toResponse($request);
     }
 
-    public function accept(string $token, Request $request, Invitations $invitations, ActiveRole $activeRole): RedirectResponse
+    public function accept(string $token, Request $request, Invitations $invitations, ActiveRole $activeRole, BrokerageMoves $moves): RedirectResponse
     {
         $invitation = $invitations->findByToken($token);
         abort_if($invitation === null, 404);
         $user = $request->user();
         abort_unless($user instanceof User, 403);
 
-        $invitations->accept($invitation, $user);
+        // An agent at another brokerage or team confirms the move first (A14.3).
+        $moves->accept($user, $invitation, $request->boolean('move'));
 
         return $this->welcome($user, $invitation, $activeRole);
     }
