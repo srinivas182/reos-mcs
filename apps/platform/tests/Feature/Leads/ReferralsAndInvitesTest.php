@@ -63,7 +63,7 @@ describe('referrals between agents (B14.3b)', function () {
         $accepted = $this->postJson("/api/v1/referrals/{$sent['id']}/accept")->assertOk()->json('data');
         $contact = Contact::query()->where('owner_id', $this->dev->id)->sole();
         expect($accepted['status'])->toBe('accepted')->and($accepted['contact'])->toBe($contact->uuid)
-            ->and(ContactNote::query()->where('contact_id', $contact->id)->pluck('body')->first())->toBe('Referred by Maria Garcia: Buyer in Austin. Referral fee 25%, paid broker to broker at closing. Their note: “Relocating in March; two kids.”')
+            ->and(ContactNote::query()->where('contact_id', $contact->id)->orderBy('id')->pluck('body')->first())->toBe('Referred by Maria Garcia: Buyer in Austin. Referral fee 25%, paid broker to broker at closing. Their note: “Relocating in March; two kids.”')
             ->and(Todo::query()->where('user_id', $this->dev->id)->sole()->title)->toBe('Follow up with Elena');
         Notification::assertSentTo($this->maria, ReferralAnswered::class, fn (ReferralAnswered $n) => $n->accepted);
         $this->postJson("/api/v1/referrals/{$sent['id']}/decline")->assertUnprocessable();
