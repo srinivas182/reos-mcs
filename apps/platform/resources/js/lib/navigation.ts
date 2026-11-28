@@ -17,6 +17,7 @@ import {
     Map as MapIcon,
     Megaphone,
     ClipboardCheck,
+    IdCard,
     MessageCircleQuestion,
     MessageSquare,
     Palette,
@@ -92,6 +93,9 @@ import { index as contractReview } from '@/routes/contracts';
 import { index as brokerVirtualBroker } from '@/routes/organisation/virtual-broker';
 import { index as approvalsIndex } from '@/routes/approvals';
 import { index as policiesIndex } from '@/routes/policies';
+import { show as providerJoin } from '@/routes/provider-join';
+import { show as providerProfile } from '@/routes/provider-profile';
+import { index as providersIndex } from '@/routes/providers';
 import { index as mentorProgram } from '@/routes/organisation/mentors';
 import { index as mentorWorkspace } from '@/routes/mentoring';
 import { index as brokerChallenges } from '@/routes/organisation/challenges';
@@ -146,6 +150,9 @@ export type NavLabel =
     | 'contractReview'
     | 'policies'
     | 'approvals'
+    | 'providerJoin'
+    | 'serviceProviders'
+    | 'profile'
     | 'mentorProgram'
     | 'mentorWorkspace'
     | 'podAndChallenges'
@@ -309,7 +316,8 @@ export function roleNavigation(
             item('mentors', Users, mentorsIndex(), '/mentors'),
             // Accountability pod and brokerage challenges (A13.2, screen 131).
             item('podAndChallenges', Trophy, podIndex(), '/pod'),
-            planned('serviceProviders'),
+            // Verified providers (B15.3): licence checked, areas and services.
+            item('serviceProviders', Handshake, providersIndex(), '/providers'),
             // Daily goals, points and rewards (A13.3a, screens 111 and 112).
             item('goalsAndRewards', Gift, rewardsIndex(), '/rewards'),
             // Feedback from agents after verified closings (A13.3b, screen 125).
@@ -326,7 +334,9 @@ export function roleNavigation(
             home,
             planned('agentsInMyAreas'),
             messages,
-            planned('profile'),
+            // Joining and the profile agents see (B15.2 and B15.3, provider screens 1–7).
+            item('providerJoin', ListChecks, providerJoin(), '/provider/join'),
+            item('profile', IdCard, providerProfile(), '/provider/profile'),
             planned('community'),
             planned('results'),
             item(

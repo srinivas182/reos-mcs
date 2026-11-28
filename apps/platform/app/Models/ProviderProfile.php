@@ -31,6 +31,18 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $rules_accepted_at
  * @property Carbon|null $live_at
  * @property Carbon|null $checked_at
+ * @property string|null $photo_path
+ * @property string|null $logo_path
+ * @property string|null $bio
+ * @property string|null $bio_es
+ * @property list<string>|null $services
+ * @property list<string>|null $specialities
+ * @property int|null $response_hours
+ * @property list<array{title: string, url: string}>|null $resources
+ * @property list<array{title: string, minutes: int}>|null $sessions
+ * @property list<array<string, mixed>>|null $profile_issues
+ * @property array<string, mixed>|null $published What agents see: the last version that passed the compliance check (B15.3)
+ * @property Carbon|null $published_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read ProviderCategory|null $category
@@ -51,11 +63,14 @@ final class ProviderProfile extends Model
     /** @var array<string, mixed> */
     protected $attributes = ['status' => self::JOINING, 'state_code' => 'TX'];
 
-    protected $fillable = ['user_id', 'provider_category_id', 'fields', 'status', 'hidden_reason', 'welcomed_at', 'business_name', 'business_address', 'state_code', 'tier', 'organisation_id', 'rules_version', 'rules_accepted_at', 'live_at', 'checked_at'];
+    protected $fillable = ['user_id', 'provider_category_id', 'fields', 'status', 'hidden_reason', 'welcomed_at', 'business_name', 'business_address', 'state_code', 'tier', 'organisation_id', 'rules_version', 'rules_accepted_at', 'live_at', 'checked_at', 'photo_path', 'logo_path', 'bio', 'bio_es', 'services', 'specialities', 'response_hours', 'resources', 'sessions', 'profile_issues', 'published', 'published_at'];
 
     protected function casts(): array
     {
-        return ['fields' => 'array', 'welcomed_at' => 'datetime', 'rules_accepted_at' => 'datetime', 'live_at' => 'datetime', 'checked_at' => 'datetime'];
+        return [
+            'fields' => 'array', 'welcomed_at' => 'datetime', 'rules_accepted_at' => 'datetime', 'live_at' => 'datetime', 'checked_at' => 'datetime',
+            'services' => 'array', 'specialities' => 'array', 'response_hours' => 'integer', 'resources' => 'array', 'sessions' => 'array', 'profile_issues' => 'array', 'published' => 'array', 'published_at' => 'datetime',
+        ];
     }
 
     /** @return HasMany<ProviderServiceArea, $this> */

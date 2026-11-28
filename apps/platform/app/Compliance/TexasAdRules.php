@@ -40,6 +40,9 @@ final class TexasAdRules
 
     private const ALL = ['post', 'video', 'page', 'email', 'text', 'newsletter'];
 
+    /** Rules that also cover a provider's profile (B15.3): wording only, as a provider names no broker. */
+    private const WITH_PROVIDER = [...self::ALL, 'provider'];
+
     /** @return list<Rule> */
     public static function all(): array
     {
@@ -53,17 +56,17 @@ final class TexasAdRules
             // The IABS and Consumer Protection Notice links on the agent's website and social profiles (§531.18, §531.20).
             new Rule('links', '22 TAC §531.18, §531.20', self::TAC_531_18, ['page'], 'block', 'compliance.fix.links'),
             // No misleading advertising, including a sales agent presented as a broker (§535.155(d)).
-            new Rule('claims', '22 TAC §535.155(d)', self::TAC_535_155, self::ALL, 'block', 'compliance.fix.claims'),
+            new Rule('claims', '22 TAC §535.155(d)', self::TAC_535_155, self::WITH_PROVIDER, 'block', 'compliance.fix.claims'),
             new Rule('title', '22 TAC §535.155(d)', self::TAC_535_155, self::ALL, 'block', 'compliance.fix.title'),
             // Fair housing: describe the property, not who should live there (42 U.S.C. §3604(c)).
-            new Rule('fair_housing', '42 U.S.C. §3604(c)', self::FHA, self::ALL, 'block', 'compliance.fix.fairHousing'),
+            new Rule('fair_housing', '42 U.S.C. §3604(c)', self::FHA, self::WITH_PROVIDER, 'block', 'compliance.fix.fairHousing'),
             // Wording that depends on how it's used; a second opinion decides.
-            new Rule('unclear', '42 U.S.C. §3604(c)', self::FHA, self::ALL, 'warn', 'compliance.fix.unclear'),
+            new Rule('unclear', '42 U.S.C. §3604(c)', self::FHA, self::WITH_PROVIDER, 'warn', 'compliance.fix.unclear'),
             // Before the license is active, no service advertising: no listings, prices, "call me to buy or sell" or
             // brokerage solicitation (Tex. Occ. Code §1101.351). "Future agent" wording is fine (B13.3).
             new Rule('unlicensed', 'Tex. Occ. Code §1101.351', self::OCC_1101_351, self::ADS, 'block', 'compliance.fix.unlicensed'),
             // The brokerage's own banned phrases (B12.1; every channel from B13.2).
-            new Rule('banned', 'brokerage', '', self::ALL, 'block', 'compliance.fix.banned'),
+            new Rule('banned', 'brokerage', '', self::WITH_PROVIDER, 'block', 'compliance.fix.banned'),
         ];
     }
 

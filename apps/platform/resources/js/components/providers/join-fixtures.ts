@@ -1,4 +1,10 @@
-import type { CategoryCard, Joining, Onboarding } from './types';
+import type {
+    CategoryCard,
+    Joining,
+    Onboarding,
+    ProfileBuilderData,
+    ProviderCard,
+} from './types';
 
 /** Texas categories as Dana Brooks sees them when she joins (B15.1). */
 export const categories: CategoryCard[] = [
@@ -121,4 +127,50 @@ export const mayaJoining: Onboarding = {
         accepted_at: null,
         current: false,
     },
+};
+
+/** Maya Chen's published profile, as agents see it (B15.3). */
+export const mayaCard: ProviderCard = {
+    id: 12,
+    name: 'Chen Home Lending',
+    category: 'Loan officer',
+    photo_url: null,
+    logo_url: null,
+    bio: 'I help first-time buyers in Katy find the right loan and close on time.',
+    services: ['FHA loans', 'VA loans', 'Conventional loans'],
+    specialities: ['First-time buyers'],
+    response_hours: 2,
+    resources: [
+        {
+            title: 'Closing cost checklist',
+            url: 'https://chenlending.example/checklist.pdf',
+        },
+    ],
+    sessions: [{ title: 'Credit basics for agents', minutes: 30 }],
+    licence: {
+        kind: 'nmls',
+        number: '1234567',
+        verified: true,
+        checked_at: '2026-11-30T12:00:00Z',
+        via: 'reviewer',
+    },
+    areas: ['Katy', '15 miles around 77494'],
+    tier: 'pro',
+    live: true,
+};
+
+export const mayaBuilder: ProfileBuilderData = {
+    draft: {
+        bio: mayaCard.bio,
+        bio_es: 'Ayudo a compradores de primera vivienda en Katy a encontrar el préstamo adecuado y cerrar a tiempo.',
+        services: mayaCard.services,
+        specialities: mayaCard.specialities,
+        response_hours: 2,
+        resources: mayaCard.resources,
+        sessions: mayaCard.sessions,
+    },
+    issues: [],
+    published_at: '2026-11-30T15:10:00Z',
+    preview: mayaCard,
+    response_choices: [1, 2, 4, 8, 24],
 };

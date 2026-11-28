@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
-import { ArrowLeftRight, Bell, Camera, Building2, Compass, DoorOpen, Download, Gift, GraduationCap, IdCard, Languages, Map, MapPin, Megaphone, Plug, ShieldCheck, Users, Wallet, Wrench } from 'lucide-react-native';
+import { ArrowLeftRight, Bell, Camera, Building2, Compass, DoorOpen, Download, Gift, GraduationCap, IdCard, Languages, Map, MapPin, Handshake, Megaphone, Plug, ShieldCheck, Users, Wallet, Wrench } from 'lucide-react-native';
 import { useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -101,6 +101,10 @@ export default function MeScreen() {
         <MenuRow icon={Building2} title={current?.role === 'broker' ? t('brokerage.setup.title') : t('brokerage.verify.title')} onPress={() => router.push(current?.role === 'broker' ? '/brokerage' : '/brokerage/verify')} />
         {/* Join the provider network (B15.1–B15.2, provider screens 1–6): the steps and the profile's status. */}
         <MenuRow icon={Wrench} title={t('providers.onboarding.title')} onPress={() => router.push('/provider/join')} />
+        {/* Build your profile (B15.3, provider screen 7), for providers. */}
+        {current?.role === 'provider' ? <MenuRow icon={IdCard} title={t('providers.profile.title')} onPress={() => router.push('/provider/profile')} /> : null}
+        {/* Verified providers (B15.3), for agents and brokers. */}
+        {current?.role === 'agent' || current?.role === 'broker' ? <MenuRow icon={Handshake} title={t('providers.directory.title')} onPress={() => router.push('/providers')} /> : null}
         {/* My posts and results (B11, screen 169). */}
         {current?.role === 'agent' ? <MenuRow icon={Megaphone} title={t('social.posts.title')} onPress={() => router.push('/social')} /> : null}
         {current?.role === 'agent' ? <MenuRow icon={Camera} title={t('studio.brand.title')} onPress={() => router.push('/social/brand')} /> : null}

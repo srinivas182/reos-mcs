@@ -9,7 +9,7 @@
         "dev": "vp dev",
         "check": "vp check",
         "check:fix": "vp check --fix",
-        "types:check": "tsc --noEmit",
+        "types:check": "NODE_OPTIONS=--max-old-space-size=4096 tsc --noEmit",
         "api:export": "php artisan scramble:export",
         "test": "vitest run",
         "test:components": "vitest run --project components",

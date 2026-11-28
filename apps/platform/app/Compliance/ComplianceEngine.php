@@ -36,7 +36,7 @@ use Throwable;
  */
 final readonly class ComplianceEngine
 {
-    public const CHANNELS = ['post', 'video', 'page', 'email', 'text', 'newsletter'];
+    public const CHANNELS = ['post', 'video', 'page', 'email', 'text', 'newsletter', 'provider'];
 
     public function __construct(
         private AdvertisingPolicy $policy,
