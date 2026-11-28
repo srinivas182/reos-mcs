@@ -88,7 +88,8 @@ describe('provider categories (screen 68)', function () {
         ])->assertSessionHasNoErrors();
 
         $stager = ProviderCategory::query()->where('key', 'stager')->sole();
-        expect($stager->profile_fields)->toBe(['Styles', 'Rooms per month'])
+        expect(array_column($stager->profile_fields ?? [], 'label'))->toBe(['Styles', 'Rooms per month'])
+            ->and(array_column($stager->profile_fields ?? [], 'type'))->toBe(['text', 'text'])
             ->and($stager->prices()->where('tier', 'pro')->value('monthly_cents'))->toBe(5900);
 
         $this->patch("/admin/provider-categories/{$stager->id}", ['prices' => [['state' => 'TX', 'tier' => 'pro', 'monthly' => '69']]])->assertSessionHasNoErrors();

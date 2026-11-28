@@ -41,6 +41,7 @@ use App\Http\Controllers\Api\Practice\PracticeController as ApiPracticeControlle
 use App\Http\Controllers\Api\Practice\ReportController;
 use App\Http\Controllers\Api\Practice\SpeedRoundController;
 use App\Http\Controllers\Api\Practice\StudyGroupController;
+use App\Http\Controllers\Api\Providers\JoiningController;
 use App\Http\Controllers\Api\Social\ContentCalendarController;
 use App\Http\Controllers\Api\Social\SocialController;
 use App\Http\Controllers\Api\Studio\CandidateStudioController;
@@ -123,6 +124,7 @@ use App\Http\Controllers\Practice\PracticePageController;
 use App\Http\Controllers\Practice\SharedReportController;
 use App\Http\Controllers\Practice\StudyPlanController;
 use App\Http\Controllers\Practice\TopicPlanPageController;
+use App\Http\Controllers\Provider\JoinPageController;
 use App\Http\Controllers\Recruiting\RecruitingController;
 use App\Http\Controllers\Rewards\RewardsPageController;
 use App\Http\Controllers\RolePlay\RolePlayPageController;
@@ -508,6 +510,13 @@ Route::middleware(['auth', 'verified', 'tenancy.platform'])->prefix('support-acc
 });
 Route::delete('support-session', [SupportSessionController::class, 'destroy'])->middleware(['auth', 'verified'])->name('support-session.destroy');
 
+// Joining the provider network (B15.1, provider screen 2): categories from the admin's settings.
+Route::middleware(['auth', 'verified'])->prefix('provider')->name('provider-join.')->group(function () {
+    Route::get('join', JoinPageController::class)->name('show');
+    Route::post('categories/requests', [JoiningController::class, 'request'])->middleware('throttle:5,1,provider-category-request')->name('categories.request');
+    Route::put('profile/category', [JoiningController::class, 'choose'])->middleware('throttle:30,1,provider-profile')->name('category');
+    Route::put('profile/fields', [JoiningController::class, 'fields'])->middleware('throttle:30,1,provider-profile')->name('fields');
+});
 // Branding and domain (A4.2a, screen 57): the organisation managed in the active role.
 Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisation.manage'])->prefix('organisation/branding')->name('branding.')->group(function () {
     Route::get('/', [BrandingController::class, 'show'])->name('show');

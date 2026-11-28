@@ -200,8 +200,12 @@ export default function ProviderCategories({
                                         ],
                                         [
                                             'profileFields',
-                                            current.profile_fields.join(', ') ||
-                                                '—',
+                                            current.profile_fields
+                                                .map(
+                                                    (f) =>
+                                                        `${f.label} (${t(`providerCategories.fieldTypes.${f.type}`)})`,
+                                                )
+                                                .join(', ') || '—',
                                         ],
                                         [
                                             'permissions',
@@ -228,6 +232,18 @@ export default function ProviderCategories({
                                     </div>
                                 ))}
                             </dl>
+                            {current.request_notes.length > 0 ? (
+                                <div className="space-y-1">
+                                    <h3 className="font-medium">
+                                        {t('providerCategories.requestNotes')}
+                                    </h3>
+                                    <ul className="list-disc space-y-1 pl-5 text-base">
+                                        {current.request_notes.map((note) => (
+                                            <li key={note}>{note}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            ) : null}
                             <p className="flex gap-2 rounded-reos-md bg-reos-tone-warning-bg p-3 text-sm text-reos-tone-warning-fg">
                                 <TriangleAlert
                                     aria-hidden

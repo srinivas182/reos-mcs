@@ -23,7 +23,12 @@ final class ProviderCategoryRequest extends FormRequest
         $fields = $this->input('profile_fields');
 
         if (is_string($fields)) {
-            $this->merge(['profile_fields' => array_values(array_filter(array_map('trim', preg_split('/[\r\n,]+/', $fields) ?: [])))]);
+            $fields = array_values(array_filter(array_map('trim', preg_split('/[\r\n,]+/', $fields) ?: [])));
+        }
+
+        // Plain labels (as saved before B15.1) are text fields.
+        if (is_array($fields)) {
+            $this->merge(['profile_fields' => array_values(array_map(static fn (mixed $f): mixed => is_string($f) ? ['label' => $f, 'type' => 'text'] : $f, $fields))]);
         }
     }
 
@@ -39,7 +44,14 @@ final class ProviderCategoryRequest extends FormRequest
             'licence_check' => ['sometimes', 'nullable', 'string', 'max:120'],
             'verification' => ['sometimes', 'nullable', 'string', 'max:200'],
             'profile_fields' => ['sometimes', 'nullable', 'array', 'max:20'],
-            'profile_fields.*' => ['string', 'max:80'],
+            /** Each field the provider fills in when joining: a label, a type (text, list or yes/no) and, for a list, the values to choose from. */
+            'profile_fields.*' => ['array'],
+            'profile_fields.*.label' => ['required', 'string', 'min:2', 'max:80'],
+            'profile_fields.*.type' => ['required', Rule::in(ProviderCategory::FIELD_TYPES)],
+            'profile_fields.*.options' => ['sometimes', 'nullable', 'array', 'max:30'],
+            'profile_fields.*.options.*' => ['string', 'max:60'],
+            /** The licence step in onboarding: NMLS, TREC inspector, TDI, or none (business details and an ID). */
+            'licence_kind' => ['sometimes', 'nullable', Rule::in(ProviderCategory::LICENCE_KINDS)],
             'special_permissions' => ['sometimes', 'nullable', 'string', 'max:200'],
             'areas_on_pro' => ['sometimes', 'integer', 'min:1', 'max:50'],
             'status' => ['sometimes', Rule::in(ProviderCategory::STATUSES)],

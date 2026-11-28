@@ -2357,7 +2357,8 @@
         "policy_rule.removed": "Brokerage rule removed",
         "policy_rule.restored": "Brokerage rule restored",
         "approvals.settings": "Changed the approvals fallback",
-        "approvals.fallback": "Passed a waiting item to office admins"
+        "approvals.fallback": "Passed a waiting item to office admins",
+        "provider_category.requested": "Asked for a provider category"
       }
     }
   },
@@ -5118,13 +5119,32 @@
       "name": "Name",
       "licenceCheck": "License check",
       "verification": "Verification",
-      "profileFields": "Profile fields (one per line)",
+      "profileFields": "Profile fields",
       "permissions": "Special permissions",
       "areasOnPro": "Areas on Pro",
       "status": "Status",
       "prices": "Flat monthly plan prices",
-      "state": "State"
-    }
+      "state": "State",
+      "fieldLabel": "Field {{n}}",
+      "fieldType": "Type of field {{n}}",
+      "fieldOptions": "Values for field {{n}} (comma-separated, optional)",
+      "addField": "Add field",
+      "removeField": "Remove field {{n}}",
+      "licenceKind": "License step when joining",
+      "noFields": "No profile fields yet."
+    },
+    "fieldTypes": {
+      "text": "Text",
+      "list": "List",
+      "yes_no": "Yes or no"
+    },
+    "licenceKinds": {
+      "none": "Business details and an ID",
+      "nmls": "NMLS ID",
+      "trec_inspector": "TREC inspector license",
+      "tdi": "TDI license"
+    },
+    "requestNotes": "What providers wrote"
   },
   "aiSettings": {
     "title": "AI and credits",
@@ -8602,6 +8622,50 @@
         "approve": "Approve",
         "reject": "Reject",
         "why": "Why it's not approved"
+      }
+    },
+    "join": {
+      "title": "Join the REOS provider network",
+      "purpose": "Choose what you do. Agents find you by category, and each category has its own checks.",
+      "categoryTitle": "What do you do?",
+      "categoryHint": "Pick one. You can change it until you buy a plan.",
+      "choose": "Choose {{name}}",
+      "chosen": "Chosen",
+      "from": "From {{price}} a month",
+      "noPrice": "Prices coming soon in your state",
+      "licence": {
+        "nmls": "NMLS ID, checked by a REOS reviewer",
+        "trec_inspector": "TREC inspector license, checked in seconds",
+        "tdi": "Texas Department of Insurance license, checked in seconds",
+        "business": "Business details and a photo ID"
+      },
+      "fieldsTitle": "About your {{name}} work",
+      "fieldsHint": "These show on your profile. You can change them later.",
+      "yes": "Yes",
+      "no": "No",
+      "listHint": "Separate values with commas.",
+      "save": "Save",
+      "saved": "Saved.",
+      "missing_one": "{{count}} question left",
+      "missing_other": "{{count}} questions left",
+      "complete": "All questions answered.",
+      "emptyTitle": "No categories yet",
+      "empty": "REOS is adding provider categories. Ask for yours below.",
+      "request": {
+        "title": "Don't see what you do?",
+        "hint": "Ask us to add it. We open a category when enough providers ask.",
+        "name": "What you do",
+        "note": "Anything we should know (optional)",
+        "send": "Ask for this category",
+        "sent": "Thanks. We've counted your request for {{name}}."
+      },
+      "errors": {
+        "exists": "{{name}} is already listed. Choose it above.",
+        "category": "Choose a category that's listed.",
+        "chooseFirst": "Choose your category first.",
+        "text": "Answer \"{{field}}\" in up to 500 characters.",
+        "list": "Choose at least one value for \"{{field}}\".",
+        "yes_no": "Answer yes or no for \"{{field}}\"."
       }
     }
   },

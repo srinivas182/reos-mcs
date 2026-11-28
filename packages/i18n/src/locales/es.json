@@ -2357,7 +2357,8 @@
         "policy_rule.removed": "Se quitó una regla de la agencia",
         "policy_rule.restored": "Se restauró una regla de la agencia",
         "approvals.settings": "Se cambió el respaldo de aprobaciones",
-        "approvals.fallback": "Se pasó un elemento pendiente a los administradores de oficina"
+        "approvals.fallback": "Se pasó un elemento pendiente a los administradores de oficina",
+        "provider_category.requested": "Se solicitó una categoría de proveedores"
       }
     }
   },
@@ -5118,13 +5119,32 @@
       "name": "Nombre",
       "licenceCheck": "Verificación de licencia",
       "verification": "Verificación",
-      "profileFields": "Campos del perfil (uno por línea)",
+      "profileFields": "Campos del perfil",
       "permissions": "Permisos especiales",
       "areasOnPro": "Áreas en Pro",
       "status": "Estado",
       "prices": "Precios mensuales fijos de los planes",
-      "state": "Estado"
-    }
+      "state": "Estado",
+      "fieldLabel": "Campo {{n}}",
+      "fieldType": "Tipo del campo {{n}}",
+      "fieldOptions": "Valores del campo {{n}} (separados por comas, opcional)",
+      "addField": "Agregar campo",
+      "removeField": "Quitar el campo {{n}}",
+      "licenceKind": "Paso de licencia al unirse",
+      "noFields": "Aún no hay campos del perfil."
+    },
+    "fieldTypes": {
+      "text": "Texto",
+      "list": "Lista",
+      "yes_no": "Sí o no"
+    },
+    "licenceKinds": {
+      "none": "Datos del negocio e identificación",
+      "nmls": "ID de NMLS",
+      "trec_inspector": "Licencia de inspector de TREC",
+      "tdi": "Licencia del TDI"
+    },
+    "requestNotes": "Lo que escribieron los proveedores"
   },
   "aiSettings": {
     "title": "IA y créditos",
@@ -8602,6 +8622,50 @@
         "approve": "Aprobar",
         "reject": "Rechazar",
         "why": "Por qué no se aprueba"
+      }
+    },
+    "join": {
+      "title": "Únase a la red de proveedores de REOS",
+      "purpose": "Elija a qué se dedica. Los agentes lo encuentran por categoría, y cada categoría tiene sus propias verificaciones.",
+      "categoryTitle": "¿A qué se dedica?",
+      "categoryHint": "Elija una. Puede cambiarla hasta que compre un plan.",
+      "choose": "Elegir {{name}}",
+      "chosen": "Elegida",
+      "from": "Desde {{price}} al mes",
+      "noPrice": "Precios disponibles pronto en su estado",
+      "licence": {
+        "nmls": "ID de NMLS, verificado por un revisor de REOS",
+        "trec_inspector": "Licencia de inspector de TREC, verificada en segundos",
+        "tdi": "Licencia del Departamento de Seguros de Texas, verificada en segundos",
+        "business": "Datos del negocio y una identificación con foto"
+      },
+      "fieldsTitle": "Sobre su trabajo de {{name}}",
+      "fieldsHint": "Esto aparece en su perfil. Puede cambiarlo después.",
+      "yes": "Sí",
+      "no": "No",
+      "listHint": "Separe los valores con comas.",
+      "save": "Guardar",
+      "saved": "Guardado.",
+      "missing_one": "Falta {{count}} pregunta",
+      "missing_other": "Faltan {{count}} preguntas",
+      "complete": "Respondió todas las preguntas.",
+      "emptyTitle": "Aún no hay categorías",
+      "empty": "REOS está agregando categorías de proveedores. Solicite la suya abajo.",
+      "request": {
+        "title": "¿No ve a qué se dedica?",
+        "hint": "Pídanos que la agreguemos. Abrimos una categoría cuando suficientes proveedores la solicitan.",
+        "name": "A qué se dedica",
+        "note": "Algo que debamos saber (opcional)",
+        "send": "Solicitar esta categoría",
+        "sent": "Gracias. Contamos su solicitud de {{name}}."
+      },
+      "errors": {
+        "exists": "{{name}} ya está en la lista. Elíjala arriba.",
+        "category": "Elija una categoría de la lista.",
+        "chooseFirst": "Primero elija su categoría.",
+        "text": "Responda \"{{field}}\" en un máximo de 500 caracteres.",
+        "list": "Elija al menos un valor para \"{{field}}\".",
+        "yes_no": "Responda sí o no para \"{{field}}\"."
       }
     }
   },

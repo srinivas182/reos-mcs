@@ -27333,6 +27333,861 @@
                 }
             }
         },
+        "/provider/categories": {
+            "get": {
+                "operationId": "provider.categories",
+                "description": "The live categories with what each checks and asks for, and the flat monthly plan prices (cents) in a state.",
+                "summary": "Provider categories",
+                "tags": [
+                    "Joining"
+                ],
+                "parameters": [
+                    {
+                        "name": "state",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "key": {
+                                                        "type": "string"
+                                                    },
+                                                    "name": {
+                                                        "type": "string"
+                                                    },
+                                                    "description": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "licence": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "kind": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "nmls",
+                                                                    "trec_inspector",
+                                                                    "tdi",
+                                                                    "business"
+                                                                ]
+                                                            },
+                                                            "label": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "kind",
+                                                            "label"
+                                                        ]
+                                                    },
+                                                    "fields": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "key": {
+                                                                    "type": "string"
+                                                                },
+                                                                "label": {
+                                                                    "type": "string"
+                                                                },
+                                                                "type": {
+                                                                    "type": "string",
+                                                                    "enum": [
+                                                                        "text",
+                                                                        "list",
+                                                                        "yes_no"
+                                                                    ]
+                                                                },
+                                                                "options": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "string"
+                                                                    }
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "key",
+                                                                "label",
+                                                                "type",
+                                                                "options"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "areas_on_pro": {
+                                                        "type": "integer"
+                                                    },
+                                                    "prices": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "basic": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "pro": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "premium": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "basic",
+                                                            "pro",
+                                                            "premium"
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "key",
+                                                    "name",
+                                                    "description",
+                                                    "licence",
+                                                    "fields",
+                                                    "areas_on_pro",
+                                                    "prices"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/provider/categories/requests": {
+            "post": {
+                "operationId": "provider.categories.request",
+                "description": "For work that isn't listed: it goes to REOS as a requested category, counted once per person.",
+                "summary": "Request a category",
+                "tags": [
+                    "Joining"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CategoryRequestRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "key": {
+                                                    "type": "string"
+                                                },
+                                                "name": {
+                                                    "type": "string"
+                                                },
+                                                "status": {
+                                                    "type": "string"
+                                                },
+                                                "requests": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "required": [
+                                                "key",
+                                                "name",
+                                                "status",
+                                                "requests"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/provider/profile": {
+            "get": {
+                "operationId": "provider.profile",
+                "description": "The category chosen, its fields and my answers, and which fields are still empty.",
+                "summary": "My provider profile so far",
+                "tags": [
+                    "Joining"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "category": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "key": {
+                                                            "type": "string"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "description": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "licence": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "kind": {
+                                                                    "type": "string",
+                                                                    "enum": [
+                                                                        "nmls",
+                                                                        "trec_inspector",
+                                                                        "tdi",
+                                                                        "business"
+                                                                    ]
+                                                                },
+                                                                "label": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "kind",
+                                                                "label"
+                                                            ]
+                                                        },
+                                                        "fields": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "key": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "label": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "type": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "text",
+                                                                            "list",
+                                                                            "yes_no"
+                                                                        ]
+                                                                    },
+                                                                    "options": {
+                                                                        "type": "array",
+                                                                        "items": {
+                                                                            "type": "string"
+                                                                        }
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "key",
+                                                                    "label",
+                                                                    "type",
+                                                                    "options"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "areas_on_pro": {
+                                                            "type": "integer"
+                                                        },
+                                                        "prices": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "basic": {
+                                                                    "type": [
+                                                                        "integer",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "pro": {
+                                                                    "type": [
+                                                                        "integer",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "premium": {
+                                                                    "type": [
+                                                                        "integer",
+                                                                        "null"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "basic",
+                                                                "pro",
+                                                                "premium"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "key",
+                                                        "name",
+                                                        "description",
+                                                        "licence",
+                                                        "fields",
+                                                        "areas_on_pro",
+                                                        "prices"
+                                                    ]
+                                                },
+                                                "fields": {
+                                                    "type": "object",
+                                                    "additionalProperties": {
+                                                        "anyOf": [
+                                                            {
+                                                                "type": "string"
+                                                            },
+                                                            {
+                                                                "type": "boolean"
+                                                            },
+                                                            {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "string"
+                                                                }
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                "missing": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "category",
+                                                "fields",
+                                                "missing"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/provider/profile/category": {
+            "put": {
+                "operationId": "provider.profile.category",
+                "description": "Answers to fields the new category doesn't have are dropped.",
+                "summary": "Choose my category",
+                "tags": [
+                    "Joining"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChooseCategoryRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "category": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "key": {
+                                                            "type": "string"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "description": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "licence": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "kind": {
+                                                                    "type": "string",
+                                                                    "enum": [
+                                                                        "nmls",
+                                                                        "trec_inspector",
+                                                                        "tdi",
+                                                                        "business"
+                                                                    ]
+                                                                },
+                                                                "label": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "kind",
+                                                                "label"
+                                                            ]
+                                                        },
+                                                        "fields": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "key": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "label": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "type": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "text",
+                                                                            "list",
+                                                                            "yes_no"
+                                                                        ]
+                                                                    },
+                                                                    "options": {
+                                                                        "type": "array",
+                                                                        "items": {
+                                                                            "type": "string"
+                                                                        }
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "key",
+                                                                    "label",
+                                                                    "type",
+                                                                    "options"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "areas_on_pro": {
+                                                            "type": "integer"
+                                                        },
+                                                        "prices": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "basic": {
+                                                                    "type": [
+                                                                        "integer",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "pro": {
+                                                                    "type": [
+                                                                        "integer",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "premium": {
+                                                                    "type": [
+                                                                        "integer",
+                                                                        "null"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "basic",
+                                                                "pro",
+                                                                "premium"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "key",
+                                                        "name",
+                                                        "description",
+                                                        "licence",
+                                                        "fields",
+                                                        "areas_on_pro",
+                                                        "prices"
+                                                    ]
+                                                },
+                                                "fields": {
+                                                    "type": "object",
+                                                    "additionalProperties": {
+                                                        "anyOf": [
+                                                            {
+                                                                "type": "string"
+                                                            },
+                                                            {
+                                                                "type": "boolean"
+                                                            },
+                                                            {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "string"
+                                                                }
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                "missing": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "category",
+                                                "fields",
+                                                "missing"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/provider/profile/fields": {
+            "put": {
+                "operationId": "provider.profile.fields",
+                "description": "Text, a list of values (from the category's options when it has them) or true/false, per field key.",
+                "summary": "Answer my profile fields",
+                "tags": [
+                    "Joining"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProfileFieldsRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "category": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "key": {
+                                                            "type": "string"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "description": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "licence": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "kind": {
+                                                                    "type": "string",
+                                                                    "enum": [
+                                                                        "nmls",
+                                                                        "trec_inspector",
+                                                                        "tdi",
+                                                                        "business"
+                                                                    ]
+                                                                },
+                                                                "label": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "kind",
+                                                                "label"
+                                                            ]
+                                                        },
+                                                        "fields": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "key": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "label": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "type": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "text",
+                                                                            "list",
+                                                                            "yes_no"
+                                                                        ]
+                                                                    },
+                                                                    "options": {
+                                                                        "type": "array",
+                                                                        "items": {
+                                                                            "type": "string"
+                                                                        }
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "key",
+                                                                    "label",
+                                                                    "type",
+                                                                    "options"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "areas_on_pro": {
+                                                            "type": "integer"
+                                                        },
+                                                        "prices": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "basic": {
+                                                                    "type": [
+                                                                        "integer",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "pro": {
+                                                                    "type": [
+                                                                        "integer",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "premium": {
+                                                                    "type": [
+                                                                        "integer",
+                                                                        "null"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "basic",
+                                                                "pro",
+                                                                "premium"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "key",
+                                                        "name",
+                                                        "description",
+                                                        "licence",
+                                                        "fields",
+                                                        "areas_on_pro",
+                                                        "prices"
+                                                    ]
+                                                },
+                                                "fields": {
+                                                    "type": "object",
+                                                    "additionalProperties": {
+                                                        "anyOf": [
+                                                            {
+                                                                "type": "string"
+                                                            },
+                                                            {
+                                                                "type": "boolean"
+                                                            },
+                                                            {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "string"
+                                                                }
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                "missing": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "category",
+                                                "fields",
+                                                "missing"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
         "/learn/courses": {
             "get": {
                 "operationId": "learn.courses",
@@ -65849,6 +66704,29 @@
                 ],
                 "title": "CatalogueStatus"
             },
+            "CategoryRequestRequest": {
+                "type": "object",
+                "description": "Ask REOS to add a category that isn't listed (B15.1).",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "What the provider does, such as \"Home stager\".",
+                        "minLength": 3,
+                        "maxLength": 120
+                    },
+                    "note": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 300
+                    }
+                },
+                "required": [
+                    "name"
+                ],
+                "title": "CategoryRequestRequest"
+            },
             "CheckLicenceRequest": {
                 "type": "object",
                 "description": "Look a licence number up before adding it (agent journey screen 149).",
@@ -65870,6 +66748,20 @@
                     "number"
                 ],
                 "title": "CheckLicenceRequest"
+            },
+            "ChooseCategoryRequest": {
+                "type": "object",
+                "description": "The category a provider joins (B15.1).",
+                "properties": {
+                    "category": {
+                        "type": "string",
+                        "maxLength": 80
+                    }
+                },
+                "required": [
+                    "category"
+                ],
+                "title": "ChooseCategoryRequest"
             },
             "ChooseStateRequest": {
                 "type": "object",
@@ -68584,6 +69476,36 @@
                     "when"
                 ],
                 "title": "PostRequest"
+            },
+            "ProfileFieldsRequest": {
+                "type": "object",
+                "description": "Answers to the category's profile fields, by field key (B15.1); each is checked against its type.",
+                "properties": {
+                    "fields": {
+                        "type": "object",
+                        "description": "Field key => text, a list of strings, or true/false.",
+                        "additionalProperties": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "boolean"
+                                },
+                                {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                },
+                "required": [
+                    "fields"
+                ],
+                "title": "ProfileFieldsRequest"
             },
             "ProviderLicenceRequest": {
                 "type": "object",

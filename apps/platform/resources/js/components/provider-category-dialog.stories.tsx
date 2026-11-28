@@ -9,7 +9,28 @@ const coordinator: ProviderCategoryRow = {
     description: null,
     licence_check: 'ID check + E&O',
     verification: 'ID check + E&O certificate',
-    profile_fields: ['Files per month', 'Tools used', 'Per-file fee'],
+    licence_kind: null,
+    profile_fields: [
+        {
+            key: 'files_per_month',
+            label: 'Files per month',
+            type: 'text',
+            options: [],
+        },
+        {
+            key: 'tools_used',
+            label: 'Tools used',
+            type: 'list',
+            options: ['Dotloop', 'SkySlope', 'DocuSign'],
+        },
+        {
+            key: 'e_and_o_insured',
+            label: 'E&O insured',
+            type: 'yes_no',
+            options: [],
+        },
+    ],
+    request_notes: [],
     special_permissions: 'Deal sharing with access switches',
     areas_on_pro: 3,
     status: 'live',
@@ -31,6 +52,8 @@ const meta = {
         category: coordinator,
         options: {
             tiers: ['basic', 'pro', 'premium'],
+            field_types: ['text', 'list', 'yes_no'],
+            licence_kinds: ['nmls', 'trec_inspector', 'tdi'],
             statuses: ['live', 'draft', 'requested', 'retired'],
             states: [{ code: 'TX', name: 'Texas' }],
         },
