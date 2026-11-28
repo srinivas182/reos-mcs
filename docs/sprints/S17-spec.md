@@ -93,6 +93,27 @@
 - Split sheets from the team agreement, signed in the app.
 - Bonus campaigns can be scoped to a team.
 - **Done when:** a lead is claimed in time or reassigned.
+- **As built, A17.3** (ADR 0084):
+  - **Data:** `organisations.lead_routing` and `team_agreement`, plus `lead_routing_members`, `routed_leads` and `split_sheets`, all with row-level security.
+  - **Services:**
+    - `App\Teams\LeadRouting`: board, setRules, setMember, receive (first to claim by language, round robin, off-hours reply), claim (under a lock, in time), sweep (`reos:teams:leads` every minute: fallback in turn or to the team leader) and offeredTo.
+    - `App\Teams\SplitSheets`: agreement, create, sign and question (a chat with the team leader).
+    - Notifications: `LeadOffered` (kind `new_lead`) and `SplitSheetSent` (kind `split_sheet`).
+  - **Routes:**
+    - API: `/api/v1/team/routing` (GET and PUT), `routing/members/{agent}`, `POST leads`, `POST leads/{id}/claim`, `GET mine`, `GET splits`, `PUT agreement`, `POST splits`, and `splits/{id}/sign` and `question`.
+    - Web: `/team` (team leader) and `/team/leads` (agent), with the same actions.
+  - **Web:**
+    - Team and routing (`team/routing`, team leader sidebar): rules, rotation switches, Add a lead, recent leads, the team agreement, and New split sheet.
+    - Team leads (`team/leads`, agent sidebar): leads to claim, and sheets to sign or ask about.
+  - **Phone:**
+    - Your brokerage → Lead routing (`team/index`: rotation switches and recent leads).
+    - Me → Team leads (`team/leads`): claim, sign. Pushes open it.
+  - **Done when:** a Pest test has Okoye Team on first to claim within 5 minutes. A Zillow lead is offered to Priya, Maria and Tom. Priya claims it in 2 minutes and it's in her CRM, and Tom is told it was taken. A second lead nobody claims is refused at 6 minutes, and `reos:teams:leads` reassigns it in turn (audited as fallback). Other tests cover:
+    - Spanish leads going to Spanish speakers, and agents out of rotation being skipped;
+    - the off-hours reply, round robin and the team-leader fallback;
+    - scope;
+    - the split sheet from 20/30/50 ($2,400 / $3,600 / $6,000), signed or questioned.
+  - **Carried forward:** bonus campaigns scoped to a team.
 
 ### B17.1 Coordinators (Team B)
 

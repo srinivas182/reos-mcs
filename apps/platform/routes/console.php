@@ -87,6 +87,8 @@ Schedule::command('reos:pods')->dailyAt('06:10')->withoutOverlapping()->onOneSer
 // Daily goals (A13.3a): yesterday's points and streaks settled for every agent.
 Schedule::command('reos:daily-goals')->dailyAt('06:40')->withoutOverlapping()->onOneServer();
 Schedule::command('reos:social:insights')->hourlyAt(20)->withoutOverlapping()->onOneServer();
+// Team leads nobody claimed in time go to the fallback (A17.3).
+Schedule::command('reos:teams:leads')->everyMinute()->withoutOverlapping()->onOneServer();
 // Requests to connect unanswered for 14 days expire (B16.1).
 Schedule::command('reos:providers:requests')->dailyAt('03:40')->timezone('America/Chicago')->withoutOverlapping()->onOneServer();
 // The broker's morning brief, weekdays (A16.3).

@@ -54,6 +54,7 @@ use App\Http\Controllers\Api\Social\SocialController;
 use App\Http\Controllers\Api\Studio\CandidateStudioController;
 use App\Http\Controllers\Api\Studio\StudioController;
 use App\Http\Controllers\Api\Studio\VideoController;
+use App\Http\Controllers\Api\Teams\TeamController;
 use App\Http\Controllers\Api\Todos\TodoController;
 use App\Http\Controllers\Api\VirtualBroker\VirtualBrokerController;
 use App\Http\Controllers\Ask\AskPageController;
@@ -155,6 +156,7 @@ use App\Http\Controllers\Studio\AdvertisingController;
 use App\Http\Controllers\Studio\CandidateStudioPageController;
 use App\Http\Controllers\SupportConsentController;
 use App\Http\Controllers\SupportSessionController;
+use App\Http\Controllers\Teams\TeamPagesController;
 use App\Http\Controllers\VideoPractice\VideoPracticePageController;
 use App\Http\Controllers\VirtualBroker\BrokerVirtualBrokerController;
 use App\Http\Controllers\VirtualBroker\VirtualBrokerPageController;
@@ -622,6 +624,19 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisat
     Route::post('/', [DomainController::class, 'store'])->middleware('throttle:10,1,store')->name('store');
     Route::post('verify', [DomainController::class, 'verify'])->middleware('throttle:20,1,verify')->name('verify');
     Route::delete('/', [DomainController::class, 'destroy'])->middleware('throttle:10,1,destroy')->name('destroy');
+});
+// Teams (A17.3): the team leader's lead routing and split sheets; the agent's leads to claim and sheets to sign (same actions as the API).
+Route::middleware(['auth', 'verified'])->prefix('team')->name('team.')->group(function () {
+    Route::get('/', [TeamPagesController::class, 'leader'])->name('index');
+    Route::get('leads', [TeamPagesController::class, 'agent'])->name('leads');
+    Route::put('routing', [TeamController::class, 'rules'])->middleware('throttle:20,1,team-routing')->name('rules');
+    Route::put('routing/members/{agent}', [TeamController::class, 'member'])->whereNumber('agent')->middleware('throttle:60,1,team-routing')->name('member');
+    Route::post('leads', [TeamController::class, 'lead'])->middleware('throttle:60,1,team-leads')->name('lead');
+    Route::post('leads/{offer}/claim', [TeamController::class, 'claim'])->whereUuid('offer')->middleware('throttle:60,1,team-claim')->name('claim');
+    Route::put('agreement', [TeamController::class, 'agreement'])->middleware('throttle:20,1,team-agreement')->name('agreement');
+    Route::post('splits', [TeamController::class, 'sendSplit'])->middleware('throttle:30,1,team-splits')->name('splits.store');
+    Route::post('splits/{sheet}/sign', [TeamController::class, 'sign'])->whereUuid('sheet')->middleware('throttle:30,1,team-splits')->name('splits.sign');
+    Route::post('splits/{sheet}/question', [TeamController::class, 'question'])->whereUuid('sheet')->middleware('throttle:10,1,team-splits')->name('splits.question');
 });
 // Recruiting (A10.3b): candidates who opted in to broker offers; offers are audited.
 Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisation.manage'])->prefix('recruiting')->name('recruiting.')->controller(RecruitingController::class)->group(function () {

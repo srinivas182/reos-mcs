@@ -28,7 +28,7 @@ final readonly class Leads
     /**
      * @param  array{name: string, email: string|null, phone: string|null}  $person
      * @param  list<string>  $tags
-     * @param  'open_house'|'page'|'referral'  $kind
+     * @param  'open_house'|'page'|'referral'|'team'  $kind
      */
     public function add(User $agent, array $person, string $note, string $draft, bool $hasAgent, array $tags, string $kind): Contact
     {

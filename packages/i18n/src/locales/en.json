@@ -106,7 +106,9 @@
     "ceCompliance": "CE compliance",
     "brokerageReports": "Reports",
     "agentsInMyAreas": "Agents in my areas",
-    "providerRequests": "Provider requests"
+    "providerRequests": "Provider requests",
+    "teamsAndRouting": "Team and routing",
+    "teamLeads": "Team leads"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -2396,7 +2398,16 @@
         "recruiting.sponsorship_started": "Sponsored a candidate's AI help",
         "recruiting.sponsorship_cap": "Changed a sponsored AI cap",
         "recruiting.sponsorship_ended": "Ended a candidate's sponsored AI help",
-        "recruiting.agent_invited": "Invited an agent to talk"
+        "recruiting.agent_invited": "Invited an agent to talk",
+        "team.routing_changed": "Changed lead routing rules",
+        "team.rotation_changed": "Changed the lead rotation",
+        "team.lead_claim": "Claimed a team lead",
+        "team.lead_round_robin": "Assigned a team lead in turn",
+        "team.lead_fallback": "Reassigned an unclaimed team lead",
+        "team.lead_leader": "Sent a team lead to the team leader",
+        "team.agreement_changed": "Changed the team agreement",
+        "team.split_sent": "Sent a split sheet",
+        "team.split_signed": "Signed a split sheet"
       }
     }
   },
@@ -5740,7 +5751,8 @@
       "approval_overdue": "Approvals waiting too long",
       "course_assigned": "Courses your brokerage assigns",
       "sponsorship": "Sponsorship changes",
-      "provider_request": "Requests to connect from providers"
+      "provider_request": "Requests to connect from providers",
+      "split_sheet": "Split sheets to sign"
     },
     "digest": {
       "subject": {
@@ -11067,7 +11079,8 @@
       "open_house": "{{name}} signed in at your open house",
       "page": "{{name}} wrote from your page",
       "body": "They're in your contacts with a follow-up for tomorrow.",
-      "open": "Open contact"
+      "open": "Open contact",
+      "team": "{{name}} is a new team lead for you"
     },
     "referrals": {
       "self": "You can't refer a client to yourself.",
@@ -11718,6 +11731,113 @@
       "atRisk_other": "{{count}} deals at risk",
       "ceDue_one": "{{count}} agent due for CE",
       "ceDue_other": "{{count}} agents due for CE"
+    }
+  },
+  "teams": {
+    "routing": {
+      "title": "Lead routing",
+      "purpose": "Get every lead to the right agent fast. Claimed leads go to the agent's CRM with a follow-up task.",
+      "method": "Method",
+      "methods": {
+        "first_to_claim": "First to claim",
+        "round_robin": "Round robin"
+      },
+      "claimMinutes": "Claim time (minutes)",
+      "fallback": "If nobody claims",
+      "fallbacks": {
+        "round_robin": "Next agent in turn",
+        "leader": "The team leader"
+      },
+      "offStart": "Off hours start",
+      "offEnd": "Off hours end",
+      "sources": "Sources it applies to (none ticked: all)",
+      "sourceNames": {
+        "website": "Website",
+        "zillow": "Zillow",
+        "realtor_com": "Realtor.com",
+        "open_house": "Open house",
+        "referral": "Referral",
+        "other": "Other"
+      },
+      "save": "Save rules",
+      "saved": "Rules saved.",
+      "rotation": "Agents in rotation",
+      "inRotation": "{{name}} in rotation",
+      "leads": "Recent leads",
+      "leadsEmpty": "No team leads yet",
+      "leadsEmptyHint": "Add a lead or connect a source. Each one is routed by your rules.",
+      "addLead": "Add a lead",
+      "leadName": "Name",
+      "leadEmail": "Email",
+      "leadPhone": "Phone",
+      "leadSource": "Source",
+      "leadLanguage": "Language",
+      "route": "Route lead",
+      "statuses": {
+        "offered": "Waiting for a claim",
+        "claimed": "Claimed by {{agent}}",
+        "assigned": "Assigned to {{agent}}",
+        "leader": "With the team leader"
+      },
+      "offHoursReply": "Off-hours reply sent",
+      "claim": "Claim",
+      "claimFor": "Claim {{name}}",
+      "claimed": "It's yours. {{name}} is in your contacts with a follow-up task.",
+      "claimBy": "Claim by {{time}}",
+      "offered": "Leads to claim",
+      "offeredEmpty": "No leads to claim right now",
+      "offeredEmptyHint": "When your team gets a lead, you have a few minutes to claim it.",
+      "offerTitle": "New lead for {{team}}: claim it",
+      "offerBody": "The first to claim within {{minutes}} minutes gets it.",
+      "note": "Team lead from {{team}} ({{source}}). {{message}}",
+      "draft": "Hi {{name}}, thanks for reaching out to {{team}}. When is a good time to talk?",
+      "autoReply": "Thanks for contacting {{team}}. An agent will call you first thing in the morning, or reply with a good time to call.",
+      "errors": {
+        "taken": "Another agent claimed this lead first.",
+        "expired": "The time to claim this lead is up."
+      }
+    },
+    "splits": {
+      "title": "Split sheets",
+      "purpose": "Team splits from your team agreement, signed in the app. Payments run through your accounting tool.",
+      "agreement": "Team agreement",
+      "brokeragePercent": "Brokerage share (%)",
+      "teamPercent": "Team share (%)",
+      "agentPercent": "The agent gets {{percent}}%",
+      "saveAgreement": "Save agreement",
+      "new": "New split sheet",
+      "agent": "Agent",
+      "property": "Property",
+      "closingOn": "Closing date",
+      "gross": "Gross commission ($)",
+      "send": "Send for signature",
+      "line": "{{property}} · closing {{date}} · gross {{gross}}",
+      "shares": "Brokerage {{brokerage}} · team {{team}} · agent {{agent}}",
+      "statuses": {
+        "sent": "Waiting for signature",
+        "signed": "Signed",
+        "questioned": "Question asked"
+      },
+      "exported": "In QuickBooks",
+      "sign": "Sign",
+      "signFor": "Sign the split for {{property}}",
+      "signed": "Signed. Your team leader can see it.",
+      "ask": "Ask a question",
+      "askFor": "Ask a question about {{property}}",
+      "questionLabel": "Your question",
+      "questionBody": "About the split sheet for {{property}}: {{text}}",
+      "empty": "No split sheets yet",
+      "emptyHint": "Split sheets for your team's closings show here.",
+      "notifyTitle": "Split sheet to sign: {{property}}",
+      "notifyBody": "From {{team}}, based on your team agreement.",
+      "errors": {
+        "over": "The brokerage and team shares can't add up to more than 100%.",
+        "signed": "This split sheet is already signed."
+      }
+    },
+    "leads": {
+      "title": "Team leads",
+      "purpose": "Claim team leads before the time runs out, and sign your split sheets."
     }
   }
 }

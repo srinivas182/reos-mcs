@@ -102,6 +102,8 @@ export default function MeScreen() {
         {current?.role === 'provider' ? <MenuRow icon={Users} title={t('providers.agents.title')} onPress={() => router.push('/provider/agents')} /> : null}
         {/* Verified providers (B15.3), for agents and brokers. */}
         {current?.role === 'agent' || current?.role === 'broker' ? <MenuRow icon={Handshake} title={t('providers.directory.title')} onPress={() => router.push('/providers')} /> : null}
+        {/* Team leads to claim and split sheets (A17.3), for agents. */}
+        {current?.role === 'agent' ? <MenuRow icon={Inbox} title={t('teams.leads.title')} onPress={() => router.push('/team/leads')} /> : null}
         {/* Requests from providers, connections and my choices (B16.2), for agents. */}
         {current?.role === 'agent' ? <MenuRow icon={Inbox} title={t('providers.network.title')} onPress={() => router.push('/providers/requests')} /> : null}
         {/* What my broker sees (A16.1): the agent's own summary, as their broker sees it. */}

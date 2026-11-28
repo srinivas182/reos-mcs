@@ -71408,6 +71408,1414 @@
                 }
             }
         },
+        "/team/routing": {
+            "get": {
+                "operationId": "team.routing",
+                "summary": "Lead routing (team leader)",
+                "tags": [
+                    "Team"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "team": {
+                                                    "type": "string"
+                                                },
+                                                "rules": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "sources": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "method": {
+                                                            "type": "string",
+                                                            "enum": [
+                                                                "first_to_claim",
+                                                                "round_robin"
+                                                            ]
+                                                        },
+                                                        "claim_minutes": {
+                                                            "type": "integer"
+                                                        },
+                                                        "fallback": {
+                                                            "type": "string",
+                                                            "enum": [
+                                                                "round_robin",
+                                                                "leader"
+                                                            ]
+                                                        },
+                                                        "off_start": {
+                                                            "type": "string"
+                                                        },
+                                                        "off_end": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "sources",
+                                                        "method",
+                                                        "claim_minutes",
+                                                        "fallback",
+                                                        "off_start",
+                                                        "off_end"
+                                                    ]
+                                                },
+                                                "members": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "active": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "languages": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "last_assigned_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "name",
+                                                            "active",
+                                                            "languages",
+                                                            "last_assigned_at"
+                                                        ]
+                                                    }
+                                                },
+                                                "leads": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "source": {
+                                                                "type": "string"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "language": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "status": {
+                                                                "type": "string"
+                                                            },
+                                                            "how": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "agent": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "claim_by": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "created_at": {
+                                                                "type": "string"
+                                                            },
+                                                            "auto_reply": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "source",
+                                                            "name",
+                                                            "language",
+                                                            "status",
+                                                            "how",
+                                                            "agent",
+                                                            "claim_by",
+                                                            "created_at",
+                                                            "auto_reply"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "team",
+                                                "rules",
+                                                "members",
+                                                "leads"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "team.routing.rules",
+                "summary": "Change the routing rules",
+                "tags": [
+                    "Team"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RoutingRulesRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "team": {
+                                                    "type": "string"
+                                                },
+                                                "rules": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "sources": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "method": {
+                                                            "type": "string",
+                                                            "enum": [
+                                                                "first_to_claim",
+                                                                "round_robin"
+                                                            ]
+                                                        },
+                                                        "claim_minutes": {
+                                                            "type": "integer"
+                                                        },
+                                                        "fallback": {
+                                                            "type": "string",
+                                                            "enum": [
+                                                                "round_robin",
+                                                                "leader"
+                                                            ]
+                                                        },
+                                                        "off_start": {
+                                                            "type": "string"
+                                                        },
+                                                        "off_end": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "sources",
+                                                        "method",
+                                                        "claim_minutes",
+                                                        "fallback",
+                                                        "off_start",
+                                                        "off_end"
+                                                    ]
+                                                },
+                                                "members": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "active": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "languages": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "last_assigned_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "name",
+                                                            "active",
+                                                            "languages",
+                                                            "last_assigned_at"
+                                                        ]
+                                                    }
+                                                },
+                                                "leads": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "source": {
+                                                                "type": "string"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "language": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "status": {
+                                                                "type": "string"
+                                                            },
+                                                            "how": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "agent": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "claim_by": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "created_at": {
+                                                                "type": "string"
+                                                            },
+                                                            "auto_reply": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "source",
+                                                            "name",
+                                                            "language",
+                                                            "status",
+                                                            "how",
+                                                            "agent",
+                                                            "claim_by",
+                                                            "created_at",
+                                                            "auto_reply"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "team",
+                                                "rules",
+                                                "members",
+                                                "leads"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/team/routing/members/{agent}": {
+            "put": {
+                "operationId": "team.routing.member",
+                "summary": "An agent in or out of the rotation",
+                "tags": [
+                    "Team"
+                ],
+                "parameters": [
+                    {
+                        "name": "agent",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RotationMemberRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "team": {
+                                                    "type": "string"
+                                                },
+                                                "rules": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "sources": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "method": {
+                                                            "type": "string",
+                                                            "enum": [
+                                                                "first_to_claim",
+                                                                "round_robin"
+                                                            ]
+                                                        },
+                                                        "claim_minutes": {
+                                                            "type": "integer"
+                                                        },
+                                                        "fallback": {
+                                                            "type": "string",
+                                                            "enum": [
+                                                                "round_robin",
+                                                                "leader"
+                                                            ]
+                                                        },
+                                                        "off_start": {
+                                                            "type": "string"
+                                                        },
+                                                        "off_end": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "sources",
+                                                        "method",
+                                                        "claim_minutes",
+                                                        "fallback",
+                                                        "off_start",
+                                                        "off_end"
+                                                    ]
+                                                },
+                                                "members": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "active": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "languages": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "last_assigned_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "name",
+                                                            "active",
+                                                            "languages",
+                                                            "last_assigned_at"
+                                                        ]
+                                                    }
+                                                },
+                                                "leads": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "source": {
+                                                                "type": "string"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "language": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "status": {
+                                                                "type": "string"
+                                                            },
+                                                            "how": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "agent": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "claim_by": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "created_at": {
+                                                                "type": "string"
+                                                            },
+                                                            "auto_reply": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "source",
+                                                            "name",
+                                                            "language",
+                                                            "status",
+                                                            "how",
+                                                            "agent",
+                                                            "claim_by",
+                                                            "created_at",
+                                                            "auto_reply"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "team",
+                                                "rules",
+                                                "members",
+                                                "leads"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/team/leads": {
+            "post": {
+                "operationId": "team.leads.store",
+                "description": "It's routed at once: offered to claim, or assigned in turn.",
+                "summary": "Add a lead for the team",
+                "tags": [
+                    "Team"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TeamLeadRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "status": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "status"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/team/leads/{offer}/claim": {
+            "post": {
+                "operationId": "team.leads.claim",
+                "description": "The first to claim in time gets it, in their CRM with a follow-up task. 422 when it's taken or the time is up.",
+                "summary": "Claim a team lead (agent)",
+                "tags": [
+                    "Team"
+                ],
+                "parameters": [
+                    {
+                        "name": "offer",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "status": {
+                                                    "type": "string"
+                                                },
+                                                "contact": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "status",
+                                                "contact"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/team/mine": {
+            "get": {
+                "operationId": "team.mine",
+                "summary": "My team leads and split sheets (agent)",
+                "tags": [
+                    "Team"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "offered": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string"
+                                                    },
+                                                    "source": {
+                                                        "type": "string"
+                                                    },
+                                                    "name": {
+                                                        "type": "string"
+                                                    },
+                                                    "language": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "status": {
+                                                        "type": "string"
+                                                    },
+                                                    "how": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "agent": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "claim_by": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string"
+                                                    },
+                                                    "auto_reply": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "source",
+                                                    "name",
+                                                    "language",
+                                                    "status",
+                                                    "how",
+                                                    "agent",
+                                                    "claim_by",
+                                                    "created_at",
+                                                    "auto_reply"
+                                                ]
+                                            }
+                                        },
+                                        "splits": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string"
+                                                    },
+                                                    "agent": {
+                                                        "type": "string"
+                                                    },
+                                                    "property": {
+                                                        "type": "string"
+                                                    },
+                                                    "closing_on": {
+                                                        "type": "string"
+                                                    },
+                                                    "lead_source": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "gross": {
+                                                        "type": "integer"
+                                                    },
+                                                    "brokerage": {
+                                                        "type": "integer"
+                                                    },
+                                                    "team": {
+                                                        "type": "integer"
+                                                    },
+                                                    "agent_share": {
+                                                        "type": "integer"
+                                                    },
+                                                    "status": {
+                                                        "type": "string"
+                                                    },
+                                                    "signed_at": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "exported_at": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "agent",
+                                                    "property",
+                                                    "closing_on",
+                                                    "lead_source",
+                                                    "gross",
+                                                    "brokerage",
+                                                    "team",
+                                                    "agent_share",
+                                                    "status",
+                                                    "signed_at",
+                                                    "exported_at"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "offered",
+                                        "splits"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/team/splits": {
+            "get": {
+                "operationId": "team.splits",
+                "summary": "Split sheets and the team agreement (team leader)",
+                "tags": [
+                    "Team"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "team": {
+                                                    "type": "string"
+                                                },
+                                                "agreement": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "brokerage_percent": {
+                                                            "type": "integer"
+                                                        },
+                                                        "team_percent": {
+                                                            "type": "integer"
+                                                        },
+                                                        "agent_percent": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "brokerage_percent",
+                                                        "team_percent",
+                                                        "agent_percent"
+                                                    ]
+                                                },
+                                                "sheets": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "agent": {
+                                                                "type": "string"
+                                                            },
+                                                            "property": {
+                                                                "type": "string"
+                                                            },
+                                                            "closing_on": {
+                                                                "type": "string"
+                                                            },
+                                                            "lead_source": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "gross": {
+                                                                "type": "integer"
+                                                            },
+                                                            "brokerage": {
+                                                                "type": "integer"
+                                                            },
+                                                            "team": {
+                                                                "type": "integer"
+                                                            },
+                                                            "agent_share": {
+                                                                "type": "integer"
+                                                            },
+                                                            "status": {
+                                                                "type": "string"
+                                                            },
+                                                            "signed_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "exported_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "agent",
+                                                            "property",
+                                                            "closing_on",
+                                                            "lead_source",
+                                                            "gross",
+                                                            "brokerage",
+                                                            "team",
+                                                            "agent_share",
+                                                            "status",
+                                                            "signed_at",
+                                                            "exported_at"
+                                                        ]
+                                                    }
+                                                },
+                                                "agents": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "name"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "team",
+                                                "agreement",
+                                                "sheets",
+                                                "agents"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "team.splits.store",
+                "summary": "Send a split sheet for a closing",
+                "tags": [
+                    "Team"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SplitSheetRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "status": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "status"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/team/agreement": {
+            "put": {
+                "operationId": "team.agreement",
+                "summary": "Change the team agreement",
+                "tags": [
+                    "Team"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AgreementRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "brokerage_percent": {
+                                                    "type": "integer"
+                                                },
+                                                "team_percent": {
+                                                    "type": "integer"
+                                                },
+                                                "agent_percent": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "required": [
+                                                "brokerage_percent",
+                                                "team_percent",
+                                                "agent_percent"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/team/splits/{sheet}/sign": {
+            "post": {
+                "operationId": "team.splits.sign",
+                "summary": "Sign a split sheet (agent)",
+                "tags": [
+                    "Team"
+                ],
+                "parameters": [
+                    {
+                        "name": "sheet",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "status": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "status"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/team/splits/{sheet}/question": {
+            "post": {
+                "operationId": "team.splits.question",
+                "description": "Opens a chat with the team leader.",
+                "summary": "Ask about a split sheet (agent)",
+                "tags": [
+                    "Team"
+                ],
+                "parameters": [
+                    {
+                        "name": "sheet",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SplitQuestionRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "conversation": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "conversation"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
         "/me/phone": {
             "post": {
                 "operationId": "me.texts.phone",
@@ -76141,6 +77549,27 @@
                 ],
                 "title": "AgentPageRequest"
             },
+            "AgreementRequest": {
+                "type": "object",
+                "description": "The team agreement (A17.3): the brokerage's and the team's percent; the agent gets the rest.",
+                "properties": {
+                    "brokerage_percent": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 100
+                    },
+                    "team_percent": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 100
+                    }
+                },
+                "required": [
+                    "brokerage_percent",
+                    "team_percent"
+                ],
+                "title": "AgreementRequest"
+            },
             "AnswerQuestionRequest": {
                 "type": "object",
                 "description": "An instructor's answer to a student's question (A10.1b, screen i10).",
@@ -80598,6 +82027,85 @@
                 ],
                 "title": "RosterContactsRequest"
             },
+            "RotationMemberRequest": {
+                "type": "object",
+                "description": "An agent in the rotation (A17.3): on or off, and the languages they take.",
+                "properties": {
+                    "active": {
+                        "type": "boolean"
+                    },
+                    "languages": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "es"
+                            ]
+                        },
+                        "maxItems": 5
+                    }
+                },
+                "required": [
+                    "active",
+                    "languages"
+                ],
+                "title": "RotationMemberRequest"
+            },
+            "RoutingRulesRequest": {
+                "type": "object",
+                "description": "Lead routing rules (A17.3): sources, method, claim time, fallback and off hours.",
+                "properties": {
+                    "sources": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "website",
+                                "zillow",
+                                "realtor_com",
+                                "open_house",
+                                "referral",
+                                "other"
+                            ]
+                        }
+                    },
+                    "method": {
+                        "type": "string",
+                        "enum": [
+                            "first_to_claim",
+                            "round_robin"
+                        ]
+                    },
+                    "claim_minutes": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 30
+                    },
+                    "fallback": {
+                        "type": "string",
+                        "enum": [
+                            "round_robin",
+                            "leader"
+                        ]
+                    },
+                    "off_start": {
+                        "type": "string"
+                    },
+                    "off_end": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "sources",
+                    "method",
+                    "claim_minutes",
+                    "fallback",
+                    "off_start",
+                    "off_end"
+                ],
+                "title": "RoutingRulesRequest"
+            },
             "RulesRequest": {
                 "type": "object",
                 "description": "Accepting the network rules: the version the provider read (B15.2).",
@@ -81340,6 +82848,64 @@
                 ],
                 "title": "SignInResource"
             },
+            "SplitQuestionRequest": {
+                "type": "object",
+                "description": "A question about a split sheet (A17.3), sent to the team leader.",
+                "properties": {
+                    "text": {
+                        "type": "string",
+                        "maxLength": 1000
+                    }
+                },
+                "required": [
+                    "text"
+                ],
+                "title": "SplitQuestionRequest"
+            },
+            "SplitSheetRequest": {
+                "type": "object",
+                "description": "A split sheet for a closing (A17.3).",
+                "properties": {
+                    "agent_id": {
+                        "type": "integer"
+                    },
+                    "property": {
+                        "type": "string",
+                        "maxLength": 200
+                    },
+                    "closing_on": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "gross_cents": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 100000000
+                    },
+                    "lead_source": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "enum": [
+                            "website",
+                            "zillow",
+                            "realtor_com",
+                            "open_house",
+                            "referral",
+                            "other",
+                            null
+                        ]
+                    }
+                },
+                "required": [
+                    "agent_id",
+                    "property",
+                    "closing_on",
+                    "gross_cents"
+                ],
+                "title": "SplitSheetRequest"
+            },
             "SponsorCapRequest": {
                 "type": "object",
                 "description": "A candidate's sponsored AI cap (A17.2).",
@@ -81648,6 +83214,65 @@
                     "visits"
                 ],
                 "title": "SyncVisitsRequest"
+            },
+            "TeamLeadRequest": {
+                "type": "object",
+                "description": "A lead for the team (A17.3), added by the team leader or from a source.",
+                "properties": {
+                    "source": {
+                        "type": "string",
+                        "enum": [
+                            "website",
+                            "zillow",
+                            "realtor_com",
+                            "open_house",
+                            "referral",
+                            "other"
+                        ]
+                    },
+                    "name": {
+                        "type": "string",
+                        "maxLength": 160
+                    },
+                    "email": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "email",
+                        "maxLength": 200
+                    },
+                    "phone": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 40
+                    },
+                    "language": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "enum": [
+                            "en",
+                            "es",
+                            null
+                        ]
+                    },
+                    "message": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 1000
+                    }
+                },
+                "required": [
+                    "source",
+                    "name"
+                ],
+                "title": "TeamLeadRequest"
             },
             "TextNumberRequest": {
                 "type": "object",
