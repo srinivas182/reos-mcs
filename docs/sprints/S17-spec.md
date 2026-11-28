@@ -121,6 +121,24 @@
 - Access ends at closing.
 - A file board, checklists, missing documents, and drafted messages sent with the agent copied.
 - **Done when:** coordinator access ends at closing.
+- **As built, B17.1** (ADR 0085):
+  - **Data:** a `deal_shares` table: the deal, agent and coordinator, the four switches, the coordinator's checklist, and the status, with when and why access ended.
+  - **Service:** `App\Coordinators\DealShares`:
+    - only a connected transaction coordinator can be chosen, and only the deal's agent can share, change or remove;
+    - documents and dates are on by default; a part that's off comes back as null, and parties show name and role only;
+    - access ends when the deal is saved as closed or cancelled, on every coordinator read of a closed deal, and in a daily sweep (`reos:coordinators:sweep`);
+    - My files puts the nearest open deadline first and counts missing documents. Ticks are saved on the share and never change the agent's deal;
+    - a message goes into the coordinator's chat with the agent, and needs the messages switch;
+    - every action is audited for the deal's brokerage.
+  - **API:** `GET|POST /api/v1/deals/{deal}/coordinators`, `PUT|DELETE /api/v1/deal-shares/{share}`, `GET /api/v1/coordinator/files`, `GET /api/v1/coordinator/files/{share}`, `PUT …/checklist`, `POST …/messages`. A new notification, `DealShared`, tells the coordinator.
+  - **Web:**
+    - a Transaction coordinator section in the deal's panel (agent web screen 14): choose a coordinator, set the switches, remove; ended shares say why;
+    - My files at `/provider/files` (provider screens 14–15): counts, file cards, and one file with the checklist and a drafted message. There's a new provider nav item, My files.
+  - **Phone:** My files and one file (`/provider/files`), with a Me row for providers.
+  - **Done when:** a Pest test has James share 1302 Live Oak St with Tina Brooks. She sees the file, the option period this week and the missing inspection report. James moves the deal to Closed; Tina's access ends at once, the file is gone from her board, and opening it gives 404. Other tests:
+    - only the shared parts are visible;
+    - only a connected coordinator can be chosen;
+    - removal, cancelling and the sweep each end access.
 
 ### B17.2 Communities (Team B)
 

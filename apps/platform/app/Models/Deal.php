@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Coordinators\DealShares;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -43,6 +44,16 @@ use Illuminate\Support\Carbon;
  */
 final class Deal extends Model
 {
+    /** A deal that closes or is cancelled ends its coordinators' access (B17.1). */
+    protected static function booted(): void
+    {
+        self::saved(static function (self $deal): void {
+            if ($deal->wasChanged('stage')) {
+                app(DealShares::class)->dealChanged($deal);
+            }
+        });
+    }
+
     use SoftDeletes;
 
     public const SIDES = ['buy', 'sell', 'lease', 'both'];

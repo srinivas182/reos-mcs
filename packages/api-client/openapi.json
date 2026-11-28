@@ -25084,6 +25084,883 @@
                 }
             }
         },
+        "/deals/{deal}/coordinators": {
+            "get": {
+                "operationId": "deals.coordinators.index",
+                "description": "The agent's connected transaction coordinators, and who this deal is (or was) shared with, with the switches and when access ended.",
+                "summary": "The deal's coordinators",
+                "tags": [
+                    "Coordinator"
+                ],
+                "parameters": [
+                    {
+                        "name": "deal",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "coordinators": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "business": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "name",
+                                                            "business"
+                                                        ]
+                                                    }
+                                                },
+                                                "shares": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "coordinator": {
+                                                                "type": "string"
+                                                            },
+                                                            "switches": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "dates": {
+                                                                        "type": "boolean"
+                                                                    },
+                                                                    "documents": {
+                                                                        "type": "boolean"
+                                                                    },
+                                                                    "parties": {
+                                                                        "type": "boolean"
+                                                                    },
+                                                                    "messages": {
+                                                                        "type": "boolean"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "dates",
+                                                                    "documents",
+                                                                    "parties",
+                                                                    "messages"
+                                                                ]
+                                                            },
+                                                            "status": {
+                                                                "type": "string"
+                                                            },
+                                                            "end_reason": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "ended_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "coordinator",
+                                                            "switches",
+                                                            "status",
+                                                            "end_reason",
+                                                            "ended_at"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "coordinators",
+                                                "shares"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "deals.coordinators.store",
+                "description": "Only a transaction coordinator the agent is connected with. Documents and dates are on unless switched off; parties and messages are off unless switched on. Access ends at closing. 422 on a closed or cancelled deal.",
+                "summary": "Share a deal with a coordinator",
+                "tags": [
+                    "Coordinator"
+                ],
+                "parameters": [
+                    {
+                        "name": "deal",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ShareDealRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "switches": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "dates": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "documents": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "parties": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "messages": {
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "dates",
+                                                        "documents",
+                                                        "parties",
+                                                        "messages"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "switches"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/deal-shares/{share}": {
+            "put": {
+                "operationId": "deal-shares.update",
+                "summary": "Change what the coordinator sees",
+                "tags": [
+                    "Coordinator"
+                ],
+                "parameters": [
+                    {
+                        "name": "share",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ShareSwitchesRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "switches": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "dates": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "documents": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "parties": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "messages": {
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "dates",
+                                                        "documents",
+                                                        "parties",
+                                                        "messages"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "switches"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "deal-shares.destroy",
+                "description": "Their access ends now.",
+                "summary": "Remove the coordinator",
+                "tags": [
+                    "Coordinator"
+                ],
+                "parameters": [
+                    {
+                        "name": "share",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "removed": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "required": [
+                                        "removed"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/coordinator/files": {
+            "get": {
+                "operationId": "coordinator.files.index",
+                "description": "The coordinator's active files, nearest deadline first: the next date, missing documents and progress. Only what each agent switched on.",
+                "summary": "My files",
+                "tags": [
+                    "Coordinator"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "counts": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "active": {
+                                                            "type": "integer"
+                                                        },
+                                                        "due_this_week": {
+                                                            "type": "integer"
+                                                        },
+                                                        "missing": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "active",
+                                                        "due_this_week",
+                                                        "missing"
+                                                    ]
+                                                },
+                                                "files": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "agent": {
+                                                                "type": "string"
+                                                            },
+                                                            "property": {
+                                                                "type": "string"
+                                                            },
+                                                            "stage": {
+                                                                "type": "string"
+                                                            },
+                                                            "shared_on": {
+                                                                "type": "string"
+                                                            },
+                                                            "next": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "properties": {
+                                                                    "label": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "due_on": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "label",
+                                                                    "due_on"
+                                                                ]
+                                                            },
+                                                            "missing": {
+                                                                "type": "integer"
+                                                            },
+                                                            "progress": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "done": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "total": {
+                                                                        "type": "integer"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "done",
+                                                                    "total"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "agent",
+                                                            "property",
+                                                            "stage",
+                                                            "shared_on",
+                                                            "next",
+                                                            "missing",
+                                                            "progress"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "counts",
+                                                "files"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/coordinator/files/{share}": {
+            "get": {
+                "operationId": "coordinator.files.show",
+                "description": "The shared parts only: a part that's switched off is null. 404 once the deal closes or the agent removes the coordinator.",
+                "summary": "A file",
+                "tags": [
+                    "Coordinator"
+                ],
+                "parameters": [
+                    {
+                        "name": "share",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "agent": {
+                                                    "type": "string"
+                                                },
+                                                "property": {
+                                                    "type": "string"
+                                                },
+                                                "city": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "stage": {
+                                                    "type": "string"
+                                                },
+                                                "shared_on": {
+                                                    "type": "string"
+                                                },
+                                                "switches": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "dates": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "documents": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "parties": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "messages": {
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "dates",
+                                                        "documents",
+                                                        "parties",
+                                                        "messages"
+                                                    ]
+                                                },
+                                                "dates": {
+                                                    "type": [
+                                                        "array",
+                                                        "null"
+                                                    ],
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "due_on": {
+                                                                "type": "string"
+                                                            },
+                                                            "done": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "label",
+                                                            "due_on",
+                                                            "done"
+                                                        ]
+                                                    }
+                                                },
+                                                "documents": {
+                                                    "type": [
+                                                        "array",
+                                                        "null"
+                                                    ],
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "status": {
+                                                                "type": "string"
+                                                            },
+                                                            "done": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "name",
+                                                            "status",
+                                                            "done"
+                                                        ]
+                                                    }
+                                                },
+                                                "parties": {
+                                                    "type": [
+                                                        "array",
+                                                        "null"
+                                                    ],
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "role": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "name",
+                                                            "role"
+                                                        ]
+                                                    }
+                                                },
+                                                "draft": {
+                                                    "type": "string"
+                                                },
+                                                "conversation": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "agent",
+                                                "property",
+                                                "city",
+                                                "stage",
+                                                "shared_on",
+                                                "switches",
+                                                "dates",
+                                                "documents",
+                                                "parties",
+                                                "draft",
+                                                "conversation"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/coordinator/files/{share}/checklist": {
+            "put": {
+                "operationId": "coordinator.files.tick",
+                "description": "A document as `doc:<name>` or a date's id. The agent sees the progress.",
+                "summary": "Tick a checklist item",
+                "tags": [
+                    "Coordinator"
+                ],
+                "parameters": [
+                    {
+                        "name": "share",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TickRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "ticked": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "required": [
+                                        "ticked"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/coordinator/files/{share}/messages": {
+            "post": {
+                "operationId": "coordinator.files.message",
+                "description": "Goes to a chat with the agent, so the agent always has it. Needs the messages switch (422 otherwise).",
+                "summary": "Message the agent about the file",
+                "tags": [
+                    "Coordinator"
+                ],
+                "parameters": [
+                    {
+                        "name": "share",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/FileMessageRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "conversation": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "conversation"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
         "/me/states": {
             "get": {
                 "operationId": "me.states",
@@ -79616,6 +80493,21 @@
                 ],
                 "title": "FarmSendRequest"
             },
+            "FileMessageRequest": {
+                "type": "object",
+                "description": "A message about a shared file to the agent (B17.1).",
+                "properties": {
+                    "body": {
+                        "type": "string",
+                        "minLength": 2,
+                        "maxLength": 2000
+                    }
+                },
+                "required": [
+                    "body"
+                ],
+                "title": "FileMessageRequest"
+            },
             "FinishSpeedRoundRequest": {
                 "type": "object",
                 "description": "The taps of a speed round (A9.2d): each statement answered, True or False.",
@@ -82783,6 +83675,37 @@
                 ],
                 "title": "ShareContactsRequest"
             },
+            "ShareDealRequest": {
+                "type": "object",
+                "description": "Share a deal with a connected coordinator (B17.1), with access switches.",
+                "properties": {
+                    "coordinator_id": {
+                        "type": "integer"
+                    },
+                    "switches": {
+                        "type": "object",
+                        "properties": {
+                            "dates": {
+                                "type": "boolean"
+                            },
+                            "documents": {
+                                "type": "boolean"
+                            },
+                            "parties": {
+                                "type": "boolean"
+                            },
+                            "messages": {
+                                "type": "boolean"
+                            }
+                        }
+                    }
+                },
+                "required": [
+                    "coordinator_id",
+                    "switches"
+                ],
+                "title": "ShareDealRequest"
+            },
             "ShareRequest": {
                 "type": "object",
                 "description": "A quick action in the room (B6.3b): share a lesson, or send practice questions on a topic.",
@@ -82815,6 +83738,33 @@
                     "kind"
                 ],
                 "title": "ShareRequest"
+            },
+            "ShareSwitchesRequest": {
+                "type": "object",
+                "description": "Change what a coordinator can see on a shared deal (B17.1).",
+                "properties": {
+                    "switches": {
+                        "type": "object",
+                        "properties": {
+                            "dates": {
+                                "type": "boolean"
+                            },
+                            "documents": {
+                                "type": "boolean"
+                            },
+                            "parties": {
+                                "type": "boolean"
+                            },
+                            "messages": {
+                                "type": "boolean"
+                            }
+                        }
+                    }
+                },
+                "required": [
+                    "switches"
+                ],
+                "title": "ShareSwitchesRequest"
             },
             "SignInResource": {
                 "type": "object",
@@ -83309,6 +84259,24 @@
                     "on"
                 ],
                 "title": "TextSwitchRequest"
+            },
+            "TickRequest": {
+                "type": "object",
+                "description": "Tick or untick a checklist item on a shared file (B17.1): `doc:<name>` or a date's id.",
+                "properties": {
+                    "item": {
+                        "type": "string",
+                        "maxLength": 200
+                    },
+                    "done": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "item",
+                    "done"
+                ],
+                "title": "TickRequest"
             },
             "TodoResource": {
                 "type": "object",

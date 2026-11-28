@@ -89,6 +89,8 @@ Schedule::command('reos:daily-goals')->dailyAt('06:40')->withoutOverlapping()->o
 Schedule::command('reos:social:insights')->hourlyAt(20)->withoutOverlapping()->onOneServer();
 // Team leads nobody claimed in time go to the fallback (A17.3).
 Schedule::command('reos:teams:leads')->everyMinute()->withoutOverlapping()->onOneServer();
+// Coordinator access ends at closing (B17.1): a daily backstop to the deal-saved hook.
+Schedule::command('reos:coordinators:sweep')->dailyAt('02:20')->withoutOverlapping()->onOneServer();
 // Requests to connect unanswered for 14 days expire (B16.1).
 Schedule::command('reos:providers:requests')->dailyAt('03:40')->timezone('America/Chicago')->withoutOverlapping()->onOneServer();
 // The broker's morning brief, weekdays (A16.3).

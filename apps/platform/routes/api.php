@@ -34,6 +34,7 @@ use App\Http\Controllers\Api\Classes\ClassesController;
 use App\Http\Controllers\Api\Compliance\ComplianceController;
 use App\Http\Controllers\Api\Connections\ConnectionController;
 use App\Http\Controllers\Api\Contracts\ContractReviewController;
+use App\Http\Controllers\Api\Coordinators\CoordinatorController;
 use App\Http\Controllers\Api\Crm\ContactController;
 use App\Http\Controllers\Api\Crm\ContactWorkController;
 use App\Http\Controllers\Api\Deals\ClientPortalController;
@@ -615,6 +616,15 @@ Route::middleware('auth:sanctum')->group(function () {
     // Report a question (A8.1).
     Route::post('questions/{question}/report', [QuestionReportController::class, 'store'])->whereNumber('question')->middleware('throttle:20,1,api-question-report')->name('api.questions.report');
     // Deals (B9.1, ADR 0037): the agent's own.
+    // Coordinators (B17.1): the agent shares a deal by part; the coordinator's files until closing.
+    Route::get('deals/{deal}/coordinators', [CoordinatorController::class, 'forDeal'])->whereUuid('deal')->name('api.deals.coordinators.index');
+    Route::post('deals/{deal}/coordinators', [CoordinatorController::class, 'share'])->whereUuid('deal')->middleware('throttle:20,1,api-coordinators')->name('api.deals.coordinators.store');
+    Route::put('deal-shares/{share}', [CoordinatorController::class, 'switches'])->whereUuid('share')->middleware('throttle:30,1,api-coordinators')->name('api.deal-shares.update');
+    Route::delete('deal-shares/{share}', [CoordinatorController::class, 'remove'])->whereUuid('share')->middleware('throttle:30,1,api-coordinators')->name('api.deal-shares.destroy');
+    Route::get('coordinator/files', [CoordinatorController::class, 'board'])->name('api.coordinator.files.index');
+    Route::get('coordinator/files/{share}', [CoordinatorController::class, 'file'])->whereUuid('share')->name('api.coordinator.files.show');
+    Route::put('coordinator/files/{share}/checklist', [CoordinatorController::class, 'tick'])->whereUuid('share')->middleware('throttle:60,1,api-coordinator-files')->name('api.coordinator.files.tick');
+    Route::post('coordinator/files/{share}/messages', [CoordinatorController::class, 'message'])->whereUuid('share')->middleware('throttle:20,1,api-coordinator-files')->name('api.coordinator.files.message');
     Route::get('deals', [DealController::class, 'index'])->name('api.deals.index');
     Route::get('deals/pipeline', [DealController::class, 'pipeline'])->name('api.deals.pipeline');
     Route::get('deals/alerts', [DealController::class, 'alerts'])->name('api.deals.alerts');

@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
-import { ArrowLeftRight, Bell, Camera, Building2, Compass, DoorOpen, Download, Eye, Gift, GraduationCap, IdCard, Inbox, Languages, Map, MapPin, Handshake, Megaphone, Plug, ShieldCheck, Users, Wallet, Wrench } from 'lucide-react-native';
+import { ArrowLeftRight, Bell, Camera, Building2, Compass, DoorOpen, Download, Eye, FolderOpen, Gift, GraduationCap, IdCard, Inbox, Languages, Map, MapPin, Handshake, Megaphone, Plug, ShieldCheck, Users, Wallet, Wrench } from 'lucide-react-native';
 import { useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -100,6 +100,7 @@ export default function MeScreen() {
         {current?.role === 'provider' ? <MenuRow icon={IdCard} title={t('providers.profile.title')} onPress={() => router.push('/provider/profile')} /> : null}
         {/* Agents in my areas and requests to connect (B16.1), for providers. */}
         {current?.role === 'provider' ? <MenuRow icon={Users} title={t('providers.agents.title')} onPress={() => router.push('/provider/agents')} /> : null}
+        {current?.role === 'provider' ? <MenuRow icon={FolderOpen} title={t('coordinators.title')} onPress={() => router.push('/provider/files')} /> : null}
         {/* Verified providers (B15.3), for agents and brokers. */}
         {current?.role === 'agent' || current?.role === 'broker' ? <MenuRow icon={Handshake} title={t('providers.directory.title')} onPress={() => router.push('/providers')} /> : null}
         {/* Team leads to claim and split sheets (A17.3), for agents. */}
