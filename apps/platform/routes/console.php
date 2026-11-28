@@ -94,3 +94,5 @@ Schedule::command('reos:certificates:prune')->dailyAt('04:25')->onOneServer();
 Schedule::command('reos:approvals:fallback')->everyFifteenMinutes()->withoutOverlapping()->onOneServer();
 // Providers' licences, monthly after the regulators' imports (B15.2): an expired licence hides the profile.
 Schedule::command('reos:providers:recheck')->monthlyOn(2, '05:10')->withoutOverlapping()->onOneServer();
+// Sponsorship releases on their date, and joins and releases confirmed with TREC's file (A16.2).
+Schedule::command('reos:sponsorships')->dailyAt('06:15')->timezone('America/Chicago')->withoutOverlapping()->onOneServer();

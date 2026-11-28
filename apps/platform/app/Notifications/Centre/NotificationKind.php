@@ -87,6 +87,10 @@ enum NotificationKind: string
     case InviteReward = 'invite_reward';
     /** An approval or escalated question waited past the brokerage's working hours (A15.3). */
     case ApprovalOverdue = 'approval_overdue';
+    /** The brokerage assigned a course, with its due date (A16.2). */
+    case CourseAssigned = 'course_assigned';
+    /** A sponsorship release or join, or deals handed over to you (A16.2). */
+    case Sponsorship = 'sponsorship';
 
     public const INBOX = 'inbox';
 
@@ -143,8 +147,8 @@ enum NotificationKind: string
             self::NewDevice, self::AccountDeletion, self::PrivacyRequest => 'account',
             self::PurchaseReceipt, self::PaymentFailed, self::MembershipLink => 'billing',
             self::Message, self::Announcement, self::MessagesReported => 'messages',
-            self::SessionBooked, self::SessionStarting, self::ClassCheck, self::ClassReport, self::ExamReminder, self::PassNews, self::BrokerOffer, self::LicenceFound, self::CeRenewal, self::StateRulesChanged, self::StateWentLive, self::WeeklyReport, self::Challenge, self::StudentQuestion, self::InstructorAnswer, self::Mentoring => 'learning',
-            self::Invitation, self::SeatsRequested, self::BrokerAsked, self::SupportAccess, self::ApprovalExpiring, self::AvatarConsentEnded, self::ContentReview, self::PolicyQuestion, self::PostApproval, self::ApprovalOverdue => 'organisation',
+            self::SessionBooked, self::SessionStarting, self::ClassCheck, self::ClassReport, self::ExamReminder, self::PassNews, self::BrokerOffer, self::LicenceFound, self::CeRenewal, self::StateRulesChanged, self::StateWentLive, self::WeeklyReport, self::Challenge, self::StudentQuestion, self::InstructorAnswer, self::Mentoring, self::CourseAssigned => 'learning',
+            self::Invitation, self::SeatsRequested, self::BrokerAsked, self::SupportAccess, self::ApprovalExpiring, self::AvatarConsentEnded, self::ContentReview, self::PolicyQuestion, self::PostApproval, self::ApprovalOverdue, self::Sponsorship => 'organisation',
             self::IntegrationPaused, self::FlagRolledBack, self::ConnectionNeedsReconnect => 'tools',
             self::DealDeadline, self::SignatureCompleted, self::MorningBrief, self::PolicyAnswer, self::ContractReview, self::PostDecision, self::Celebration, self::AgentFeedback, self::NewLead, self::Referral, self::InviteReward => 'deals',
         };

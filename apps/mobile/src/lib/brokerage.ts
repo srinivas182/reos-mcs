@@ -166,3 +166,44 @@ export async function loadBrokerView(): Promise<OversightProfile | null> {
 export function needingHelp(board: OversightBoard): OversightAgent[] {
   return board.agents.filter((a) => a.signals.some((s) => s !== 'new'));
 }
+
+export type CeTable = Got<'/organisation/ce'>['data'];
+export type CeRow = CeTable['rows'][number];
+export type SponsorshipBoard = Got<'/organisation/sponsorships'>['data'];
+
+/** CE compliance (A16.2): every agent's renewal, hours left and SAE. */
+export async function loadCe(): Promise<CeTable | null> {
+  const { data } = await api().GET('/organisation/ce');
+
+  return data ? data.data : null;
+}
+
+/** Remind all due agents in one action. */
+export async function remindAllDue(): Promise<{ sent: number; skipped: number; table: CeTable }> {
+  const { data, error } = await api().POST('/organisation/ce/remind');
+
+  return data ? data.data : fail(error);
+}
+
+export async function assignCourse(courseId: number, dueOn: string | null): Promise<{ assigned: number; table: CeTable }> {
+  const { data, error } = await api().POST('/organisation/ce/assign', { body: { course_id: courseId, due: true, due_on: dueOn } });
+
+  return data ? data.data : fail(error);
+}
+
+export async function loadSponsorships(): Promise<SponsorshipBoard | null> {
+  const { data } = await api().GET('/organisation/sponsorships');
+
+  return data ? data.data : null;
+}
+
+export async function releaseAgent(agentId: number, effectiveOn: string, handoverTo: number | null): Promise<SponsorshipBoard> {
+  const { data, error } = await api().POST('/organisation/sponsorships/release', { body: { agent_id: agentId, effective_on: effectiveOn, handover_to: handoverTo } });
+
+  return data ? data.data : fail(error);
+}
+
+/** Agents a reminder would reach. */
+export function dueRows(table: CeTable): CeRow[] {
+  return table.rows.filter((r) => r.status === 'due' || r.status === 'behind' || r.status === 'overdue');
+}

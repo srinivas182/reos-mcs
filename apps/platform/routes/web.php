@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\Ask\AskController;
 use App\Http\Controllers\Api\Bookings\BookingController;
 use App\Http\Controllers\Api\Brokerage\ApprovalsController;
 use App\Http\Controllers\Api\Brokerage\BrokerVerificationController;
+use App\Http\Controllers\Api\Brokerage\CeComplianceController;
 use App\Http\Controllers\Api\Brokerage\OversightController;
 use App\Http\Controllers\Api\Brokerage\PoliciesController;
 use App\Http\Controllers\Api\Brokerage\RosterController;
@@ -113,6 +114,7 @@ use App\Http\Controllers\Organisation\AgentsController;
 use App\Http\Controllers\Organisation\ApprovalsPageController;
 use App\Http\Controllers\Organisation\BrandingController;
 use App\Http\Controllers\Organisation\BrokerageIntegrationsController;
+use App\Http\Controllers\Organisation\CeCompliancePageController;
 use App\Http\Controllers\Organisation\DomainController;
 use App\Http\Controllers\Organisation\InvitationController;
 use App\Http\Controllers\Organisation\OversightPagesController;
@@ -563,6 +565,11 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisat
     Route::get('organisation/oversight', [OversightPagesController::class, 'index'])->name('oversight.index');
     Route::get('organisation/oversight/agents/{member}', [OversightPagesController::class, 'show'])->whereNumber('member')->name('oversight.agent');
     Route::put('organisation/oversight/settings', [OversightController::class, 'settings'])->middleware('throttle:20,1,oversight-settings')->name('oversight.settings');
+    // CE compliance and sponsorship (A16.2).
+    Route::get('organisation/ce', CeCompliancePageController::class)->name('ce-compliance.index');
+    Route::post('organisation/ce/remind', [CeComplianceController::class, 'remind'])->middleware('throttle:5,1,ce-remind')->name('ce-compliance.remind');
+    Route::post('organisation/ce/assign', [CeComplianceController::class, 'assign'])->middleware('throttle:20,1,ce-assign')->name('ce-compliance.assign');
+    Route::post('organisation/sponsorships/release', [CeComplianceController::class, 'release'])->middleware('throttle:10,1,sponsorship-release')->name('sponsorships.release');
     // One approvals queue (A15.3): posts, public pages and escalated questions.
     Route::get('organisation/approvals', ApprovalsPageController::class)->name('approvals.index');
     Route::post('organisation/approvals/{kind}/{item}', [ApprovalsController::class, 'act'])->whereIn('kind', ['post', 'page', 'question'])->where('item', '[A-Za-z0-9-]{1,80}')->middleware('throttle:60,1,approvals-act')->name('approvals.act');

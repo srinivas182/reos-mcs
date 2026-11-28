@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services\Tenancy;
 
 use App\Authorization\Role;
+use App\Brokerage\Sponsorships;
 use App\Enums\Locale;
 use App\Enums\OrganisationType;
 use App\Messaging\TextMessagesFactory;
@@ -389,6 +390,11 @@ final readonly class Invitations
             // Already holding the role elsewhere in the tenant takes no second seat.
             if ($this->memberships->find($user, $fresh->role, $target->id) === null) {
                 $this->tenancy->run($fresh->organisation_id, fn () => $this->memberships->grant($user, $fresh->role, $target, $user));
+
+                // An agent joining a brokerage (A16.2): the sponsorship, confirmed later against TREC's file.
+                if ($fresh->role === Role::Agent) {
+                    app(Sponsorships::class)->joined($user, $target);
+                }
             }
 
             $this->tenancy->run($fresh->organisation_id, static fn () => $fresh->forceFill([

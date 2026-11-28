@@ -7747,6 +7747,1066 @@
                 }
             }
         },
+        "/organisation/ce": {
+            "get": {
+                "operationId": "brokerage.ce",
+                "description": "Every agent's licence, renewal date, hours left and SAE status, the courses that can be assigned, and when each agent was last reminded.",
+                "summary": "CE compliance",
+                "tags": [
+                    "CeCompliance"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "brokerage": {
+                                                    "type": "string"
+                                                },
+                                                "scope": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "brokerage",
+                                                        "team"
+                                                    ]
+                                                },
+                                                "team": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "counts": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "agents": {
+                                                            "type": "integer"
+                                                        },
+                                                        "due": {
+                                                            "type": "integer"
+                                                        },
+                                                        "done": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "agents",
+                                                        "due",
+                                                        "done"
+                                                    ]
+                                                },
+                                                "rows": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "team": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "licence": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "status": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "done",
+                                                                    "on_track",
+                                                                    "due",
+                                                                    "behind",
+                                                                    "overdue",
+                                                                    "no_licence"
+                                                                ]
+                                                            },
+                                                            "due_on": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "days_left": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "hours_required": {
+                                                                "type": "number"
+                                                            },
+                                                            "hours_done": {
+                                                                "type": "number"
+                                                            },
+                                                            "hours_left": {
+                                                                "type": "number"
+                                                            },
+                                                            "sae": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "reminded_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "assignments": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "course": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "due_on": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "done": {
+                                                                            "type": "boolean"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "course",
+                                                                        "due_on",
+                                                                        "done"
+                                                                    ]
+                                                                }
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "name",
+                                                            "team",
+                                                            "licence",
+                                                            "status",
+                                                            "due_on",
+                                                            "days_left",
+                                                            "hours_required",
+                                                            "hours_done",
+                                                            "hours_left",
+                                                            "sae",
+                                                            "reminded_at",
+                                                            "assignments"
+                                                        ]
+                                                    }
+                                                },
+                                                "courses": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "type": {
+                                                                "type": "string"
+                                                            },
+                                                            "hours": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "title",
+                                                            "type",
+                                                            "hours"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "brokerage",
+                                                "scope",
+                                                "team",
+                                                "counts",
+                                                "rows",
+                                                "courses"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/organisation/ce/remind": {
+            "post": {
+                "operationId": "brokerage.ce.remind",
+                "description": "One action: agents due, behind or overdue who weren't reminded in the last 7 days get a reminder from the broker.",
+                "summary": "Remind all due agents",
+                "tags": [
+                    "CeCompliance"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "sent": {
+                                                    "type": "integer"
+                                                },
+                                                "skipped": {
+                                                    "type": "integer"
+                                                },
+                                                "table": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "brokerage": {
+                                                            "type": "string"
+                                                        },
+                                                        "scope": {
+                                                            "type": "string",
+                                                            "enum": [
+                                                                "brokerage",
+                                                                "team"
+                                                            ]
+                                                        },
+                                                        "team": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "counts": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "agents": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "due": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "done": {
+                                                                    "type": "integer"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "agents",
+                                                                "due",
+                                                                "done"
+                                                            ]
+                                                        },
+                                                        "rows": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "team": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "licence": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "status": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "done",
+                                                                            "on_track",
+                                                                            "due",
+                                                                            "behind",
+                                                                            "overdue",
+                                                                            "no_licence"
+                                                                        ]
+                                                                    },
+                                                                    "due_on": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "days_left": {
+                                                                        "type": [
+                                                                            "integer",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "hours_required": {
+                                                                        "type": "number"
+                                                                    },
+                                                                    "hours_done": {
+                                                                        "type": "number"
+                                                                    },
+                                                                    "hours_left": {
+                                                                        "type": "number"
+                                                                    },
+                                                                    "sae": {
+                                                                        "type": "boolean"
+                                                                    },
+                                                                    "reminded_at": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "assignments": {
+                                                                        "type": "array",
+                                                                        "items": {
+                                                                            "type": "object",
+                                                                            "properties": {
+                                                                                "course": {
+                                                                                    "type": "string"
+                                                                                },
+                                                                                "due_on": {
+                                                                                    "type": [
+                                                                                        "string",
+                                                                                        "null"
+                                                                                    ]
+                                                                                },
+                                                                                "done": {
+                                                                                    "type": "boolean"
+                                                                                }
+                                                                            },
+                                                                            "required": [
+                                                                                "course",
+                                                                                "due_on",
+                                                                                "done"
+                                                                            ]
+                                                                        }
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "name",
+                                                                    "team",
+                                                                    "licence",
+                                                                    "status",
+                                                                    "due_on",
+                                                                    "days_left",
+                                                                    "hours_required",
+                                                                    "hours_done",
+                                                                    "hours_left",
+                                                                    "sae",
+                                                                    "reminded_at",
+                                                                    "assignments"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "courses": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "title": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "type": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "hours": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "title",
+                                                                    "type",
+                                                                    "hours"
+                                                                ]
+                                                            }
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "brokerage",
+                                                        "scope",
+                                                        "team",
+                                                        "counts",
+                                                        "rows",
+                                                        "courses"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "sent",
+                                                "skipped",
+                                                "table"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/organisation/ce/assign": {
+            "post": {
+                "operationId": "brokerage.ce.assign",
+                "description": "A live CE, qualifying or elective course for some agents or everyone due, with an optional due date.",
+                "summary": "Assign a course",
+                "tags": [
+                    "CeCompliance"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AssignCourseRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "assigned": {
+                                                    "type": "integer"
+                                                },
+                                                "table": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "brokerage": {
+                                                            "type": "string"
+                                                        },
+                                                        "scope": {
+                                                            "type": "string",
+                                                            "enum": [
+                                                                "brokerage",
+                                                                "team"
+                                                            ]
+                                                        },
+                                                        "team": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "counts": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "agents": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "due": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "done": {
+                                                                    "type": "integer"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "agents",
+                                                                "due",
+                                                                "done"
+                                                            ]
+                                                        },
+                                                        "rows": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "team": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "licence": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "status": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "done",
+                                                                            "on_track",
+                                                                            "due",
+                                                                            "behind",
+                                                                            "overdue",
+                                                                            "no_licence"
+                                                                        ]
+                                                                    },
+                                                                    "due_on": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "days_left": {
+                                                                        "type": [
+                                                                            "integer",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "hours_required": {
+                                                                        "type": "number"
+                                                                    },
+                                                                    "hours_done": {
+                                                                        "type": "number"
+                                                                    },
+                                                                    "hours_left": {
+                                                                        "type": "number"
+                                                                    },
+                                                                    "sae": {
+                                                                        "type": "boolean"
+                                                                    },
+                                                                    "reminded_at": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "assignments": {
+                                                                        "type": "array",
+                                                                        "items": {
+                                                                            "type": "object",
+                                                                            "properties": {
+                                                                                "course": {
+                                                                                    "type": "string"
+                                                                                },
+                                                                                "due_on": {
+                                                                                    "type": [
+                                                                                        "string",
+                                                                                        "null"
+                                                                                    ]
+                                                                                },
+                                                                                "done": {
+                                                                                    "type": "boolean"
+                                                                                }
+                                                                            },
+                                                                            "required": [
+                                                                                "course",
+                                                                                "due_on",
+                                                                                "done"
+                                                                            ]
+                                                                        }
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "name",
+                                                                    "team",
+                                                                    "licence",
+                                                                    "status",
+                                                                    "due_on",
+                                                                    "days_left",
+                                                                    "hours_required",
+                                                                    "hours_done",
+                                                                    "hours_left",
+                                                                    "sae",
+                                                                    "reminded_at",
+                                                                    "assignments"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "courses": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "title": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "type": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "hours": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "title",
+                                                                    "type",
+                                                                    "hours"
+                                                                ]
+                                                            }
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "brokerage",
+                                                        "scope",
+                                                        "team",
+                                                        "counts",
+                                                        "rows",
+                                                        "courses"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "assigned",
+                                                "table"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/organisation/sponsorships": {
+            "get": {
+                "operationId": "brokerage.sponsorships",
+                "description": "Joins and releases with their TREC confirmation, the agents who can be released, and who can take a handover.",
+                "summary": "Sponsorships",
+                "tags": [
+                    "CeCompliance"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "brokerage": {
+                                                    "type": "string"
+                                                },
+                                                "trec_number": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "changes": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "kind": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "join",
+                                                                    "release"
+                                                                ]
+                                                            },
+                                                            "agent": {
+                                                                "type": "string"
+                                                            },
+                                                            "agent_id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "effective_on": {
+                                                                "type": "string"
+                                                            },
+                                                            "handover_to": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "deals": {
+                                                                "type": "integer"
+                                                            },
+                                                            "status": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "recorded",
+                                                                    "done",
+                                                                    "confirmed"
+                                                                ]
+                                                            },
+                                                            "confirmed_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "kind",
+                                                            "agent",
+                                                            "agent_id",
+                                                            "effective_on",
+                                                            "handover_to",
+                                                            "deals",
+                                                            "status",
+                                                            "confirmed_at"
+                                                        ]
+                                                    }
+                                                },
+                                                "agents": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "open_deals": {
+                                                                "type": "integer"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "name",
+                                                            "open_deals"
+                                                        ]
+                                                    }
+                                                },
+                                                "handover": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "name"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "brokerage",
+                                                "trec_number",
+                                                "changes",
+                                                "agents",
+                                                "handover"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/organisation/sponsorships/release": {
+            "post": {
+                "operationId": "brokerage.sponsorships.release",
+                "description": "On a date up to 30 days ahead, handing their open deals to another agent or broker of the brokerage. Their role ends on the date; TREC's file confirms it later.",
+                "summary": "Release an agent",
+                "tags": [
+                    "CeCompliance"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ReleaseRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "brokerage": {
+                                                    "type": "string"
+                                                },
+                                                "trec_number": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "changes": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "kind": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "join",
+                                                                    "release"
+                                                                ]
+                                                            },
+                                                            "agent": {
+                                                                "type": "string"
+                                                            },
+                                                            "agent_id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "effective_on": {
+                                                                "type": "string"
+                                                            },
+                                                            "handover_to": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "deals": {
+                                                                "type": "integer"
+                                                            },
+                                                            "status": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "recorded",
+                                                                    "done",
+                                                                    "confirmed"
+                                                                ]
+                                                            },
+                                                            "confirmed_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "kind",
+                                                            "agent",
+                                                            "agent_id",
+                                                            "effective_on",
+                                                            "handover_to",
+                                                            "deals",
+                                                            "status",
+                                                            "confirmed_at"
+                                                        ]
+                                                    }
+                                                },
+                                                "agents": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "open_deals": {
+                                                                "type": "integer"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "name",
+                                                            "open_deals"
+                                                        ]
+                                                    }
+                                                },
+                                                "handover": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "name"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "brokerage",
+                                                "trec_number",
+                                                "changes",
+                                                "agents",
+                                                "handover"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
         "/me/ce": {
             "get": {
                 "operationId": "me.ce.index",
@@ -71881,6 +72941,37 @@
                 },
                 "title": "AskRequest"
             },
+            "AssignCourseRequest": {
+                "type": "object",
+                "description": "Assign a course to agents, or to everyone due (A16.2).",
+                "properties": {
+                    "course_id": {
+                        "type": "integer"
+                    },
+                    "agents": {
+                        "type": "array",
+                        "description": "Agents' ids; leave out with `due: true` for everyone due.",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "maxItems": 500
+                    },
+                    "due": {
+                        "type": "boolean"
+                    },
+                    "due_on": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "course_id"
+                ],
+                "title": "AssignCourseRequest"
+            },
             "AssistantQuestionRequest": {
                 "type": "object",
                 "description": "A question to the assistant (A12.3; screen 60), in a new chat or one of mine.",
@@ -75810,6 +76901,31 @@
                     "kind"
                 ],
                 "title": "ReferralRequest"
+            },
+            "ReleaseRequest": {
+                "type": "object",
+                "description": "Release an agent's sponsorship (A16.2): the date, and who takes their open deals.",
+                "properties": {
+                    "agent_id": {
+                        "type": "integer"
+                    },
+                    "effective_on": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "handover_to": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "description": "The agent or broker who takes the open deals; needed when there are any."
+                    }
+                },
+                "required": [
+                    "agent_id",
+                    "effective_on"
+                ],
+                "title": "ReleaseRequest"
             },
             "RenewalRequest": {
                 "type": "object",

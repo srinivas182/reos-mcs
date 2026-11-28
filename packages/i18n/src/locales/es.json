@@ -102,7 +102,8 @@
     "approvals": "Aprobaciones",
     "providerJoin": "Inscripción",
     "serviceProviders": "Proveedores de servicios",
-    "oversight": "Agentes y operaciones"
+    "oversight": "Agentes y operaciones",
+    "ceCompliance": "Cumplimiento de educación continua"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -2372,7 +2373,11 @@
         "provider.profile_published": "Se publicó el perfil del proveedor",
         "provider.profile_blocked": "Se retuvo el perfil del proveedor por la redacción",
         "oversight.settings": "Se cambió cuándo se señala a los agentes",
-        "oversight.profile_viewed": "Se vio el resumen de un agente"
+        "oversight.profile_viewed": "Se vio el resumen de un agente",
+        "ce.reminded": "Se recordó la educación continua a los agentes",
+        "ce.course_assigned": "Se asignó un curso",
+        "sponsorship.released": "Se liberó a un agente",
+        "sponsorship.confirmed": "TREC confirmó el patrocinio"
       }
     }
   },
@@ -5693,7 +5698,9 @@
       "new_lead": "Nuevos clientes potenciales",
       "referral": "Referencias",
       "invite_reward": "Premios por invitaciones",
-      "approval_overdue": "Aprobaciones que esperan demasiado"
+      "approval_overdue": "Aprobaciones que esperan demasiado",
+      "course_assigned": "Cursos que asigna su correduría",
+      "sponsorship": "Cambios de patrocinio"
     },
     "digest": {
       "subject": {
@@ -11302,6 +11309,105 @@
         "none": "Usted no está en una correduría."
       },
       "onTrack": "Van bien"
+    },
+    "ce": {
+      "title": "Cumplimiento de educación continua",
+      "purpose": "La renovación, las horas pendientes y el SAE de cada agente, según las reglas y los registros de TREC.",
+      "teamPurpose": "Renovaciones, horas pendientes y SAE de {{team}}.",
+      "counts": "{{due}} de {{agents}} agentes con renovación próxima · {{done}} completos",
+      "remindAll": "Recordar a todos los agentes con renovación próxima",
+      "reminded": "Se envió un recordatorio a {{count}} agentes.",
+      "remindedNone": "No hay a quién recordar: a todos ya se les recordó esta semana.",
+      "skipped_one": "A {{count}} ya se le recordó esta semana.",
+      "skipped_other": "A {{count}} ya se les recordó esta semana.",
+      "statuses": {
+        "done": "Completo",
+        "on_track": "Al día",
+        "due": "Vence pronto",
+        "behind": "Atrasado",
+        "overdue": "Vencido",
+        "no_licence": "Sin licencia de Texas"
+      },
+      "columns": {
+        "agent": "Agente",
+        "status": "Estado",
+        "renewal": "Renovación",
+        "hours": "Horas",
+        "assigned": "Asignados",
+        "reminded": "Recordatorio"
+      },
+      "hours": "Faltan {{left}} de {{required}}",
+      "sae": "SAE",
+      "never": "Aún no",
+      "emptyTitle": "Aún no hay agentes",
+      "empty": "Los agentes aparecen aquí cuando se unen a su correduría.",
+      "assign": {
+        "title": "Asignar un curso",
+        "course": "Curso",
+        "who": "A quién",
+        "due": "Todos con renovación próxima",
+        "selected": "Los agentes que elija",
+        "pick": "Elegir agentes",
+        "dueOn": "Fecha límite (opcional)",
+        "submit": "Asignar",
+        "assigned_one": "Asignado a {{count}} agente.",
+        "assigned_other": "Asignado a {{count}} agentes.",
+        "noCourses": "Aún no hay cursos publicados para asignar.",
+        "notifyTitle": "Nuevo curso de su correduría: {{course}}",
+        "notifyBody": "{{brokerage}} se lo asignó.",
+        "notifyDue": "{{brokerage}} se lo asignó, con fecha límite el {{date}}.",
+        "open": "Abrir el curso",
+        "done": "Completado",
+        "errors": {
+          "course": "Elija un curso publicado.",
+          "agents": "Elija al menos un agente."
+        }
+      },
+      "notify": {
+        "title": "{{broker}} le recordó su educación continua",
+        "body": "Le faltan {{hours}} horas antes de su renovación del {{date}}.",
+        "sae": "Le faltan {{hours}} horas de SAE antes de su primera renovación del {{date}}. El SAE no se puede aplazar."
+      }
+    },
+    "sponsorship": {
+      "title": "Patrocinio",
+      "purpose": "Agentes que entran y salen de su correduría, confirmados con los registros de TREC.",
+      "kinds": {
+        "join": "Se unió",
+        "release": "Liberado"
+      },
+      "statuses": {
+        "recorded": "Esperando la fecha",
+        "done": "Esperando a TREC",
+        "confirmed": "Confirmado por TREC"
+      },
+      "joinWaiting": "Esperando a TREC",
+      "release": "Liberar a un agente",
+      "agent": "Agente",
+      "date": "Fecha de liberación",
+      "handover": "Entregar las operaciones abiertas a",
+      "openDeals_one": "{{count}} operación abierta",
+      "openDeals_other": "{{count}} operaciones abiertas",
+      "noDeals": "Sin operaciones abiertas",
+      "submit": "Liberar",
+      "released": "{{agent}} queda liberado el {{date}}.",
+      "row": "{{kind}} · {{agent}} · {{date}}",
+      "handedOver_one": "{{count}} operación a {{to}}",
+      "handedOver_other": "{{count}} operaciones a {{to}}",
+      "emptyTitle": "Aún no hay cambios",
+      "empty": "Aquí aparecen las incorporaciones y liberaciones.",
+      "noTrec": "Agregue la licencia de correduría de TREC para confirmar los cambios con los registros de TREC.",
+      "errors": {
+        "date": "Elija una fecha desde hoy hasta {{days}} días después.",
+        "handover": "Elija quién recibe las {{count}} operaciones abiertas.",
+        "already": "La liberación de este agente ya está registrada."
+      },
+      "notify": {
+        "releasedTitle": "{{brokerage}} va a liberar su patrocinio",
+        "releasedBody": "Su patrocinio termina el {{date}}. Su licencia, su educación continua y sus contactos se quedan con usted; las operaciones abiertas se quedan con la correduría.",
+        "handoverTitle": "Las operaciones abiertas de {{agent}} ahora son suyas",
+        "handoverBody": "Se le entregaron {{count}} operaciones abiertas. La liberación de {{agent}} es el {{date}}."
+      }
     }
   }
 }
