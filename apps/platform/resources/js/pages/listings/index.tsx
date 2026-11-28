@@ -9,6 +9,7 @@ import { PageCard } from '@/components/listings/page-card';
 import { PostDialog } from '@/components/listings/post-dialog';
 import { index as studio } from '@/routes/studio';
 import type {
+    CardDetails,
     ListingRow,
     ListingsOverview,
     MemberRow,
@@ -65,8 +66,12 @@ export default function ListingsPage({
             setError(e instanceof Error ? e.message : String(e));
         }
     };
-    const savePage = async (published: boolean, bio: string) => {
-        await putJson(pageUpdate().url, { published, bio });
+    const savePage = async (
+        published: boolean,
+        bio: string,
+        card: CardDetails,
+    ) => {
+        await putJson(pageUpdate().url, { published, bio, ...card });
         router.reload({ only: ['page'] });
         toast.success(t('listings.page.saved'));
     };

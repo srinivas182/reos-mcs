@@ -169,15 +169,19 @@ describe('the agent\'s public page (B10.2b)', function () {
             ->assertJsonPath('data.url', url('/agent/james-miller'));
         auth()->forgetGuards();
 
-        $this->get('/agent/james-miller')->assertOk()->assertInertia(fn (AssertableInertia $page) => $page->component('public/agent')
-            ->where('page.name', 'James Miller')->where('page.brokerage', 'Lone Star Realty')->where('page.bio', 'Katy homes, twelve years.')
-            ->where('page.licences.0.number', '0798765')->where('page.sample', true)
-            // Coming soon, active and pending; the sold one stays off (Texas: no public sold prices).
-            ->has('page.listings', 3)->where('page.listings.1.attribution', 'Listing courtesy of Lone Star Realty. Source: HAR MLS.'));
+        // Rendered on the server (B14.1): the page reads without JavaScript.
+        $html = $this->get('/agent/james-miller')->assertOk()
+            ->assertSee('<h1 class="text-3xl font-semibold">James Miller</h1>', false)
+            ->assertSee('Lone Star Realty')->assertSee('Katy homes, twelve years.')->assertSee('TX license #0798765')
+            // Sample data stays out of search engines.
+            ->assertSee('<meta name="robots" content="noindex">', false)
+            ->assertSee('Listing courtesy of Lone Star Realty. Source: HAR MLS.')->getContent();
+        // Coming soon, active and pending; the sold one stays off (Texas: no public sold prices).
+        expect(substr_count((string) $html, 'Listing courtesy of'))->toBe(3);
 
         // A stale feed shows no listings to the public.
         MlsFeed::query()->where('integration', 'mls-har')->update(['synced_at' => now()->subHours(13)]);
-        $this->get('/agent/james-miller')->assertInertia(fn (AssertableInertia $page) => $page->has('page.listings', 0));
+        $this->get('/agent/james-miller')->assertSee(__('listings.public.noListings'))->assertDontSee('Listing courtesy of');
     });
 
     it('gets its own address when the name is taken, and is for agents only', function () {

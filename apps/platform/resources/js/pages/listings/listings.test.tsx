@@ -30,6 +30,12 @@ const page = {
     url: 'https://reos.com/agent/james-miller',
     waiting: false,
     note: null,
+    phone: null,
+    email: null,
+    areas: [],
+    card_url: 'https://reos.com/agent/james-miller/card',
+    vcard_url: 'https://reos.com/agent/james-miller/contact.vcf',
+    qr_url: 'https://reos.com/agent/james-miller/qr.svg',
 };
 const render = (ui: ReactElement) =>
     baseRender(<I18nextProvider i18n={i18n}>{ui}</I18nextProvider>);

@@ -6,7 +6,6 @@ import type {
     MemberRow,
     PageSettings,
     PostDraft,
-    PublicAgentPage,
 } from './types';
 
 /** James Miller at HAR (journey cast), on the Simulator. */
@@ -195,21 +194,11 @@ export const pageSettings = (
     url: 'https://reos.com/agent/james-miller',
     waiting: false,
     note: null,
+    phone: '(832) 555-0142',
+    email: 'james@lonestar.example',
+    areas: ['Katy', 'Cinco Ranch'],
+    card_url: 'https://reos.com/agent/james-miller/card',
+    vcard_url: 'https://reos.com/agent/james-miller/contact.vcf',
+    qr_url: 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 10 10%22%3E%3Crect width=%2210%22 height=%2210%22 fill=%22%23fff%22/%3E%3C/svg%3E',
     ...overrides,
 });
-
-export function publicPage(
-    overrides: Partial<PublicAgentPage> = {},
-): PublicAgentPage {
-    return {
-        name: 'James Miller',
-        brokerage: 'Lone Star Realty',
-        licences: [{ state: 'TX', number: '0798765', type: 'sales_agent' }],
-        peer_rating: null,
-        bio: 'Katy homes, twelve years.',
-        listings: [view()],
-        sample: true,
-        url: 'https://reos.com/agent/james-miller',
-        ...overrides,
-    };
-}

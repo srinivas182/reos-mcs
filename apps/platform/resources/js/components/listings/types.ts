@@ -106,17 +106,18 @@ export type PageSettings = {
     /** Waiting for the broker, and what the broker said when sending it back (B13.2). */
     waiting: boolean;
     note: string | null;
+    /** The digital card (B14.1): only what the agent adds shows. */
+    phone: string | null;
+    email: string | null;
+    areas: string[];
+    card_url: string;
+    vcard_url: string;
+    qr_url: string;
 };
 
-/** What the public sees at /agent/{handle}. */
-export type PublicAgentPage = {
-    name: string;
-    brokerage: string | null;
-    licences: { state: string; number: string; type: string }[];
-    bio: string | null;
-    /** Feedback from agents, shown only if the agent chose it (A13.3b). */
-    peer_rating: { average: number; count: number } | null;
-    listings: ListingView[];
-    sample: boolean;
-    url: string;
+/** The card's details the agent chooses to show (B14.1). */
+export type CardDetails = {
+    phone: string | null;
+    email: string | null;
+    areas: string[];
 };
