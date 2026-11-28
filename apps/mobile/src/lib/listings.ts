@@ -89,11 +89,19 @@ export async function loadPage(): Promise<PageSettings | null> {
   return data?.data ?? null;
 }
 
-export async function savePage(published: boolean, bio: string | null): Promise<PageSettings> {
-  const { data, error } = await api().PUT('/listings/page', { body: { published, bio } });
+/** The card's details the agent chooses to show (B14.1). */
+export type CardDetails = { phone: string | null; email: string | null; areas: string[] };
+
+export async function savePage(published: boolean, bio: string | null, card?: CardDetails): Promise<PageSettings> {
+  const { data, error } = await api().PUT('/listings/page', { body: { published, bio, ...card } });
 
   return data ? data.data : fail(error);
 }
 
 export const dollarsOf = (value: number | null, language: string): string =>
   value === null ? '—' : new Intl.NumberFormat(language, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(value);
+
+/** "Katy, Cinco Ranch" typed in one field: up to six areas, no blanks or repeats. */
+export function areasFrom(text: string): string[] {
+  return [...new Set(text.split(',').map((a) => a.trim()).filter((a) => a !== ''))].slice(0, 6);
+}

@@ -34,8 +34,8 @@ use Illuminate\Validation\ValidationException;
  *
  * @phpstan-import-type ListingView from ListingService
  *
- * @phpstan-type PageSettings array{handle: string, published: bool, bio: string|null, url: string, waiting: bool, note: string|null}
- * @phpstan-type PublicPage array{name: string, brokerage: string|null, licences: list<array{state: string, number: string, type: string}>, bio: string|null, peer_rating: array{average: float, count: int}|null, listings: list<ListingView>, sample: bool, url: string}
+ * @phpstan-type PageSettings array{handle: string, published: bool, bio: string|null, url: string, waiting: bool, note: string|null, phone: string|null, email: string|null, areas: list<string>, card_url: string, vcard_url: string, qr_url: string}
+ * @phpstan-type PublicPage array{handle: string, name: string, brokerage: string|null, licences: list<array{state: string, number: string, type: string}>, bio: string|null, peer_rating: array{average: float, count: int}|null, listings: list<ListingView>, sample: bool, url: string, phone: string|null, email: string|null, areas: list<string>, language: 'en'|'es', updated_at: string|null}
  */
 final readonly class AgentPages
 {
@@ -64,8 +64,11 @@ final readonly class AgentPages
         return $this->settingsOf($this->page($user));
     }
 
-    /** @return PageSettings */
-    public function update(User $user, bool $published, ?string $bio): array
+    /**
+     * @param  array{phone?: string|null, email?: string|null, areas?: list<string>}  $card  the card's details (B14.1), when sent
+     * @return PageSettings
+     */
+    public function update(User $user, bool $published, ?string $bio, array $card = []): array
     {
         $this->access->allow($user);
         $page = $this->page($user);
@@ -91,6 +94,17 @@ final readonly class AgentPages
         // Brokerage rules on every channel (B13.2): when the brokerage approves its agents' ads, the page
         // waits for the broker before it goes live; an unchanged live page stays live.
         $waits = $published && $this->policy->needsApproval($user) && ! ($page->published && $page->bio === $bio);
+
+        // The card's details (B14.1): what the agent chose to show; nothing taken from the account.
+        foreach (['phone', 'email'] as $key) {
+            if (array_key_exists($key, $card)) {
+                $page->{$key} = $card[$key];
+            }
+        }
+
+        if (array_key_exists('areas', $card)) {
+            $page->areas = $card['areas'] === [] ? null : $card['areas'];
+        }
 
         $page->fill(['published' => $published && ! $waits, 'bio' => $bio])->forceFill([
             'approval_requested_at' => $waits ? now() : ($published ? null : $page->approval_requested_at),
@@ -165,6 +179,7 @@ final readonly class AgentPages
         }
 
         return [
+            'handle' => $page->handle,
             'name' => (string) $user->name,
             // The broker's name on every page (22 TAC §535.155): the MLS office, else the agent's brokerage.
             'brokerage' => is_string($brokerage) ? $brokerage : $this->compliance->brokerName($user),
@@ -175,6 +190,12 @@ final readonly class AgentPages
             'listings' => $listings,
             'sample' => array_any($listings, static fn (array $l): bool => $l['sample']),
             'url' => route('agent-pages.show', $page->handle),
+            'phone' => $page->phone,
+            'email' => $page->email,
+            // The areas the agent named, else the cities of their listings.
+            'areas' => $page->areas ?? array_slice(array_values(array_unique(array_filter(array_map(static fn (array $l): string => (string) $l['city'], $listings)))), 0, 6),
+            'language' => $user->locale->value === 'es' ? 'es' : 'en',
+            'updated_at' => $page->updated_at?->toIso8601String(),
         ];
     }
 
@@ -207,6 +228,11 @@ final readonly class AgentPages
             'handle' => $page->handle, 'published' => $page->published, 'bio' => $page->bio, 'url' => route('agent-pages.show', $page->handle),
             // Waiting for the broker, and what the broker said when sending it back (B13.2).
             'waiting' => $page->approval_requested_at !== null, 'note' => $page->approval_note,
+            // The digital card (B14.1).
+            'phone' => $page->phone, 'email' => $page->email, 'areas' => $page->areas ?? [],
+            'card_url' => route('agent-pages.card', $page->handle),
+            'vcard_url' => route('agent-pages.vcard', $page->handle),
+            'qr_url' => route('agent-pages.qr', $page->handle),
         ];
     }
 }

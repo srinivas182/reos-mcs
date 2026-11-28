@@ -36,7 +36,7 @@ final class CmaController extends Controller
      *
      * Whether it's published, its address, and my short bio.
      *
-     * @response array{data: array{handle: string, published: bool, bio: string|null, url: string, waiting: bool, note: string|null}}
+     * @response array{data: array{handle: string, published: bool, bio: string|null, url: string, waiting: bool, note: string|null, phone: string|null, email: string|null, areas: list<string>, card_url: string, vcard_url: string, qr_url: string}}
      */
     public function page(#[CurrentUser] User $user, AgentPages $pages): JsonResponse
     {
@@ -46,12 +46,12 @@ final class CmaController extends Controller
     /**
      * Publish or hide my public page.
      *
-     * It shows my name, brokerage, license numbers, bio and MLS listings, as each MLS allows.
+     * It shows my name, brokerage, license numbers, bio and MLS listings, as each MLS allows. The phone, email and areas (B14.1) show on the page and my digital card only when I add them.
      *
-     * @response array{data: array{handle: string, published: bool, bio: string|null, url: string, waiting: bool, note: string|null}}
+     * @response array{data: array{handle: string, published: bool, bio: string|null, url: string, waiting: bool, note: string|null, phone: string|null, email: string|null, areas: list<string>, card_url: string, vcard_url: string, qr_url: string}}
      */
     public function updatePage(AgentPageRequest $request, #[CurrentUser] User $user, AgentPages $pages): JsonResponse
     {
-        return response()->json(['data' => $pages->update($user, $request->boolean('published'), $request->bio())]);
+        return response()->json(['data' => $pages->update($user, $request->boolean('published'), $request->bio(), $request->card())]);
     }
 }

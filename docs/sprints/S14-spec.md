@@ -164,6 +164,25 @@
 - **Digital card:** name, photo, license, broker, contact buttons, vCard download, QR code, share link.
 - **Public page:** server-rendered, schema.org (RealEstateAgent), FAQs, sitemap, fast images; TREC notices.
 - **Done when:** the page scores 90+ on Lighthouse.
+- **As built, B14.1** (ADR 0064):
+  - **Data:** `agent_pages.phone`, `email` and `areas`, opt-in.
+  - **Services:**
+    - `AgentPages::update` takes the card details; its settings return `card_url`, `vcard_url` and `qr_url`; `public()` returns the handle, contact details, areas (or listing cities), language and `updated_at`.
+    - `App\Mls\AgentCards` covers the vCard 3.0, the QR SVG, the FAQs and the schema.org data (RealEstateAgent and FAQPage).
+  - **Routes:**
+    - Public: `/agent/{handle}` (Blade), `/agent/{handle}/card`, `/agent/{handle}/contact.vcf` and `/agent/{handle}/qr.svg`, at 60 requests a minute.
+    - Search engines: `/sitemap.xml` and `/robots.txt`.
+    - API: `PUT /api/v1/listings/page` takes `phone`, `email` and `areas`.
+  - **Views:** `layouts/public`, `public/agent`, `public/card` and `public/sitemap`. The React `public/agent` page and its type are removed.
+  - **Web:** the page settings card has Phone, Email and Areas, plus a "Your digital card" block (QR, Open my card, Download contact file, link).
+  - **Phone:** the listings page card has a "Your digital card" button that opens `card.tsx`: the QR, share, open, and the contact fields.
+  - **Done when:** Lighthouse (mobile, run locally) scores 99, 100, 100 and 100 on the page and the card. Pest checks:
+    - the server HTML: title, description, canonical, `lang`, no app script, the JSON-LD and the FAQs;
+    - opt-in contact details, and validation;
+    - the vCard, the QR and the card;
+    - Spanish;
+    - the sitemap and robots;
+    - and the updated public page tests.
 
 ### B14.2 Client portal (Team B)
 

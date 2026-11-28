@@ -2,10 +2,9 @@ import { render as baseRender, screen } from '@testing-library/react';
 import type { ReactElement } from 'react';
 import { I18nextProvider } from 'react-i18next';
 import { describe, expect, it, vi } from 'vitest';
-import { cma, publicPage } from '@/components/listings/fixtures';
+import { cma } from '@/components/listings/fixtures';
 import { i18n } from '@/lib/i18n';
 import CmaPage from '@/pages/listings/cma';
-import AgentPublicPage from '@/pages/public/agent';
 
 const router = vi.hoisted(() => ({
     visit: vi.fn(),
@@ -64,48 +63,6 @@ describe('CMA (B10.2b)', () => {
 
         expect(
             screen.getByText('No comparables in this area'),
-        ).toBeInTheDocument();
-    });
-});
-
-describe('the public agent page (B10.2b)', () => {
-    it("shows the agent, their listings with attribution and TREC's notices", () => {
-        render(<AgentPublicPage page={publicPage()} />);
-
-        expect(
-            screen.getByRole('heading', { level: 1, name: 'James Miller' }),
-        ).toBeInTheDocument();
-        expect(screen.getByText('TX license #0798765')).toBeInTheDocument();
-        expect(
-            screen.getByText(
-                'Listing courtesy of Lone Star Realty. Source: HAR MLS.',
-            ),
-        ).toBeInTheDocument();
-        expect(screen.queryByText(/Listing agent/)).not.toBeInTheDocument();
-        expect(
-            screen.getByRole('link', {
-                name: 'TREC Consumer Protection Notice',
-            }),
-        ).toHaveAttribute(
-            'href',
-            'https://www.trec.texas.gov/forms/consumer-protection-notice',
-        );
-        expect(
-            screen.getByRole('link', {
-                name: 'Texas Real Estate Commission Information About Brokerage Services',
-            }),
-        ).toBeInTheDocument();
-    });
-
-    it('says when there is nothing to show', () => {
-        render(
-            <AgentPublicPage
-                page={publicPage({ listings: [], sample: false })}
-            />,
-        );
-
-        expect(
-            screen.getByText('No listings to show right now.'),
         ).toBeInTheDocument();
     });
 });

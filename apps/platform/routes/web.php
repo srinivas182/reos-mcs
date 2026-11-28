@@ -76,6 +76,7 @@ use App\Http\Controllers\Licence\LicenceJourneyPageController;
 use App\Http\Controllers\Licence\PassesAndOffersPageController;
 use App\Http\Controllers\Listings\AgentPublicPageController;
 use App\Http\Controllers\Listings\ListingsPageController;
+use App\Http\Controllers\Listings\SitemapController;
 use App\Http\Controllers\Mentoring\ChallengesController;
 use App\Http\Controllers\Mentoring\MentorProgramController;
 use App\Http\Controllers\Mentoring\MentorWorkspacePageController;
@@ -148,6 +149,14 @@ Route::get('groups/{group}', [ChallengePageController::class, 'group'])->whereUu
 Route::get('challenges/{challenge}', [ChallengePageController::class, 'show'])->whereUuid('challenge')->middleware('throttle:60,1,challenges')->name('challenges.show');
 // An agent's public page (B10.2b): their MLS listings with each MLS's rules applied.
 Route::get('agent/{handle}', [AgentPublicPageController::class, 'show'])->where('handle', '(?!(?:setup|mode|plan|brief)$)[a-z0-9-]{1,80}')->middleware('throttle:60,1,agent-pages')->name('agent-pages.show');
+// The digital card (B14.1): the card page, the contact file and the QR code.
+Route::middleware('throttle:60,1,agent-pages')->group(function () {
+    Route::get('agent/{handle}/card', [AgentPublicPageController::class, 'card'])->where('handle', '[a-z0-9-]{1,80}')->name('agent-pages.card');
+    Route::get('agent/{handle}/contact.vcf', [AgentPublicPageController::class, 'vcard'])->where('handle', '[a-z0-9-]{1,80}')->name('agent-pages.vcard');
+    Route::get('agent/{handle}/qr.svg', [AgentPublicPageController::class, 'qr'])->where('handle', '[a-z0-9-]{1,80}')->name('agent-pages.qr');
+});
+Route::get('sitemap.xml', [SitemapController::class, 'sitemap'])->middleware('throttle:30,1,sitemap')->name('sitemap');
+Route::get('robots.txt', [SitemapController::class, 'robots'])->middleware('throttle:30,1,sitemap')->name('robots');
 Route::get('reports/{share}', [SharedReportController::class, 'show'])->whereUuid('share')->middleware('throttle:60,1,shared-reports')->name('reports.shared');
 Route::get('terms', [LegalController::class, 'terms'])->name('legal.terms');
 Route::get('privacy', [LegalController::class, 'privacy'])->name('legal.privacy');

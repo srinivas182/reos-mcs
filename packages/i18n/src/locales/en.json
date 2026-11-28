@@ -8512,7 +8512,17 @@
       "saved": "Page saved",
       "view": "View page",
       "copy": "Copy link",
-      "link": "Your page's address"
+      "link": "Your page's address",
+      "phone": "Phone to show",
+      "email": "Email to show",
+      "contactHint": "Only what you add here shows on your page and card.",
+      "areas": "Areas you serve",
+      "areasHint": "Up to six, separated by commas. Left empty, your listings' cities are used.",
+      "cardTitle": "Your digital card",
+      "cardHint": "Share it, print the QR code, or let people save your contact.",
+      "openCard": "Open my card",
+      "downloadCard": "Download contact file",
+      "qrAlt": "QR code for your page"
     },
     "public": {
       "title": "{{name}}, real estate agent",
@@ -10316,6 +10326,43 @@
       "invited": "{{tenant}} invites you.",
       "team": "Team: {{team}}",
       "joinOnly": "Join {{tenant}}"
+    }
+  },
+  "cards": {
+    "skip": "Skip to the page",
+    "metaDescription": "{{name}} is a real estate agent{{brokerage}}{{areas}}. See listings, contact details and the TREC notices.",
+    "withBrokerage": " with {{brokerage}}",
+    "serving": " serving {{areas}}",
+    "title": "{{name}}'s card",
+    "vcardTitle": "Real estate sales agent",
+    "call": "Call",
+    "text": "Text",
+    "email": "Email",
+    "save": "Save contact",
+    "open": "Digital card",
+    "viewPage": "See my page and listings",
+    "photoOf": "Photo of {{address}}",
+    "beds": "{{count}} bd",
+    "baths": "{{count}} ba",
+    "area": "{{area}} sq ft",
+    "faqTitle": "Questions people ask",
+    "qrAlt": "QR code that opens {{name}}'s page",
+    "scan": "Scan to open my page.",
+    "iabsShort": "Information About Brokerage Services",
+    "cpnShort": "Consumer Protection Notice",
+    "faq": {
+      "whoQ": "Who is {{name}}?",
+      "whoA": "{{name}} is a real estate sales agent with {{brokerage}}.",
+      "whoLicensedA": "{{name}} is a licensed real estate sales agent ({{state}} license #{{number}}) with {{brokerage}}.",
+      "areasQ": "Which areas does {{name}} serve?",
+      "areasA": "{{name}} works with buyers and sellers in {{areas}}.",
+      "contactQ": "How do I contact {{name}}?",
+      "contactA": "You can reach {{name}} at {{contact}}.",
+      "contactPageA": "Use the contact buttons on this page, or save {{name}}'s contact card.",
+      "listingsQ": "Does {{name}} have homes for sale?",
+      "listingsA": "Yes. Listings on this page right now: {{count}}. Each shows the MLS that provided it.",
+      "noticesQ": "Where are the TREC notices?",
+      "noticesA": "Information About Brokerage Services: {{iabs}}. Consumer Protection Notice: {{cpn}}."
     }
   }
 }

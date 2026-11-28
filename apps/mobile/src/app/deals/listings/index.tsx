@@ -160,6 +160,8 @@ function PageCard() {
         <>
           <Text tone="muted">{page.url}</Text>
           <Button variant="secondary" icon={Share2} label={t('listings.post.share')} onPress={() => void Share.share({ message: page.url })} />
+          {/* The digital card (B14.1): contact details, QR code and sharing. */}
+          <Button variant="secondary" icon={IdCard} label={t('listings.page.cardTitle')} onPress={() => router.push('/card')} />
         </>
       ) : null}
     </Card>

@@ -15865,6 +15865,33 @@
                                                         "string",
                                                         "null"
                                                     ]
+                                                },
+                                                "phone": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "email": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "areas": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "card_url": {
+                                                    "type": "string"
+                                                },
+                                                "vcard_url": {
+                                                    "type": "string"
+                                                },
+                                                "qr_url": {
+                                                    "type": "string"
                                                 }
                                             },
                                             "required": [
@@ -15873,7 +15900,13 @@
                                                 "bio",
                                                 "url",
                                                 "waiting",
-                                                "note"
+                                                "note",
+                                                "phone",
+                                                "email",
+                                                "areas",
+                                                "card_url",
+                                                "vcard_url",
+                                                "qr_url"
                                             ]
                                         }
                                     },
@@ -15891,7 +15924,7 @@
             },
             "put": {
                 "operationId": "listings.page.update",
-                "description": "It shows my name, brokerage, license numbers, bio and MLS listings, as each MLS allows.",
+                "description": "It shows my name, brokerage, license numbers, bio and MLS listings, as each MLS allows. The phone, email and areas (B14.1) show on the page and my digital card only when I add them.",
                 "summary": "Publish or hide my public page",
                 "tags": [
                     "Cma"
@@ -15940,6 +15973,33 @@
                                                         "string",
                                                         "null"
                                                     ]
+                                                },
+                                                "phone": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "email": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "areas": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "card_url": {
+                                                    "type": "string"
+                                                },
+                                                "vcard_url": {
+                                                    "type": "string"
+                                                },
+                                                "qr_url": {
+                                                    "type": "string"
                                                 }
                                             },
                                             "required": [
@@ -15948,7 +16008,13 @@
                                                 "bio",
                                                 "url",
                                                 "waiting",
-                                                "note"
+                                                "note",
+                                                "phone",
+                                                "email",
+                                                "areas",
+                                                "card_url",
+                                                "vcard_url",
+                                                "qr_url"
                                             ]
                                         }
                                     },
@@ -59516,6 +59582,34 @@
                             "null"
                         ],
                         "maxLength": 600
+                    },
+                    "phone": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "The card (B14.1): only what the agent chooses to show.",
+                        "pattern": "^\\+?[0-9 ().-]{7,30}$"
+                    },
+                    "email": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "email",
+                        "maxLength": 120
+                    },
+                    "areas": {
+                        "type": [
+                            "array",
+                            "null"
+                        ],
+                        "items": {
+                            "type": "string",
+                            "minLength": 2,
+                            "maxLength": 60
+                        },
+                        "maxItems": 6
                     }
                 },
                 "required": [

@@ -8512,7 +8512,17 @@
       "saved": "Página guardada",
       "view": "Ver página",
       "copy": "Copiar enlace",
-      "link": "La dirección de su página"
+      "link": "La dirección de su página",
+      "phone": "Teléfono que se muestra",
+      "email": "Correo que se muestra",
+      "contactHint": "Solo lo que agregue aquí aparece en su página y su tarjeta.",
+      "areas": "Zonas donde trabaja",
+      "areasHint": "Hasta seis, separadas por comas. Si lo deja vacío, se usan las ciudades de sus propiedades.",
+      "cardTitle": "Su tarjeta digital",
+      "cardHint": "Compártala, imprima el código QR o deje que la gente guarde su contacto.",
+      "openCard": "Abrir mi tarjeta",
+      "downloadCard": "Descargar archivo de contacto",
+      "qrAlt": "Código QR de su página"
     },
     "public": {
       "title": "{{name}}, agente de bienes raíces",
@@ -10316,6 +10326,43 @@
       "invited": "{{tenant}} lo invita.",
       "team": "Equipo: {{team}}",
       "joinOnly": "Unirse a {{tenant}}"
+    }
+  },
+  "cards": {
+    "skip": "Ir a la página",
+    "metaDescription": "{{name}} es agente de bienes raíces{{brokerage}}{{areas}}. Vea propiedades, datos de contacto y los avisos de TREC.",
+    "withBrokerage": " en {{brokerage}}",
+    "serving": " en {{areas}}",
+    "title": "Tarjeta de {{name}}",
+    "vcardTitle": "Agente de ventas de bienes raíces",
+    "call": "Llamar",
+    "text": "Enviar mensaje",
+    "email": "Correo",
+    "save": "Guardar contacto",
+    "open": "Tarjeta digital",
+    "viewPage": "Ver mi página y propiedades",
+    "photoOf": "Foto de {{address}}",
+    "beds": "{{count}} rec.",
+    "baths": "{{count}} baños",
+    "area": "{{area}} pies²",
+    "faqTitle": "Preguntas frecuentes",
+    "qrAlt": "Código QR que abre la página de {{name}}",
+    "scan": "Escanee para abrir mi página.",
+    "iabsShort": "Información sobre servicios de corretaje",
+    "cpnShort": "Aviso de protección al consumidor",
+    "faq": {
+      "whoQ": "¿Quién es {{name}}?",
+      "whoA": "{{name}} es agente de ventas de bienes raíces en {{brokerage}}.",
+      "whoLicensedA": "{{name}} es agente de ventas de bienes raíces con licencia ({{state}}, licencia n.º {{number}}) en {{brokerage}}.",
+      "areasQ": "¿En qué zonas trabaja {{name}}?",
+      "areasA": "{{name}} trabaja con compradores y vendedores en {{areas}}.",
+      "contactQ": "¿Cómo me comunico con {{name}}?",
+      "contactA": "Puede comunicarse con {{name}} en {{contact}}.",
+      "contactPageA": "Use los botones de contacto de esta página o guarde la tarjeta de contacto de {{name}}.",
+      "listingsQ": "¿{{name}} tiene casas en venta?",
+      "listingsA": "Sí. Propiedades en esta página ahora: {{count}}. Cada una indica el MLS que la proporcionó.",
+      "noticesQ": "¿Dónde están los avisos de TREC?",
+      "noticesA": "Información sobre servicios de corretaje: {{iabs}}. Aviso de protección al consumidor: {{cpn}}."
     }
   }
 }

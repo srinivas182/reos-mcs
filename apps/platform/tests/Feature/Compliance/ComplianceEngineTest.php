@@ -91,7 +91,7 @@ describe('the compliance engine (B13.1)', function () {
     it('keeps the public page compliant before it is published', function () {
         $this->actingAs($this->james)->putJson('/api/v1/listings/page', ['published' => true, 'bio' => 'Katy homes, perfect for families.'])->assertUnprocessable()->assertJsonValidationErrors('bio');
         $this->putJson('/api/v1/listings/page', ['published' => true, 'bio' => 'Katy homes, twelve years.'])->assertOk()->assertJsonPath('data.published', true);
-        $this->get('/agent/james-miller')->assertOk()->assertInertia(fn ($page) => $page->where('page.brokerage', app(ComplianceEngine::class)->brokerName($this->james)));
+        $this->get('/agent/james-miller')->assertOk()->assertSee((string) app(ComplianceEngine::class)->brokerName($this->james));
 
         // An agent on a team with no brokerage and no sponsoring broker can't publish.
         $nobroker = User::factory()->withRole(Role::Agent, Organisation::factory()->create(['type' => OrganisationType::Team, 'name' => 'Bayou Home Group']))->create(['name' => 'Sam Lee']);

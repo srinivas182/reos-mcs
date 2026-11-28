@@ -96,11 +96,11 @@ describe('feedback from agents (A13.3b)', function () {
         }
 
         AgentPage::query()->create(['user_id' => $this->priya->id, 'handle' => 'priya-shah', 'published' => true]);
-        $this->get('/agent/priya-shah')->assertInertia(fn (Assert $page) => $page->where('page.peer_rating', null));
+        $this->get('/agent/priya-shah')->assertOk()->assertDontSee('agents they closed with');
 
         $this->actingAs($this->priya)->from('/feedback')->put('/feedback/visibility', ['public' => true])->assertRedirect('/feedback');
         expect(AgentProfile::query()->where('user_id', $this->priya->id)->value('feedback_public'))->toBeTrue();
-        $this->get('/agent/priya-shah')->assertInertia(fn (Assert $page) => $page->where('page.peer_rating.count', 4));
+        $this->get('/agent/priya-shah')->assertSee('from 4 agents they closed with');
 
         $rude = collect($this->getJson('/api/v1/feedback')->json('data.mine.items'))->firstWhere('comment', 'Rude.');
         $this->putJson("/api/v1/feedback/{$rude['id']}/response", ['response' => 'Sorry it felt that way. Happy to talk.'])->assertOk()

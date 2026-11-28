@@ -1492,7 +1492,7 @@ export interface paths {
         get: operations["listings.page"];
         /**
          * Publish or hide my public page
-         * @description It shows my name, brokerage, license numbers, bio and MLS listings, as each MLS allows.
+         * @description It shows my name, brokerage, license numbers, bio and MLS listings, as each MLS allows. The phone, email and areas (B14.1) show on the page and my digital card only when I add them.
          */
         put: operations["listings.page.update"];
         post?: never;
@@ -6212,6 +6212,11 @@ export interface components {
         AgentPageRequest: {
             published: boolean;
             bio?: string | null;
+            /** @description The card (B14.1): only what the agent chooses to show. */
+            phone?: string | null;
+            /** Format: email */
+            email?: string | null;
+            areas?: string[] | null;
         };
         /**
          * AnswerQuestionRequest
@@ -13210,6 +13215,12 @@ export interface operations {
                             url: string;
                             waiting: boolean;
                             note: string | null;
+                            phone: string | null;
+                            email: string | null;
+                            areas: string[];
+                            card_url: string;
+                            vcard_url: string;
+                            qr_url: string;
                         };
                     };
                 };
@@ -13243,6 +13254,12 @@ export interface operations {
                             url: string;
                             waiting: boolean;
                             note: string | null;
+                            phone: string | null;
+                            email: string | null;
+                            areas: string[];
+                            card_url: string;
+                            vcard_url: string;
+                            qr_url: string;
                         };
                     };
                 };
