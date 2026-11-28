@@ -2000,6 +2000,328 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/communities": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My communities */
+        get: operations["communities.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/community": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My community (the owner)
+         * @description Set up on first use, for Pro and Partner providers (422 `plan` otherwise). With the invite link and results.
+         */
+        get: operations["community.show"];
+        /** Rename or describe my community */
+        put: operations["community.update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/community/code": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * A new invite link and QR code
+         * @description The old link stops working.
+         */
+        post: operations["community.code"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/community/results": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Results (the owner) */
+        get: operations["community.results"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/community/resources": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Add a resource (the owner) */
+        post: operations["community.resources.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/community/resources/{resource}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Remove a resource (the owner) */
+        delete: operations["community.resources.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/community/sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Schedule an expert session (the owner)
+         * @description Members are told. Free on Pro; a price needs Partner (422 `price_cents`). A CE course number only when the session is approved for CE elsewhere; otherwise it's information only.
+         */
+        post: operations["community.sessions.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/community/sessions/{session}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Cancel a session (the owner) */
+        delete: operations["community.sessions.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/community/sessions/{session}/roster": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Who's going (the host) */
+        get: operations["community.sessions.roster"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/community/sessions/{session}/attendance": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Who came (the host)
+         * @description Marks the session done.
+         */
+        put: operations["community.sessions.attendance"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/communities/join/{code}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * An invite, before joining
+         * @description Whether the person can join: verified agents and providers only.
+         */
+        get: operations["communities.preview"];
+        put?: never;
+        /**
+         * Join by link or QR code
+         * @description 422 `code` for someone who isn't a verified agent or provider.
+         */
+        post: operations["communities.join.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/communities/{community}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A community
+         * @description Members only: posts (pinned first), resources and sessions. A session's join link shows once you're going.
+         */
+        get: operations["communities.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/communities/{community}/membership": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Leave a community */
+        delete: operations["communities.leave"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/communities/{community}/posts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Post
+         * @description Checked first: advertising wording, no pay for referrals, no phone numbers, email addresses or links (422 `body` with the reason).
+         */
+        post: operations["communities.posts.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/community-posts/{post}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Take a post down
+         * @description Its author or the community's owner.
+         */
+        delete: operations["community-posts.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/community-posts/{post}/pin": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Pin a post (the owner) */
+        put: operations["community-posts.pin"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/community-sessions/{session}/rsvp": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * RSVP to a session
+         * @description Free: going. Paid: held, with the checkout link; going once paid. 422 `session` when it's full or over.
+         */
+        post: operations["community-sessions.rsvp"];
+        /** Cancel my RSVP */
+        delete: operations["community-sessions.rsvp.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/compliance/check": {
         parameters: {
             query?: never;
@@ -8152,6 +8474,32 @@ export interface components {
             /** @description Add it to the student's flashcards. */
             flashcard?: boolean;
         };
+        /**
+         * App.Http.Requests.Social.PostRequest
+         * @description A social post: text, media, a link, the places it goes, and now, later or a draft (B11).
+         */
+        "App.Http.Requests.Social.PostRequest": {
+            body: string;
+            media: string[];
+            /** Format: uri */
+            link?: string | null;
+            targets: {
+                connection: number;
+                channel: string;
+                id: string;
+            }[];
+            /** @enum {string} */
+            when: "now" | "later" | "draft";
+            /** Format: date-time */
+            at?: string | null;
+            /**
+             * Format: uuid
+             * @description The listing (B10.2) a listing post comes from.
+             */
+            listing?: string | null;
+            /** @description Instead of fixing flagged wording, send the post to the broker with this reason (B13.2). */
+            ask_broker?: string | null;
+        };
         /** AppConfigResource */
         AppConfigResource: {
             /**
@@ -8280,6 +8628,13 @@ export interface components {
             question: string;
             /** Format: uuid */
             chat?: string | null;
+        };
+        /**
+         * AttendanceRequest
+         * @description Who came to a session (B17.2).
+         */
+        AttendanceRequest: {
+            user_ids: number[];
         };
         /**
          * BookSessionRequest
@@ -8526,6 +8881,14 @@ export interface components {
             question: string;
             /** @description Two to five answers. */
             options: string[];
+        };
+        /**
+         * CommunityRequest
+         * @description The community's name and about (B17.2).
+         */
+        CommunityRequest: {
+            name: string;
+            about?: string | null;
         };
         /** ConnectionResource */
         ConnectionResource: {
@@ -8934,6 +9297,14 @@ export interface components {
         InviteCodeRequest: {
             code: string;
         };
+        /**
+         * JoinRequest
+         * @description Joining by the link or the QR code (B17.2).
+         */
+        JoinRequest: {
+            /** @enum {string} */
+            via?: "link" | "qr";
+        };
         /** KnowledgeHitResource */
         KnowledgeHitResource: {
             passage_id: number;
@@ -9339,6 +9710,13 @@ export interface components {
             };
         };
         /**
+         * PinRequest
+         * @description Pin or unpin a post (B17.2).
+         */
+        PinRequest: {
+            pinned: boolean;
+        };
+        /**
          * PlanRequest
          * @description The plan to buy: basic (Listed), pro or premium (Partner) (B15.2).
          */
@@ -9363,29 +9741,10 @@ export interface components {
         };
         /**
          * PostRequest
-         * @description A social post: text, media, a link, the places it goes, and now, later or a draft (B11).
+         * @description A post in a community (B17.2).
          */
         PostRequest: {
             body: string;
-            media: string[];
-            /** Format: uri */
-            link?: string | null;
-            targets: {
-                connection: number;
-                channel: string;
-                id: string;
-            }[];
-            /** @enum {string} */
-            when: "now" | "later" | "draft";
-            /** Format: date-time */
-            at?: string | null;
-            /**
-             * Format: uuid
-             * @description The listing (B10.2) a listing post comes from.
-             */
-            listing?: string | null;
-            /** @description Instead of fixing flagged wording, send the post to the broker with this reason (B13.2). */
-            ask_broker?: string | null;
         };
         /**
          * ProfileFieldsRequest
@@ -9585,6 +9944,15 @@ export interface components {
             details?: string | null;
             user?: number | null;
             block?: boolean;
+        };
+        /**
+         * ResourceRequest
+         * @description A resource link for the community (B17.2).
+         */
+        ResourceRequest: {
+            title: string;
+            /** Format: uri */
+            url: string;
         };
         /**
          * ReviewProviderRequest
@@ -9888,6 +10256,25 @@ export interface components {
             price_30_cents: number;
             price_60_cents: number;
             active: boolean;
+        };
+        /**
+         * SessionRequest
+         * @description An expert session (B17.2): online or in person, free or (on Partner) paid, with a CE course number only if approved elsewhere.
+         */
+        SessionRequest: {
+            title: string;
+            about?: string | null;
+            /** @enum {string} */
+            format: "online" | "in_person";
+            /** Format: date-time */
+            starts_at: string;
+            minutes: number;
+            place?: string | null;
+            /** Format: uri */
+            join_url?: string | null;
+            capacity?: number | null;
+            price_cents: number;
+            ce_course?: string | null;
         };
         /**
          * ShareContactsRequest
@@ -10267,6 +10654,7 @@ export type SchemaAddLicenceRequest = components['schemas']['AddLicenceRequest']
 export type SchemaAgentPageRequest = components['schemas']['AgentPageRequest'];
 export type SchemaAgreementRequest = components['schemas']['AgreementRequest'];
 export type SchemaAnswerQuestionRequest = components['schemas']['AnswerQuestionRequest'];
+export type SchemaAppHttpRequestsSocialPostRequest = components['schemas']['App.Http.Requests.Social.PostRequest'];
 export type SchemaAppConfigResource = components['schemas']['AppConfigResource'];
 export type SchemaApprovalActionRequest = components['schemas']['ApprovalActionRequest'];
 export type SchemaApprovalSettingsRequest = components['schemas']['ApprovalSettingsRequest'];
@@ -10275,6 +10663,7 @@ export type SchemaAskInstructorRequest = components['schemas']['AskInstructorReq
 export type SchemaAskRequest = components['schemas']['AskRequest'];
 export type SchemaAssignCourseRequest = components['schemas']['AssignCourseRequest'];
 export type SchemaAssistantQuestionRequest = components['schemas']['AssistantQuestionRequest'];
+export type SchemaAttendanceRequest = components['schemas']['AttendanceRequest'];
 export type SchemaBookSessionRequest = components['schemas']['BookSessionRequest'];
 export type SchemaBriefSettingsRequest = components['schemas']['BriefSettingsRequest'];
 export type SchemaBrokerLicenceRequest = components['schemas']['BrokerLicenceRequest'];
@@ -10290,6 +10679,7 @@ export type SchemaCheckLicenceRequest = components['schemas']['CheckLicenceReque
 export type SchemaChooseCategoryRequest = components['schemas']['ChooseCategoryRequest'];
 export type SchemaChooseStateRequest = components['schemas']['ChooseStateRequest'];
 export type SchemaClassPollRequest = components['schemas']['ClassPollRequest'];
+export type SchemaCommunityRequest = components['schemas']['CommunityRequest'];
 export type SchemaConnectionResource = components['schemas']['ConnectionResource'];
 export type SchemaConnectionStatus = components['schemas']['ConnectionStatus'];
 export type SchemaConsentPurpose = components['schemas']['ConsentPurpose'];
@@ -10321,6 +10711,7 @@ export type SchemaIdentityProvider = components['schemas']['IdentityProvider'];
 export type SchemaIdentitySignInRequest = components['schemas']['IdentitySignInRequest'];
 export type SchemaInviteAgentRequest = components['schemas']['InviteAgentRequest'];
 export type SchemaInviteCodeRequest = components['schemas']['InviteCodeRequest'];
+export type SchemaJoinRequest = components['schemas']['JoinRequest'];
 export type SchemaKnowledgeHitResource = components['schemas']['KnowledgeHitResource'];
 export type SchemaLibraryGroup = components['schemas']['LibraryGroup'];
 export type SchemaLicenceResource = components['schemas']['LicenceResource'];
@@ -10347,6 +10738,7 @@ export type SchemaParseVoiceRequest = components['schemas']['ParseVoiceRequest']
 export type SchemaPhoneContactsRequest = components['schemas']['PhoneContactsRequest'];
 export type SchemaPhoneStartRequest = components['schemas']['PhoneStartRequest'];
 export type SchemaPhoneVerifyRequest = components['schemas']['PhoneVerifyRequest'];
+export type SchemaPinRequest = components['schemas']['PinRequest'];
 export type SchemaPlanRequest = components['schemas']['PlanRequest'];
 export type SchemaPlanTaskRequest = components['schemas']['PlanTaskRequest'];
 export type SchemaPolicyCheckRequest = components['schemas']['PolicyCheckRequest'];
@@ -10368,6 +10760,7 @@ export type SchemaReferralRequest = components['schemas']['ReferralRequest'];
 export type SchemaReleaseRequest = components['schemas']['ReleaseRequest'];
 export type SchemaRenewalRequest = components['schemas']['RenewalRequest'];
 export type SchemaReportRequest = components['schemas']['ReportRequest'];
+export type SchemaResourceRequest = components['schemas']['ResourceRequest'];
 export type SchemaReviewProviderRequest = components['schemas']['ReviewProviderRequest'];
 export type SchemaReviewVideoRequest = components['schemas']['ReviewVideoRequest'];
 export type SchemaRole = components['schemas']['Role'];
@@ -10389,6 +10782,7 @@ export type SchemaSendRequestRequest = components['schemas']['SendRequestRequest
 export type SchemaServiceAreaRequest = components['schemas']['ServiceAreaRequest'];
 export type SchemaSessionNotesRequest = components['schemas']['SessionNotesRequest'];
 export type SchemaSessionOfferRequest = components['schemas']['SessionOfferRequest'];
+export type SchemaSessionRequest = components['schemas']['SessionRequest'];
 export type SchemaShareContactsRequest = components['schemas']['ShareContactsRequest'];
 export type SchemaShareDealRequest = components['schemas']['ShareDealRequest'];
 export type SchemaShareRequest = components['schemas']['ShareRequest'];
@@ -17080,6 +17474,841 @@ export interface operations {
                         data: {
                             eliminated: number;
                         };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "communities.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            name: string;
+                            owner: string;
+                            members: number;
+                            next: {
+                                title: string;
+                                starts_at: string;
+                            } | null;
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "community.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            name: string;
+                            about: string | null;
+                            owner: string;
+                            is_owner: boolean;
+                            member: boolean;
+                            members: number;
+                            invite_url: string | null;
+                            qr_url: string | null;
+                            posts: {
+                                id: string;
+                                author: string;
+                                body: string;
+                                pinned: boolean;
+                                at: string;
+                                mine: boolean;
+                            }[];
+                            resources: {
+                                id: string;
+                                title: string;
+                                url: string;
+                            }[];
+                            sessions: {
+                                id: string;
+                                title: string;
+                                about: string | null;
+                                format: string;
+                                starts_at: string;
+                                minutes: number;
+                                place: string | null;
+                                join_url: string | null;
+                                capacity: number | null;
+                                price_cents: number;
+                                ce_course: string | null;
+                                status: string;
+                                going: number;
+                                attended: number;
+                                mine: string | null;
+                            }[];
+                        };
+                        results: {
+                            members: number;
+                            joined_30: number;
+                            via: {
+                                link: number;
+                                qr: number;
+                            };
+                            posts_30: number;
+                            sessions: number;
+                            rsvps: number;
+                            attended: number;
+                            show_rate: number;
+                            top: {
+                                title: string;
+                                going: number;
+                                attended: number;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "community.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CommunityRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            name: string;
+                            about: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "community.code": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            invite_url: string;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "community.results": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            members: number;
+                            joined_30: number;
+                            via: {
+                                link: number;
+                                qr: number;
+                            };
+                            posts_30: number;
+                            sessions: number;
+                            rsvps: number;
+                            attended: number;
+                            show_rate: number;
+                            top: {
+                                title: string;
+                                going: number;
+                                attended: number;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "community.resources.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ResourceRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            title: string;
+                            url: string;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "community.resources.destroy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                resource: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        removed: boolean;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "community.sessions.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SessionRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "community.sessions.destroy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                session: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        cancelled: boolean;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "community.sessions.roster": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                session: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            name: string;
+                            attended: boolean;
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "community.sessions.attendance": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                session: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AttendanceRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            name: string;
+                            attended: boolean;
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "communities.preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                code: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            name: string;
+                            about: string | null;
+                            owner: string;
+                            members: number;
+                            verified: boolean;
+                            member: boolean;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "communities.join.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                code: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["JoinRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "communities.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                community: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            name: string;
+                            about: string | null;
+                            owner: string;
+                            is_owner: boolean;
+                            member: boolean;
+                            members: number;
+                            invite_url: string | null;
+                            qr_url: string | null;
+                            posts: {
+                                id: string;
+                                author: string;
+                                body: string;
+                                pinned: boolean;
+                                at: string;
+                                mine: boolean;
+                            }[];
+                            resources: {
+                                id: string;
+                                title: string;
+                                url: string;
+                            }[];
+                            sessions: {
+                                id: string;
+                                title: string;
+                                about: string | null;
+                                format: string;
+                                starts_at: string;
+                                minutes: number;
+                                place: string | null;
+                                join_url: string | null;
+                                capacity: number | null;
+                                price_cents: number;
+                                ce_course: string | null;
+                                status: string;
+                                going: number;
+                                attended: number;
+                                mine: string | null;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "communities.leave": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                community: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        left: boolean;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "communities.posts.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                community: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "community-posts.destroy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                post: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        removed: boolean;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "community-posts.pin": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                post: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PinRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        pinned: boolean;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "community-sessions.rsvp": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                session: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            status: string;
+                            checkout_url: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "community-sessions.rsvp.destroy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                session: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        cancelled: boolean;
                     };
                 };
             };
@@ -32521,7 +33750,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["PostRequest"];
+                "application/json": components["schemas"]["App.Http.Requests.Social.PostRequest"];
             };
         };
         responses: {
@@ -32594,7 +33823,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["PostRequest"];
+                "application/json": components["schemas"]["App.Http.Requests.Social.PostRequest"];
             };
         };
         responses: {
@@ -32774,7 +34003,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["PostRequest"];
+                "application/json": components["schemas"]["App.Http.Requests.Social.PostRequest"];
             };
         };
         responses: {

@@ -115,3 +115,6 @@ REOS Spanish is for people in Texas and the US, many of whom also use English ap
 | Responsiveness | Rapidez de respuesta | A13.3b |
 | Transaction coordinator | Coordinador de transacciones | B17.1 |
 | File (a coordinator's shared deal) | Expediente | B17.1 |
+| Community (provider-led) | Comunidad | B17.2 |
+| Expert session | Sesión con expertos | B17.2 |
+| RSVP | Confirmar asistencia | B17.2 |

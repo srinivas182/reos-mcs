@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\Brokerage\SeatsController;
 use App\Http\Controllers\Api\Brokerage\StaffController;
 use App\Http\Controllers\Api\Ce\CeWalletController;
 use App\Http\Controllers\Api\Classes\ClassesController;
+use App\Http\Controllers\Api\Communities\CommunityController;
 use App\Http\Controllers\Api\Compliance\ComplianceController;
 use App\Http\Controllers\Api\Contracts\ContractReviewController;
 use App\Http\Controllers\Api\Coordinators\CoordinatorController;
@@ -75,6 +76,7 @@ use App\Http\Controllers\Builder\StarterBankController;
 use App\Http\Controllers\Calendar\CalendarPageController;
 use App\Http\Controllers\Ce\CeWalletPageController;
 use App\Http\Controllers\Classes\ClassesPageController;
+use App\Http\Controllers\Communities\CommunityPagesController;
 use App\Http\Controllers\Compliance\ComplianceLogController;
 use App\Http\Controllers\Connections\ConnectController;
 use App\Http\Controllers\Connections\ConnectionsPageController;
@@ -550,6 +552,28 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('provider/profile/bio', [ProviderProfileController::class, 'draft'])->middleware('throttle:10,1,provider-bio')->name('provider-profile.bio');
     Route::post('provider/profile/photo', [ProviderProfileController::class, 'photo'])->middleware('throttle:10,1,provider-photo')->name('provider-profile.photo');
     // Agents in my areas and requests to connect (B16.1): the page, and the same actions as the API.
+    // Communities (B17.2, provider screens 16–18): the owner's community and results, a member's view, the invite, and the same actions as the API.
+    Route::get('community', [CommunityPagesController::class, 'own'])->name('community.show');
+    Route::get('community/results', [CommunityPagesController::class, 'results'])->name('community.results');
+    Route::get('community/qr.svg', [CommunityPagesController::class, 'qr'])->name('community.qr');
+    Route::get('communities', [CommunityPagesController::class, 'mine'])->name('communities.index');
+    Route::get('communities/{community}', [CommunityPagesController::class, 'show'])->whereUuid('community')->name('communities.show');
+    Route::get('join/community/{code}', [CommunityPagesController::class, 'invite'])->where('code', '[a-z0-9]{6,24}')->name('communities.join');
+    Route::get('community/sessions/{session}/roster', [CommunityController::class, 'roster'])->whereUuid('session')->name('community.sessions.roster');
+    Route::put('community', [CommunityController::class, 'update'])->middleware('throttle:20,1,community')->name('community.update');
+    Route::post('community/code', [CommunityController::class, 'newCode'])->middleware('throttle:10,1,community')->name('community.code');
+    Route::post('community/resources', [CommunityController::class, 'addResource'])->middleware('throttle:30,1,community')->name('community.resources.store');
+    Route::delete('community/resources/{resource}', [CommunityController::class, 'removeResource'])->whereUuid('resource')->middleware('throttle:30,1,community')->name('community.resources.destroy');
+    Route::post('community/sessions', [CommunityController::class, 'schedule'])->middleware('throttle:20,1,community')->name('community.sessions.store');
+    Route::delete('community/sessions/{session}', [CommunityController::class, 'cancelSession'])->whereUuid('session')->middleware('throttle:20,1,community')->name('community.sessions.destroy');
+    Route::put('community/sessions/{session}/attendance', [CommunityController::class, 'attendance'])->whereUuid('session')->middleware('throttle:30,1,community')->name('community.sessions.attendance');
+    Route::post('communities/join/{code}', [CommunityController::class, 'join'])->where('code', '[a-z0-9]{6,24}')->middleware('throttle:10,1,community-join')->name('communities.join.store');
+    Route::delete('communities/{community}/membership', [CommunityController::class, 'leave'])->whereUuid('community')->middleware('throttle:20,1,community-join')->name('communities.leave');
+    Route::post('communities/{community}/posts', [CommunityController::class, 'post'])->whereUuid('community')->middleware('throttle:20,1,community-posts')->name('communities.posts.store');
+    Route::delete('community-posts/{post}', [CommunityController::class, 'removePost'])->whereUuid('post')->middleware('throttle:30,1,community-posts')->name('community-posts.destroy');
+    Route::put('community-posts/{post}/pin', [CommunityController::class, 'pin'])->whereUuid('post')->middleware('throttle:30,1,community-posts')->name('community-posts.pin');
+    Route::post('community-sessions/{session}/rsvp', [CommunityController::class, 'rsvp'])->whereUuid('session')->middleware('throttle:30,1,community-rsvp')->name('community-sessions.rsvp');
+    Route::delete('community-sessions/{session}/rsvp', [CommunityController::class, 'cancelRsvp'])->whereUuid('session')->middleware('throttle:30,1,community-rsvp')->name('community-sessions.rsvp.destroy');
     // Coordinators (B17.1, provider screens 14–15): My files, and the agent's share panel in a deal.
     Route::get('provider/files', [FilesPageController::class, 'index'])->name('provider-files.index');
     Route::get('provider/files/{share}', [FilesPageController::class, 'show'])->whereUuid('share')->name('provider-files.show');
