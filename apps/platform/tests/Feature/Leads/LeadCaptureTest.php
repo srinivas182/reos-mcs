@@ -53,7 +53,7 @@ describe('open house sign-in (B14.3a)', function () {
 
         $contact = Contact::query()->where('owner_type', 'user')->where('owner_id', $this->maria->id)->sole();
         expect($contact->first_name)->toBe('Rosa')->and($contact->last_name)->toBe('Lima')->and(array_column($contact->emails, 'value'))->toBe(['rosa.lima@example.com'])
-            ->and(ContactNote::query()->where('contact_id', $contact->id)->pluck('body')->all())->toBe([
+            ->and(ContactNote::query()->where('contact_id', $contact->id)->orderBy('id')->pluck('body')->all())->toBe([
                 'Signed in at the open house at 12 Willow Bend on Nov 28, 2026. Not working with an agent. Pre-approved for a loan. Timeline: In 3 months.',
                 'Suggested first message: Hi Rosa, thanks for visiting 12 Willow Bend today. Do you have any questions about the home, or would you like the details of similar homes nearby? Maria Garcia',
             ])
