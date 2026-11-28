@@ -2334,7 +2334,8 @@
         "agent_feedback.unreported": "Feedback report taken back",
         "agent_page.approved": "Public page approved",
         "agent_page.returned": "Public page sent back",
-        "compliance_log.exported": "Compliance log exported"
+        "compliance_log.exported": "Compliance log exported",
+        "agent.moved": "Agent moved to another brokerage or team"
       }
     }
   },
@@ -10268,6 +10269,53 @@
     },
     "errors": {
       "short": "That's too short to review. Record at least 10 seconds and 20 words."
+    }
+  },
+  "moves": {
+    "confirm": "You're an agent with another brokerage or team. Check what moves with you, then confirm.",
+    "title": "Moving to {{to}}",
+    "teamTitle": "Changing team to {{to}}",
+    "intro": "You're an agent with {{from}}. A sales agent works under one broker at a time, so joining {{to}} moves you there.",
+    "teamIntro": "You stay with the same brokerage and leave {{from}}. Everything of yours stays as it is.",
+    "movesTitle": "Moves with you",
+    "staysTitle": "Stays with {{from}}",
+    "endsTitle": "Ends",
+    "join": "Join {{to}} and move",
+    "joined": "You've moved to {{to}}.",
+    "keys": {
+      "licenses_one": "{{count}} license",
+      "licenses_other": "{{count}} licenses",
+      "ce_hours_one": "{{count}} CE hour",
+      "ce_hours_other": "{{count}} CE hours",
+      "certificates_one": "{{count}} CE certificate",
+      "certificates_other": "{{count}} CE certificates",
+      "contacts_one": "{{count}} of your contacts",
+      "contacts_other": "{{count}} of your contacts",
+      "posts_one": "{{count}} post",
+      "posts_other": "{{count}} posts",
+      "points_one": "{{count}} point",
+      "points_other": "{{count}} points",
+      "practice_one": "{{count}} practice session",
+      "practice_other": "{{count}} practice sessions",
+      "deals_one": "{{count}} deal and its files",
+      "deals_other": "{{count}} deals and their files",
+      "compliance_one": "{{count}} compliance record",
+      "compliance_other": "{{count}} compliance records",
+      "mentor_one": "Your mentor assignment",
+      "mentor_other": "Your mentor assignments",
+      "pods_one": "{{count}} pod",
+      "pods_other": "{{count}} pods",
+      "approvals_one": "{{count}} item waiting for approval goes back to drafts",
+      "approvals_other": "{{count}} items waiting for approval go back to drafts"
+    },
+    "phone": {
+      "title": "Join another brokerage or team",
+      "purpose": "Enter the invite code from your new brokerage or team. You'll see what moves with you before you confirm.",
+      "code": "Invite code",
+      "check": "Check the code",
+      "invited": "{{tenant}} invites you.",
+      "team": "Team: {{team}}",
+      "joinOnly": "Join {{tenant}}"
     }
   }
 }

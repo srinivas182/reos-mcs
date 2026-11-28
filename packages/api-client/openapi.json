@@ -34409,6 +34409,293 @@
                 }
             }
         },
+        "/me/moves/preview": {
+            "post": {
+                "operationId": "me.moves.preview",
+                "description": "Who invites me and as what, and \u2014 when I'm an agent at another brokerage or team \u2014 what moves with me, what stays with the old brokerage and what ends. 422 when the code is unknown, closed or for someone else.",
+                "summary": "Check an invite code",
+                "tags": [
+                    "Move"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/MoveRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "tenant": {
+                                                    "type": "string"
+                                                },
+                                                "team": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "role": {
+                                                    "type": "string"
+                                                },
+                                                "move": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "kind": {
+                                                            "type": "string",
+                                                            "enum": [
+                                                                "brokerage",
+                                                                "team"
+                                                            ]
+                                                        },
+                                                        "from": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "name": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "id",
+                                                                "name"
+                                                            ]
+                                                        },
+                                                        "to": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "name": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "id",
+                                                                "name"
+                                                            ]
+                                                        },
+                                                        "moves": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "key": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "licenses",
+                                                                            "ce_hours",
+                                                                            "certificates",
+                                                                            "contacts",
+                                                                            "posts",
+                                                                            "points",
+                                                                            "practice"
+                                                                        ]
+                                                                    },
+                                                                    "count": {
+                                                                        "type": "integer"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "key",
+                                                                    "count"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "stays": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "key": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "deals",
+                                                                            "compliance"
+                                                                        ]
+                                                                    },
+                                                                    "count": {
+                                                                        "type": "integer"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "key",
+                                                                    "count"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "ends": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "key": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "mentor",
+                                                                            "pods",
+                                                                            "approvals"
+                                                                        ]
+                                                                    },
+                                                                    "count": {
+                                                                        "type": "integer"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "key",
+                                                                    "count"
+                                                                ]
+                                                            }
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "kind",
+                                                        "from",
+                                                        "to",
+                                                        "moves",
+                                                        "stays",
+                                                        "ends"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "tenant",
+                                                "team",
+                                                "role",
+                                                "move"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/me/moves": {
+            "post": {
+                "operationId": "me.moves.accept",
+                "description": "Accepts the invitation and switches to the new role. An agent elsewhere must send `confirm: true` (422 `move` otherwise): they leave the old brokerage or team, their own data stays with them, and the old brokerage keeps its records.",
+                "summary": "Join",
+                "tags": [
+                    "Move"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/MoveRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "organisation": {
+                                                    "type": "string"
+                                                },
+                                                "role": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "organisation",
+                                                "role"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
         "/notifications": {
             "get": {
                 "operationId": "notifications.index",
@@ -62036,6 +62323,23 @@
                     "member_key"
                 ],
                 "title": "MlsMemberRequest"
+            },
+            "MoveRequest": {
+                "type": "object",
+                "description": "An invite code to join another brokerage or team (A14.3), and the agent's confirmation.",
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "maxLength": 20
+                    },
+                    "confirm": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "code"
+                ],
+                "title": "MoveRequest"
             },
             "NotificationSettingsRequest": {
                 "type": "object",

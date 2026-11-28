@@ -3501,6 +3501,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/me/moves/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Check an invite code
+         * @description Who invites me and as what, and — when I'm an agent at another brokerage or team — what moves with me, what stays with the old brokerage and what ends. 422 when the code is unknown, closed or for someone else.
+         */
+        post: operations["me.moves.preview"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/me/moves": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Join
+         * @description Accepts the invitation and switches to the new role. An agent elsewhere must send `confirm: true` (422 `move` otherwise): they leave the old brokerage or team, their own data stays with them, and the old brokerage keeps its records.
+         */
+        post: operations["me.moves.accept"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/notifications": {
         parameters: {
             query?: never;
@@ -7067,6 +7107,14 @@ export interface components {
             member_key: string;
         };
         /**
+         * MoveRequest
+         * @description An invite code to join another brokerage or team (A14.3), and the agent's confirmation.
+         */
+        MoveRequest: {
+            code: string;
+            confirm?: boolean;
+        };
+        /**
          * NotificationSettingsRequest
          * @description Notification settings (B6.2): channels per kind, digests, quiet hours and time zone.
          */
@@ -7897,6 +7945,7 @@ export type SchemaMeResource = components['schemas']['MeResource'];
 export type SchemaMediaRequest = components['schemas']['MediaRequest'];
 export type SchemaMembershipResource = components['schemas']['MembershipResource'];
 export type SchemaMlsMemberRequest = components['schemas']['MlsMemberRequest'];
+export type SchemaMoveRequest = components['schemas']['MoveRequest'];
 export type SchemaNotificationSettingsRequest = components['schemas']['NotificationSettingsRequest'];
 export type SchemaOnboardingPath = components['schemas']['OnboardingPath'];
 export type SchemaOnboardingRequest = components['schemas']['OnboardingRequest'];
@@ -19385,6 +19434,118 @@ export interface operations {
                 };
             };
             401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "me.moves.preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MoveRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            tenant: string;
+                            team: string | null;
+                            role: string;
+                            move: {
+                                /** @enum {string} */
+                                kind: "brokerage" | "team";
+                                from: {
+                                    id: number;
+                                    name: string;
+                                };
+                                to: {
+                                    id: number;
+                                    name: string;
+                                };
+                                moves: {
+                                    /** @enum {string} */
+                                    key: "licenses" | "ce_hours" | "certificates" | "contacts" | "posts" | "points" | "practice";
+                                    count: number;
+                                }[];
+                                stays: {
+                                    /** @enum {string} */
+                                    key: "deals" | "compliance";
+                                    count: number;
+                                }[];
+                                ends: {
+                                    /** @enum {string} */
+                                    key: "mentor" | "pods" | "approvals";
+                                    count: number;
+                                }[];
+                            } | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "me.moves.accept": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MoveRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            organisation: string;
+                            role: string;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
             /** @description Too many requests */
             429: {
                 headers: {

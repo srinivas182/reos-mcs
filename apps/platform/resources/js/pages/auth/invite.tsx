@@ -7,6 +7,7 @@ import { AgreementNote } from '@/components/consents';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { type Move, MoveSummary } from '@/components/moves/move-summary';
 import { i18n } from '@/lib/i18n';
 import { join, login, logout } from '@/routes';
 import { accept, register, signIn } from '@/routes/invite';
@@ -27,6 +28,8 @@ type Props = {
     } | null;
     account: 'match' | 'other' | 'existing' | 'new' | null;
     signedInAs: string | null;
+    /** An agent at another brokerage or team (A14.3): what moving does. */
+    move?: Move | null;
 };
 
 /**
@@ -40,6 +43,7 @@ export default function Invite({
     invite,
     account,
     signedInAs,
+    move = null,
 }: Props) {
     const { t } = useTranslation();
 
@@ -108,7 +112,19 @@ export default function Invite({
                     <Form {...accept.form(token)}>
                         {({ processing, errors }) => (
                             <>
-                                <InputError message={errors.invite} />
+                                {move ? (
+                                    <>
+                                        <MoveSummary move={move} />
+                                        <input
+                                            type="hidden"
+                                            name="move"
+                                            value="1"
+                                        />
+                                    </>
+                                ) : null}
+                                <InputError
+                                    message={errors.invite ?? errors.move}
+                                />
                                 <Button
                                     type="submit"
                                     className="w-full"
@@ -116,9 +132,13 @@ export default function Invite({
                                 >
                                     {processing
                                         ? t('invitePage.joining')
-                                        : t('invitePage.join', {
-                                              tenant: invite.tenant,
-                                          })}
+                                        : move
+                                          ? t('moves.join', {
+                                                to: move.to.name,
+                                            })
+                                          : t('invitePage.join', {
+                                                tenant: invite.tenant,
+                                            })}
                                 </Button>
                             </>
                         )}

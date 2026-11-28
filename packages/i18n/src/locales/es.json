@@ -2334,7 +2334,8 @@
         "agent_feedback.unreported": "Reporte de opinión retirado",
         "agent_page.approved": "Página pública aprobada",
         "agent_page.returned": "Página pública devuelta",
-        "compliance_log.exported": "Registro de cumplimiento exportado"
+        "compliance_log.exported": "Registro de cumplimiento exportado",
+        "agent.moved": "El agente se mudó a otra agencia o equipo"
       }
     }
   },
@@ -10268,6 +10269,53 @@
     },
     "errors": {
       "short": "Es muy corto para revisarlo. Grabe al menos 10 segundos y 20 palabras."
+    }
+  },
+  "moves": {
+    "confirm": "Usted es agente en otra agencia o equipo. Revise qué se muda con usted y luego confirme.",
+    "title": "Mudarse a {{to}}",
+    "teamTitle": "Cambiar al equipo {{to}}",
+    "intro": "Usted es agente en {{from}}. Un agente de ventas trabaja con un solo bróker a la vez, así que unirse a {{to}} lo muda allí.",
+    "teamIntro": "Usted sigue en la misma agencia y deja {{from}}. Todo lo suyo queda igual.",
+    "movesTitle": "Se muda con usted",
+    "staysTitle": "Se queda con {{from}}",
+    "endsTitle": "Termina",
+    "join": "Unirse a {{to}} y mudarse",
+    "joined": "Se mudó a {{to}}.",
+    "keys": {
+      "licenses_one": "{{count}} licencia",
+      "licenses_other": "{{count}} licencias",
+      "ce_hours_one": "{{count}} hora de CE",
+      "ce_hours_other": "{{count}} horas de CE",
+      "certificates_one": "{{count}} certificado de CE",
+      "certificates_other": "{{count}} certificados de CE",
+      "contacts_one": "{{count}} de sus contactos",
+      "contacts_other": "{{count}} de sus contactos",
+      "posts_one": "{{count}} publicación",
+      "posts_other": "{{count}} publicaciones",
+      "points_one": "{{count}} punto",
+      "points_other": "{{count}} puntos",
+      "practice_one": "{{count}} sesión de práctica",
+      "practice_other": "{{count}} sesiones de práctica",
+      "deals_one": "{{count}} transacción y sus archivos",
+      "deals_other": "{{count}} transacciones y sus archivos",
+      "compliance_one": "{{count}} registro de cumplimiento",
+      "compliance_other": "{{count}} registros de cumplimiento",
+      "mentor_one": "Su asignación de mentor",
+      "mentor_other": "Sus asignaciones de mentor",
+      "pods_one": "{{count}} grupo",
+      "pods_other": "{{count}} grupos",
+      "approvals_one": "{{count}} elemento en espera de aprobación vuelve a borradores",
+      "approvals_other": "{{count}} elementos en espera de aprobación vuelven a borradores"
+    },
+    "phone": {
+      "title": "Unirse a otra agencia o equipo",
+      "purpose": "Escriba el código de invitación de su nueva agencia o equipo. Verá qué se muda con usted antes de confirmar.",
+      "code": "Código de invitación",
+      "check": "Revisar el código",
+      "invited": "{{tenant}} lo invita.",
+      "team": "Equipo: {{team}}",
+      "joinOnly": "Unirse a {{tenant}}"
     }
   }
 }

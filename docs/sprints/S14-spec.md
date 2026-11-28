@@ -133,6 +133,31 @@
 - Licenses in several states in one account, each verified.
 - **Switch brokerage or team:** leave one and join another; what moves with the agent and what stays is shown before confirming.
 - **Done when:** an agent switches brokerage without losing CE.
+- **As built, A14.3** (ADR 0063):
+  - **Several licenses:** these already worked. An account has one license per state (`POST /api/v1/me/licences`), each with its own CE wallet. Nothing new was needed.
+  - **Services:** `App\Agents\BrokerageMoves`:
+    - `from` returns the agent role the invite would move away from.
+    - `preview` lists what moves, stays and ends, counting the old brokerage's rows inside its tenant.
+    - `accept` requires confirmation, then joins and leaves in one transaction.
+    - `complete`:
+      - revokes the old role;
+      - ends the old brokerage's mentor assignments and pods;
+      - sends posts waiting for approval back to drafts and withdraws the page's approval request;
+      - audits `agent.moved` in both tenants.
+    - A team change only swaps the team role.
+  - **Web:** the invite page (`auth/invite`) shows the move summary for a matching account; Join sends `move=1`. The component is `components/moves/move-summary`, with a story and a test.
+  - **API:**
+    - `POST /api/v1/me/moves/preview` (code)
+    - `POST /api/v1/me/moves` (code, confirm)
+    - Both are limited to 10 a minute.
+  - **Phone:** Me has "Join another brokerage or team" (`me/move`): enter the code, see the preview, then join. Typed codes are cleaned up.
+  - **Strings:** `moves.*`.
+  - **Done when:** a Pest test moves Maria from Lone Star Realty to Gulf Coast Homes. Before she confirms, the page lists:
+    - moves: one license, 7 CE hours, 2 certificates, one contact, one post;
+    - stays: one deal, one compliance record;
+    - ends: her mentor, her pod, and two items waiting for approval.
+
+    Without confirmation the join is refused. After it, she's an agent only at Gulf Coast and still has 7 CE hours and her contacts. Lone Star keeps the deal and the compliance record, her mentor assignment and pod end, and both tenants audit the move. The phone and team-change tests pass too.
 
 ### B14.1 Card and public page (Team B)
 
