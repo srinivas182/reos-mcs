@@ -38,7 +38,8 @@ final class ComplianceLogController extends Controller
             'events' => $log->list($brokerage, $filters),
             'filters' => $filters,
             'agents' => array_values(array_map(static fn (User $a): array => ['id' => $a->id, 'name' => (string) $a->name], User::query()->whereIn('id', $directory->agentsOf($brokerage))->orderBy('name')->get()->all())),
-            'channels' => ComplianceEngine::CHANNELS,
+            // A provider's profile (B15.3) belongs to no brokerage's log.
+            'channels' => array_values(array_diff(ComplianceEngine::CHANNELS, ['provider'])),
             'actions' => ComplianceEvent::ACTIONS,
         ]);
     }

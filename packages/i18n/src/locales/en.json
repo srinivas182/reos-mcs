@@ -99,7 +99,9 @@
     "openHouses": "Open houses",
     "referrals": "Referrals",
     "farming": "Farming",
-    "approvals": "Approvals"
+    "approvals": "Approvals",
+    "providerJoin": "Joining",
+    "serviceProviders": "Service providers"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -2365,7 +2367,9 @@
         "provider.hidden": "Provider profile was hidden",
         "provider.joining": "Provider profile is back to joining",
         "provider_licence.rechecked": "Provider license re-checked",
-        "provider_licence.document_viewed": "Viewed a provider's photo ID"
+        "provider_licence.document_viewed": "Viewed a provider's photo ID",
+        "provider.profile_published": "Provider profile published",
+        "provider.profile_blocked": "Provider profile held for wording"
       }
     }
   },
@@ -3367,7 +3371,8 @@
         "page": "Public page",
         "email": "Email",
         "text": "Text",
-        "newsletter": "Market update email"
+        "newsletter": "Market update email",
+        "provider": "Provider profile"
       },
       "actions": {
         "checked": "Checked, passed",
@@ -8799,6 +8804,77 @@
         "licenceNeeded": "Your category needs a state license. Add it on the license step.",
         "idPhoto": "Add a photo of your ID."
       }
+    },
+    "profile": {
+      "title": "Build your profile",
+      "purpose": "What agents see when they find you. We check the wording before it's published.",
+      "photo": "Your photo",
+      "logo": "Your logo",
+      "upload": "Upload",
+      "replace": "Replace",
+      "photoHint": "JPEG, PNG or WebP, up to 5 MB.",
+      "bio": "Short bio",
+      "bioEs": "Bio in Spanish",
+      "bioHint": "Two or three sentences. No phone numbers, emails or web addresses: agents reach you through REOS.",
+      "write": "Write it for me",
+      "writing": "Writing…",
+      "written": "Draft written in English and Spanish. Check it, then save.",
+      "services": "Services",
+      "specialities": "Specialities",
+      "listHint": "Separate them with commas.",
+      "response": "Response-time goal",
+      "responseNone": "No goal set",
+      "responseHours_one": "Within {{count}} hour",
+      "responseHours_other": "Within {{count}} hours",
+      "resources": "Free resources",
+      "resourceTitle": "Title of resource {{n}}",
+      "resourceUrl": "Link for resource {{n}} (https)",
+      "addResource": "Add a resource",
+      "removeResource": "Remove resource {{n}}",
+      "sessions": "Expert sessions",
+      "sessionTitle": "Title of session {{n}}",
+      "sessionMinutes": "Minutes for session {{n}}",
+      "addSession": "Add a session",
+      "removeSession": "Remove session {{n}}",
+      "sessionLength": "{{minutes}} minutes",
+      "save": "Save and check",
+      "published": "Published. Agents see this version.",
+      "blocked": "Not published yet. Fix the wording below and save again; agents keep seeing your last published version.",
+      "lastPublished": "Last published {{date}}",
+      "preview": "Preview: what agents see",
+      "draft": {
+        "intro": "{{name}} is a {{category}} working with real estate agents and their clients.",
+        "areas": "Serving {{areas}}.",
+        "services": "Services include {{services}}.",
+        "response": "We aim to reply within {{hours}} hours."
+      },
+      "errors": {
+        "contact": "Take out phone numbers, emails and web addresses. Agents reach you through REOS.",
+        "https": "Use a link that starts with https://."
+      }
+    },
+    "directory": {
+      "title": "Verified providers",
+      "purpose": "Loan officers, inspectors and other providers whose licenses REOS has checked.",
+      "category": "Category",
+      "allCategories": "All categories",
+      "place": "City or ZIP code",
+      "search": "Show providers",
+      "emptyTitle": "No verified providers here yet",
+      "empty": "Try another category or area.",
+      "open": "View {{name}}'s profile",
+      "verified": "Verified {{kind}}",
+      "checked": "Checked {{date}}",
+      "notVerified": "License not verified",
+      "partner": "Partner",
+      "areas": "Areas served",
+      "services": "Services",
+      "specialities": "Specialities",
+      "response": "Response-time goal",
+      "resources": "Free resources",
+      "sessions": "Expert sessions",
+      "about": "About",
+      "licenceNumber": "License {{number}}"
     }
   },
   "certificates": {

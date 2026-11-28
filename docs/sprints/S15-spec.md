@@ -207,6 +207,53 @@
 - **Build your profile (provider screen 7):** photo and logo, a short bio with "Write it for me" and a Spanish version, services, specialities, response-time goal, free resources, expert sessions offered. No phone or email on the profile. The text is checked by the compliance engine before it's published.
 - **The agent's view:** the verified profile with the licence badge and when it was checked, the areas and the services.
 - **Done when:** an agent sees a verified profile.
+- **As built, B15.3** (ADR 0075):
+  - **Data:** `provider_profiles` gains photo and logo, `bio` and `bio_es`, services, specialities, `response_hours`, resources, sessions, `profile_issues`, and `published` with `published_at`.
+  - **Services:**
+    - `App\ProviderNetwork\ProviderProfiles`:
+      - the builder;
+      - save: contact details refused, then the compliance engine; only a clean save is published;
+      - draftBio: `ClaudeProviderBio`, or a template in both languages;
+      - photo;
+      - directory and show, for agents: live and published only;
+      - card: the licence badge, checked date, areas and services.
+    - The compliance engine's new `provider` channel (wording rules only).
+  - **Routes:**
+    - API: `GET` and `PUT /api/v1/provider/profile/builder`, `POST /api/v1/provider/profile/bio`, `POST /api/v1/provider/profile/photo`, `GET /api/v1/providers` and `GET /api/v1/providers/{profile}`.
+    - Web: `/provider/profile`, `/providers`, `/providers/{profile}`, and the signed `providers/{profile}/photo/{kind}`.
+  - **Web:**
+    - Build your profile (`profile-builder`), with the preview agents see beside it.
+    - Verified providers and a provider's profile (`provider-card`).
+    - Service providers is now in the agent sidebar, and the provider sidebar gets Joining and Profile.
+  - **Phone:**
+    - Me → Build your profile (`provider/profile`), for providers.
+    - Me → Verified providers (`providers`, and `providers/[id]`), for agents and brokers.
+  - **Done when:** a Pest test has Maya Chen save her profile, which passes the check and is published. James Miller, an agent, finds her by loan officer and Katy, verified (NMLS 1234567, checked this morning by a reviewer), with her areas and services. Other tests cover:
+    - a phone number, an email, a web address and an http resource refused;
+    - "approval guaranteed" kept as a draft while agents see the version that passed;
+    - "Write it for me" in both languages;
+    - the signed photo link;
+    - a hidden profile shown to nobody but its owner.
+
+## 7. Sprint 15 wrap-up (30 November 2026)
+
+- **Built:** A15.1a–A15.3 (Team A) and B15.1–B15.3 (Team B), each its own PR with green CI. ADRs 0069–0075.
+- **Definition of done:**
+  - Every endpoint is in `/api/v1` with Pest feature tests, and the api-client is regenerated.
+  - Every string is in English and Spanish.
+  - Every new shared component has a story passing axe.
+  - **Security tests:**
+    - only a verified designated broker creates a brokerage, changes duties, seats and the approvals fallback (A15.1a, A15.2, A15.3);
+    - a team leader sees only their team's approvals (A15.3);
+    - providers see only area counts of agents, never agents, contacts, clients or deals (B15.2);
+    - an unverified, expired or hidden provider is never shown to agents (B15.2, B15.3).
+- **Carried forward:**
+  - coordinator requests in the approvals queue (with transaction coordinators);
+  - the provider marketplace for agents (search, invites, messages), on the B15.3 cards;
+  - Spanish phrase lists for the compliance engine;
+  - working-hours time zones beyond Texas;
+  - opening `provider_network` per state after the RESPA counsel review (decision 5).
+- **Infrastructure:** the web type check now runs with a 4 GB heap. The i18n key types grew past Node's default as the strings passed 8,800.
 
 ## 4. Definition of done (whole sprint)
 

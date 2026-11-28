@@ -43,6 +43,7 @@ use App\Http\Controllers\Api\Practice\SpeedRoundController;
 use App\Http\Controllers\Api\Practice\StudyGroupController;
 use App\Http\Controllers\Api\Providers\JoiningController;
 use App\Http\Controllers\Api\Providers\ProviderOnboardingController;
+use App\Http\Controllers\Api\Providers\ProviderProfileController;
 use App\Http\Controllers\Api\Social\ContentCalendarController;
 use App\Http\Controllers\Api\Social\SocialController;
 use App\Http\Controllers\Api\Studio\CandidateStudioController;
@@ -126,6 +127,8 @@ use App\Http\Controllers\Practice\SharedReportController;
 use App\Http\Controllers\Practice\StudyPlanController;
 use App\Http\Controllers\Practice\TopicPlanPageController;
 use App\Http\Controllers\Provider\JoinPageController;
+use App\Http\Controllers\Provider\ProfilePagesController;
+use App\Http\Controllers\Provider\ProviderPhotoController;
 use App\Http\Controllers\Recruiting\RecruitingController;
 use App\Http\Controllers\Rewards\RewardsPageController;
 use App\Http\Controllers\RolePlay\RolePlayPageController;
@@ -526,6 +529,16 @@ Route::middleware(['auth', 'verified'])->prefix('provider')->name('provider-join
     Route::post('join/plan', [ProviderOnboardingController::class, 'plan'])->middleware('throttle:10,1,provider-plan')->name('plan');
     Route::post('join/rules', [ProviderOnboardingController::class, 'rules'])->middleware('throttle:10,1,provider-join')->name('rules');
 });
+// The provider profile (B15.3, provider screen 7) and verified providers as agents see them.
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('provider/profile', [ProfilePagesController::class, 'builder'])->name('provider-profile.show');
+    Route::put('provider/profile', [ProviderProfileController::class, 'update'])->middleware('throttle:20,1,provider-profile-save')->name('provider-profile.update');
+    Route::post('provider/profile/bio', [ProviderProfileController::class, 'draft'])->middleware('throttle:10,1,provider-bio')->name('provider-profile.bio');
+    Route::post('provider/profile/photo', [ProviderProfileController::class, 'photo'])->middleware('throttle:10,1,provider-photo')->name('provider-profile.photo');
+    Route::get('providers', [ProfilePagesController::class, 'index'])->name('providers.index');
+    Route::get('providers/{profile}', [ProfilePagesController::class, 'show'])->whereNumber('profile')->name('providers.show');
+});
+Route::get('providers/{profile}/photo/{kind}', ProviderPhotoController::class)->whereNumber('profile')->whereIn('kind', ['photo', 'logo'])->middleware(['signed', 'throttle:120,1,provider-photo-view'])->name('providers.photo');
 // Branding and domain (A4.2a, screen 57): the organisation managed in the active role.
 Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisation.manage'])->prefix('organisation/branding')->name('branding.')->group(function () {
     Route::get('/', [BrandingController::class, 'show'])->name('show');

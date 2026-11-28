@@ -145,3 +145,59 @@ export function nextStep(o: Onboarding): StepKey | null {
 export function areaParts(a: ServiceArea): { kind: ServiceArea['kind']; value: string; miles: number | null } {
   return { kind: a.kind, value: a.kind === 'city' ? (a.city ?? '') : (a.postal_code ?? ''), miles: a.radius_miles };
 }
+
+export type ProfileBuilder = Got<'/provider/profile/builder'>['data'];
+export type ProfileDraft = ProfileBuilder['draft'];
+export type ProviderCard = Got<'/providers/{profile}'>['data'];
+
+/** Build your profile (B15.3, provider screen 7). */
+export async function loadBuilder(): Promise<ProfileBuilder | null> {
+  const { data } = await api().GET('/provider/profile/builder');
+
+  return data ? data.data : null;
+}
+
+/** Saves and checks the profile; blocked wording comes back as issues. */
+export async function saveProfile(draft: ProfileDraft): Promise<ProfileBuilder> {
+  const { data, error } = await api().PUT('/provider/profile/builder', { body: draft });
+
+  return data ? data.data : fail(error);
+}
+
+/** "Write it for me": a bio in English and Spanish. */
+export async function writeBio(): Promise<{ bio: string; bio_es: string }> {
+  const { data, error } = await api().POST('/provider/profile/bio');
+
+  return data ? data.data : fail(error);
+}
+
+export async function uploadProfilePhoto(kind: 'photo' | 'logo', file: { uri: string; name: string; type: string }): Promise<ProfileBuilder> {
+  const form = new FormData();
+  form.append('kind', kind);
+  // React Native's FormData takes { uri, name, type } for a file.
+  form.append('image', file as unknown as Blob);
+  const { data, error } = await api().POST('/provider/profile/photo', { body: { kind, image: '' }, bodySerializer: () => form });
+
+  return data ? data.data : fail(error);
+}
+
+/** Verified providers for agents (B15.3). */
+export async function loadProviders(category?: string, place?: string): Promise<ProviderCard[]> {
+  const { data } = await api().GET('/providers', { params: { query: { category: category || undefined, place: place || undefined } } });
+
+  return data ? data.data : [];
+}
+
+export async function loadProvider(id: number): Promise<ProviderCard | null> {
+  const { data } = await api().GET('/providers/{profile}', { params: { path: { profile: id } } });
+
+  return data ? data.data : null;
+}
+
+/** Comma-separated text to a clean list. */
+export function splitList(text: string): string[] {
+  return text
+    .split(',')
+    .map((s) => s.trim())
+    .filter((s) => s !== '');
+}

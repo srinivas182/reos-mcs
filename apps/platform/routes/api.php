@@ -79,6 +79,8 @@ use App\Http\Controllers\Api\Privacy\ConsentController;
 use App\Http\Controllers\Api\Providers\JoiningController;
 use App\Http\Controllers\Api\Providers\ProviderLicenceController;
 use App\Http\Controllers\Api\Providers\ProviderOnboardingController;
+use App\Http\Controllers\Api\Providers\ProviderProfileController;
+use App\Http\Controllers\Api\Providers\ProvidersController;
 use App\Http\Controllers\Api\Releases\WhatsNewController;
 use App\Http\Controllers\Api\Rewards\RewardsController;
 use App\Http\Controllers\Api\RolePlay\RolePlayController;
@@ -484,6 +486,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('provider/join/areas/{area}', [ProviderOnboardingController::class, 'removeArea'])->whereNumber('area')->middleware('throttle:30,1,api-provider-join')->name('api.provider.join.areas.destroy');
     Route::post('provider/join/plan', [ProviderOnboardingController::class, 'plan'])->middleware('throttle:10,1,api-provider-plan')->name('api.provider.join.plan');
     Route::post('provider/join/rules', [ProviderOnboardingController::class, 'rules'])->middleware('throttle:10,1,api-provider-join')->name('api.provider.join.rules');
+    // The provider profile (B15.3): the builder, and verified providers as agents see them.
+    Route::get('provider/profile/builder', [ProviderProfileController::class, 'show'])->name('api.provider.profile.builder');
+    Route::put('provider/profile/builder', [ProviderProfileController::class, 'update'])->middleware('throttle:20,1,api-provider-profile-save')->name('api.provider.profile.builder.update');
+    Route::post('provider/profile/bio', [ProviderProfileController::class, 'draft'])->middleware('throttle:10,1,api-provider-bio')->name('api.provider.profile.bio');
+    Route::post('provider/profile/photo', [ProviderProfileController::class, 'photo'])->middleware('throttle:10,1,api-provider-photo')->name('api.provider.profile.photo');
+    Route::get('providers', [ProvidersController::class, 'index'])->middleware('throttle:60,1,api-providers')->name('api.providers.index');
+    Route::get('providers/{profile}', [ProvidersController::class, 'show'])->whereNumber('profile')->middleware('throttle:120,1,api-providers')->name('api.providers.show');
     // CMAs for my listings and my public page (B10.2b).
     Route::get('listings/{listing}/cma', [CmaController::class, 'show'])->whereUuid('listing')->middleware('throttle:30,1,api-listing-cma')->name('api.listings.cma');
     Route::get('listings/page', [CmaController::class, 'page'])->name('api.listings.page');

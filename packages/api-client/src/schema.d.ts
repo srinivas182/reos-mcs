@@ -5084,6 +5084,107 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/provider/profile/builder": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My profile builder
+         * @description The draft, the compliance issues with the last save, when it was last published, and the preview as agents see it.
+         */
+        get: operations["provider.profile.builder"];
+        /**
+         * Save my profile
+         * @description Phone numbers, emails and web addresses are refused. Wording the compliance engine blocks stays a draft with its issues; agents keep seeing the last version that passed.
+         */
+        put: operations["provider.profile.builder.update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/provider/profile/bio": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Write my bio for me
+         * @description A short bio in English and Spanish from my category, details, areas and services. Nothing is saved until I save the profile.
+         */
+        post: operations["provider.profile.bio"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/provider/profile/photo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Upload my photo or logo */
+        post: operations["provider.profile.photo"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/providers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Verified providers
+         * @description Live providers with a published profile, Partner first.
+         */
+        get: operations["providers.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/providers/{profile}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A provider's profile
+         * @description A live provider's published profile, or my own preview.
+         */
+        get: operations["providers.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/me/push-devices": {
         parameters: {
             query?: never;
@@ -8299,6 +8400,43 @@ export interface components {
             };
         };
         /**
+         * ProfilePhotoRequest
+         * @description A profile photo or a logo (B15.3): JPEG, PNG or WebP, up to 5 MB.
+         */
+        ProfilePhotoRequest: {
+            /** @enum {string} */
+            kind: "photo" | "logo";
+            /**
+             * Format: binary
+             * @description Maximum file size: 5120 kilobytes.
+             */
+            image: string;
+        };
+        /**
+         * ProfileRequest
+         * @description The provider profile (B15.3, provider screen 7). Phone numbers, emails and web addresses are refused in the text.
+         */
+        ProfileRequest: {
+            bio?: string | null;
+            /** @description The bio in Spanish. */
+            bio_es?: string | null;
+            services: string[];
+            specialities: string[];
+            /** @description The response-time goal, in hours: 1, 2, 4, 8 or 24. */
+            response_hours?: number | null;
+            /** @description Free resources for agents: a title and an https link each. */
+            resources: {
+                title: string;
+                /** Format: uri */
+                url: string;
+            }[];
+            /** @description Expert sessions offered to agents: a title and a length in minutes. */
+            sessions: {
+                title: string;
+                minutes: number;
+            }[];
+        };
+        /**
          * ProviderLicenceRequest
          * @description A provider's professional licence: its kind and number (B10.3).
          */
@@ -9071,6 +9209,8 @@ export type SchemaPlanTaskRequest = components['schemas']['PlanTaskRequest'];
 export type SchemaPolicyCheckRequest = components['schemas']['PolicyCheckRequest'];
 export type SchemaPostRequest = components['schemas']['PostRequest'];
 export type SchemaProfileFieldsRequest = components['schemas']['ProfileFieldsRequest'];
+export type SchemaProfilePhotoRequest = components['schemas']['ProfilePhotoRequest'];
+export type SchemaProfileRequest = components['schemas']['ProfileRequest'];
 export type SchemaProviderLicenceRequest = components['schemas']['ProviderLicenceRequest'];
 export type SchemaPushDeviceRequest = components['schemas']['PushDeviceRequest'];
 export type SchemaQuizAttemptRequest = components['schemas']['QuizAttemptRequest'];
@@ -14987,7 +15127,7 @@ export interface operations {
             content: {
                 "application/json": {
                     /** @enum {string} */
-                    channel: "post" | "video" | "page" | "email" | "text" | "newsletter";
+                    channel: "post" | "video" | "page" | "email" | "text" | "newsletter" | "provider";
                     text: string;
                 };
             };
@@ -15045,7 +15185,7 @@ export interface operations {
             content: {
                 "application/json": {
                     /** @enum {string} */
-                    channel: "post" | "video" | "page" | "email" | "text" | "newsletter";
+                    channel: "post" | "video" | "page" | "email" | "text" | "newsletter" | "provider";
                     text: string;
                 };
             };
@@ -25564,6 +25704,451 @@ export interface operations {
             };
             401: components["responses"]["AuthenticationException"];
             422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "provider.profile.builder": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            draft: {
+                                bio: string | null;
+                                bio_es: string | null;
+                                services: string[];
+                                specialities: string[];
+                                response_hours: number | null;
+                                resources: {
+                                    title: string;
+                                    url: string;
+                                }[];
+                                sessions: {
+                                    title: string;
+                                    minutes: number;
+                                }[];
+                            };
+                            issues: {
+                                code: string;
+                                /** @enum {string} */
+                                severity: "block" | "warn";
+                                phrase: string | null;
+                                fix: string | null;
+                                reason: string | null;
+                                citation: string;
+                                url: string;
+                                /** @enum {string} */
+                                source: "rule" | "claude";
+                            }[];
+                            published_at: string | null;
+                            preview: {
+                                id: number;
+                                name: string;
+                                category: string | null;
+                                photo_url: string | null;
+                                logo_url: string | null;
+                                bio: string | null;
+                                services: string[];
+                                specialities: string[];
+                                response_hours: number | null;
+                                resources: {
+                                    title: string;
+                                    url: string;
+                                }[];
+                                sessions: {
+                                    title: string;
+                                    minutes: number;
+                                }[];
+                                licence: {
+                                    kind: string;
+                                    number: string | null;
+                                    verified: boolean;
+                                    checked_at: string | null;
+                                    via: string | null;
+                                };
+                                areas: string[];
+                                tier: string | null;
+                                live: boolean;
+                            } | null;
+                            response_choices: number[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "provider.profile.builder.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProfileRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            draft: {
+                                bio: string | null;
+                                bio_es: string | null;
+                                services: string[];
+                                specialities: string[];
+                                response_hours: number | null;
+                                resources: {
+                                    title: string;
+                                    url: string;
+                                }[];
+                                sessions: {
+                                    title: string;
+                                    minutes: number;
+                                }[];
+                            };
+                            issues: {
+                                code: string;
+                                /** @enum {string} */
+                                severity: "block" | "warn";
+                                phrase: string | null;
+                                fix: string | null;
+                                reason: string | null;
+                                citation: string;
+                                url: string;
+                                /** @enum {string} */
+                                source: "rule" | "claude";
+                            }[];
+                            published_at: string | null;
+                            preview: {
+                                id: number;
+                                name: string;
+                                category: string | null;
+                                photo_url: string | null;
+                                logo_url: string | null;
+                                bio: string | null;
+                                services: string[];
+                                specialities: string[];
+                                response_hours: number | null;
+                                resources: {
+                                    title: string;
+                                    url: string;
+                                }[];
+                                sessions: {
+                                    title: string;
+                                    minutes: number;
+                                }[];
+                                licence: {
+                                    kind: string;
+                                    number: string | null;
+                                    verified: boolean;
+                                    checked_at: string | null;
+                                    via: string | null;
+                                };
+                                areas: string[];
+                                tier: string | null;
+                                live: boolean;
+                            } | null;
+                            response_choices: number[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "provider.profile.bio": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            bio: string;
+                            bio_es: string;
+                            /** @enum {string} */
+                            engine: "ai" | "simulator";
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "provider.profile.photo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["ProfilePhotoRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            draft: {
+                                bio: string | null;
+                                bio_es: string | null;
+                                services: string[];
+                                specialities: string[];
+                                response_hours: number | null;
+                                resources: {
+                                    title: string;
+                                    url: string;
+                                }[];
+                                sessions: {
+                                    title: string;
+                                    minutes: number;
+                                }[];
+                            };
+                            issues: {
+                                code: string;
+                                /** @enum {string} */
+                                severity: "block" | "warn";
+                                phrase: string | null;
+                                fix: string | null;
+                                reason: string | null;
+                                citation: string;
+                                url: string;
+                                /** @enum {string} */
+                                source: "rule" | "claude";
+                            }[];
+                            published_at: string | null;
+                            preview: {
+                                id: number;
+                                name: string;
+                                category: string | null;
+                                photo_url: string | null;
+                                logo_url: string | null;
+                                bio: string | null;
+                                services: string[];
+                                specialities: string[];
+                                response_hours: number | null;
+                                resources: {
+                                    title: string;
+                                    url: string;
+                                }[];
+                                sessions: {
+                                    title: string;
+                                    minutes: number;
+                                }[];
+                                licence: {
+                                    kind: string;
+                                    number: string | null;
+                                    verified: boolean;
+                                    checked_at: string | null;
+                                    via: string | null;
+                                };
+                                areas: string[];
+                                tier: string | null;
+                                live: boolean;
+                            } | null;
+                            response_choices: number[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "providers.index": {
+        parameters: {
+            query?: {
+                category?: string;
+                place?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            name: string;
+                            category: string | null;
+                            photo_url: string | null;
+                            logo_url: string | null;
+                            bio: string | null;
+                            services: string[];
+                            specialities: string[];
+                            response_hours: number | null;
+                            resources: {
+                                title: string;
+                                url: string;
+                            }[];
+                            sessions: {
+                                title: string;
+                                minutes: number;
+                            }[];
+                            licence: {
+                                kind: string;
+                                number: string | null;
+                                verified: boolean;
+                                checked_at: string | null;
+                                via: string | null;
+                            };
+                            areas: string[];
+                            tier: string | null;
+                            live: boolean;
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "providers.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                profile: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            name: string;
+                            category: string | null;
+                            photo_url: string | null;
+                            logo_url: string | null;
+                            bio: string | null;
+                            services: string[];
+                            specialities: string[];
+                            response_hours: number | null;
+                            resources: {
+                                title: string;
+                                url: string;
+                            }[];
+                            sessions: {
+                                title: string;
+                                minutes: number;
+                            }[];
+                            licence: {
+                                kind: string;
+                                number: string | null;
+                                verified: boolean;
+                                checked_at: string | null;
+                                via: string | null;
+                            };
+                            areas: string[];
+                            tier: string | null;
+                            live: boolean;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
             /** @description Too many requests */
             429: {
                 headers: {

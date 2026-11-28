@@ -1,4 +1,4 @@
-import { acceptRules, addArea, areaParts, chooseCategory, lowestPrice, nextStep, requestCategory, saveAnswers, startPlan, type Onboarding, type ProviderCategory } from './providers';
+import { acceptRules, addArea, areaParts, chooseCategory, loadProviders, lowestPrice, nextStep, requestCategory, saveAnswers, saveProfile, splitList, startPlan, type Onboarding, type ProviderCategory } from './providers';
 
 const mockApi = { GET: jest.fn(), POST: jest.fn(), PUT: jest.fn() };
 jest.mock('@/lib/api', () => ({ api: () => mockApi }));
@@ -73,5 +73,21 @@ describe('the joining steps on the phone (B15.2)', () => {
     mockApi.POST.mockResolvedValueOnce({ data: { data: onboarding } });
     await acceptRules('2026-11-30');
     expect(mockApi.POST).toHaveBeenLastCalledWith('/provider/join/rules', { body: { version: '2026-11-30', accept: true } });
+  });
+});
+
+describe('the provider profile on the phone (B15.3)', () => {
+  beforeEach(() => jest.clearAllMocks());
+
+  it('splits lists and shows why a save was refused', async () => {
+    expect(splitList(' FHA loans, VA loans ,, ')).toEqual(['FHA loans', 'VA loans']);
+    mockApi.PUT.mockResolvedValueOnce({ data: undefined, error: { errors: { bio: ['Take out phone numbers, emails and web addresses. Agents reach you through REOS.'] } } });
+    await expect(saveProfile({ bio: 'Call 281 555 0142', bio_es: null, services: [], specialities: [], response_hours: 2, resources: [], sessions: [] })).rejects.toThrow('Take out phone numbers');
+  });
+
+  it('finds verified providers by place', async () => {
+    mockApi.GET.mockResolvedValueOnce({ data: { data: [] } });
+    await loadProviders(undefined, 'Katy');
+    expect(mockApi.GET).toHaveBeenCalledWith('/providers', { params: { query: { category: undefined, place: 'Katy' } } });
   });
 });
