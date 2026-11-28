@@ -2820,6 +2820,106 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/provider/categories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Provider categories
+         * @description The live categories with what each checks and asks for, and the flat monthly plan prices (cents) in a state.
+         */
+        get: operations["provider.categories"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/provider/categories/requests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Request a category
+         * @description For work that isn't listed: it goes to REOS as a requested category, counted once per person.
+         */
+        post: operations["provider.categories.request"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/provider/profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My provider profile so far
+         * @description The category chosen, its fields and my answers, and which fields are still empty.
+         */
+        get: operations["provider.profile"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/provider/profile/category": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Choose my category
+         * @description Answers to fields the new category doesn't have are dropped.
+         */
+        put: operations["provider.profile.category"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/provider/profile/fields": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Answer my profile fields
+         * @description Text, a list of values (from the category's options when it has them) or true/false, per field key.
+         */
+        put: operations["provider.profile.fields"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/learn/courses": {
         parameters: {
             query?: never;
@@ -7173,6 +7273,15 @@ export interface components {
          */
         CatalogueStatus: "enabled" | "beta" | "coming_soon" | "paused" | "retired";
         /**
+         * CategoryRequestRequest
+         * @description Ask REOS to add a category that isn't listed (B15.1).
+         */
+        CategoryRequestRequest: {
+            /** @description What the provider does, such as "Home stager". */
+            name: string;
+            note?: string | null;
+        };
+        /**
          * CheckLicenceRequest
          * @description Look a licence number up before adding it (agent journey screen 149).
          */
@@ -7180,6 +7289,13 @@ export interface components {
             /** @description The state's two-letter code, for example `TX`. */
             state: string;
             number: string;
+        };
+        /**
+         * ChooseCategoryRequest
+         * @description The category a provider joins (B15.1).
+         */
+        ChooseCategoryRequest: {
+            category: string;
         };
         /**
          * ChooseStateRequest
@@ -8018,6 +8134,16 @@ export interface components {
             ask_broker?: string | null;
         };
         /**
+         * ProfileFieldsRequest
+         * @description Answers to the category's profile fields, by field key (B15.1); each is checked against its type.
+         */
+        ProfileFieldsRequest: {
+            /** @description Field key => text, a list of strings, or true/false. */
+            fields: {
+                [key: string]: string | boolean | string[];
+            };
+        };
+        /**
          * ProviderLicenceRequest
          * @description A provider's professional licence: its kind and number (B10.3).
          */
@@ -8706,7 +8832,9 @@ export type SchemaCalendarEventResource = components['schemas']['CalendarEventRe
 export type SchemaCalendarMode = components['schemas']['CalendarMode'];
 export type SchemaCatalogueItemResource = components['schemas']['CatalogueItemResource'];
 export type SchemaCatalogueStatus = components['schemas']['CatalogueStatus'];
+export type SchemaCategoryRequestRequest = components['schemas']['CategoryRequestRequest'];
 export type SchemaCheckLicenceRequest = components['schemas']['CheckLicenceRequest'];
+export type SchemaChooseCategoryRequest = components['schemas']['ChooseCategoryRequest'];
 export type SchemaChooseStateRequest = components['schemas']['ChooseStateRequest'];
 export type SchemaClassPollRequest = components['schemas']['ClassPollRequest'];
 export type SchemaConnectionResource = components['schemas']['ConnectionResource'];
@@ -8765,6 +8893,7 @@ export type SchemaPhoneVerifyRequest = components['schemas']['PhoneVerifyRequest
 export type SchemaPlanTaskRequest = components['schemas']['PlanTaskRequest'];
 export type SchemaPolicyCheckRequest = components['schemas']['PolicyCheckRequest'];
 export type SchemaPostRequest = components['schemas']['PostRequest'];
+export type SchemaProfileFieldsRequest = components['schemas']['ProfileFieldsRequest'];
 export type SchemaProviderLicenceRequest = components['schemas']['ProviderLicenceRequest'];
 export type SchemaPushDeviceRequest = components['schemas']['PushDeviceRequest'];
 export type SchemaQuizAttemptRequest = components['schemas']['QuizAttemptRequest'];
@@ -18036,6 +18165,280 @@ export interface operations {
                             }[];
                             invited_by: string | null;
                             can_claim: boolean;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "provider.categories": {
+        parameters: {
+            query?: {
+                state?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            key: string;
+                            name: string;
+                            description: string | null;
+                            licence: {
+                                /** @enum {string} */
+                                kind: "nmls" | "trec_inspector" | "tdi" | "business";
+                                label: string | null;
+                            };
+                            fields: {
+                                key: string;
+                                label: string;
+                                /** @enum {string} */
+                                type: "text" | "list" | "yes_no";
+                                options: string[];
+                            }[];
+                            areas_on_pro: number;
+                            prices: {
+                                basic: number | null;
+                                pro: number | null;
+                                premium: number | null;
+                            };
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "provider.categories.request": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CategoryRequestRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            key: string;
+                            name: string;
+                            status: string;
+                            requests: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "provider.profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            category: {
+                                key: string;
+                                name: string;
+                                description: string | null;
+                                licence: {
+                                    /** @enum {string} */
+                                    kind: "nmls" | "trec_inspector" | "tdi" | "business";
+                                    label: string | null;
+                                };
+                                fields: {
+                                    key: string;
+                                    label: string;
+                                    /** @enum {string} */
+                                    type: "text" | "list" | "yes_no";
+                                    options: string[];
+                                }[];
+                                areas_on_pro: number;
+                                prices: {
+                                    basic: number | null;
+                                    pro: number | null;
+                                    premium: number | null;
+                                };
+                            } | null;
+                            fields: {
+                                [key: string]: string | boolean | string[];
+                            };
+                            missing: string[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "provider.profile.category": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChooseCategoryRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            category: {
+                                key: string;
+                                name: string;
+                                description: string | null;
+                                licence: {
+                                    /** @enum {string} */
+                                    kind: "nmls" | "trec_inspector" | "tdi" | "business";
+                                    label: string | null;
+                                };
+                                fields: {
+                                    key: string;
+                                    label: string;
+                                    /** @enum {string} */
+                                    type: "text" | "list" | "yes_no";
+                                    options: string[];
+                                }[];
+                                areas_on_pro: number;
+                                prices: {
+                                    basic: number | null;
+                                    pro: number | null;
+                                    premium: number | null;
+                                };
+                            } | null;
+                            fields: {
+                                [key: string]: string | boolean | string[];
+                            };
+                            missing: string[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "provider.profile.fields": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProfileFieldsRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            category: {
+                                key: string;
+                                name: string;
+                                description: string | null;
+                                licence: {
+                                    /** @enum {string} */
+                                    kind: "nmls" | "trec_inspector" | "tdi" | "business";
+                                    label: string | null;
+                                };
+                                fields: {
+                                    key: string;
+                                    label: string;
+                                    /** @enum {string} */
+                                    type: "text" | "list" | "yes_no";
+                                    options: string[];
+                                }[];
+                                areas_on_pro: number;
+                                prices: {
+                                    basic: number | null;
+                                    pro: number | null;
+                                    premium: number | null;
+                                };
+                            } | null;
+                            fields: {
+                                [key: string]: string | boolean | string[];
+                            };
+                            missing: string[];
                         };
                     };
                 };

@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ProviderCategoryRequest;
 use App\Models\ProviderCategory;
 use App\Models\ProviderCategoryPrice;
+use App\Models\ProviderCategoryRequest as CategoryAsk;
 use App\Models\State;
 use App\Models\User;
 use App\Services\ProviderCategories;
@@ -27,7 +28,8 @@ final class ProviderCategoryController extends Controller
     public function index(): Response
     {
         return Inertia::render('admin/provider-categories/index', [
-            'categories' => ProviderCategory::query()->with('prices')
+            'categories' => ProviderCategory::query()->with('prices')->withCount('profiles')
+                ->with(['requestNotes' => static fn ($q) => $q->whereNotNull('note')->latest()->limit(3)])
                 ->orderByRaw("CASE status WHEN 'live' THEN 0 WHEN 'draft' THEN 1 WHEN 'requested' THEN 2 ELSE 3 END")->orderBy('name')->get()
                 ->map(static fn (ProviderCategory $c): array => [
                     'id' => $c->id,
@@ -35,18 +37,23 @@ final class ProviderCategoryController extends Controller
                     'name' => $c->name,
                     'description' => $c->description,
                     'licence_check' => $c->licence_check,
+                    'licence_kind' => $c->licence_kind,
                     'verification' => $c->verification,
                     'profile_fields' => $c->profile_fields ?? [],
                     'special_permissions' => $c->special_permissions,
                     'areas_on_pro' => $c->areas_on_pro,
                     'status' => $c->status,
                     'requests' => $c->requests,
-                    // Providers sign up with the provider app (Sprint 9); none yet.
-                    'providers' => 0,
+                    // What providers wrote when they asked for it (B15.1).
+                    'request_notes' => $c->requestNotes->map(static fn (CategoryAsk $r): string => (string) $r->note)->values()->all(),
+                    // Providers who chose it while joining (B15.1).
+                    'providers' => $c->profiles_count,
                     'prices' => $c->prices->map(static fn (ProviderCategoryPrice $p): array => ['state' => $p->state_code, 'tier' => $p->tier, 'monthly' => $p->monthly_cents])->values()->all(),
                 ])->values()->all(),
             'options' => [
                 'tiers' => ProviderCategory::TIERS,
+                'field_types' => ProviderCategory::FIELD_TYPES,
+                'licence_kinds' => ProviderCategory::LICENCE_KINDS,
                 'statuses' => ProviderCategory::STATUSES,
                 'states' => State::query()->orderBy('name')->get(['code', 'name'])->map(static fn (State $s): array => ['code' => $s->code, 'name' => $s->name])->values()->all(),
             ],

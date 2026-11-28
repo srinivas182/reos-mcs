@@ -76,6 +76,7 @@ use App\Http\Controllers\Api\Practice\SpeedRoundController;
 use App\Http\Controllers\Api\Practice\StudyGroupController;
 use App\Http\Controllers\Api\Practice\TopicPlanController;
 use App\Http\Controllers\Api\Privacy\ConsentController;
+use App\Http\Controllers\Api\Providers\JoiningController;
 use App\Http\Controllers\Api\Providers\ProviderLicenceController;
 use App\Http\Controllers\Api\Releases\WhatsNewController;
 use App\Http\Controllers\Api\Rewards\RewardsController;
@@ -468,6 +469,12 @@ Route::middleware('auth:sanctum')->group(function () {
     // A provider's professional licences (B10.3): TREC inspector, TDI, NMLS.
     Route::get('provider/licences', [ProviderLicenceController::class, 'index'])->name('api.provider.licences.index');
     Route::post('provider/licences', [ProviderLicenceController::class, 'store'])->middleware('throttle:10,1,api-provider-licences')->name('api.provider.licences.store');
+    // Joining as a provider (B15.1): categories from the admin's settings, requests, profile fields.
+    Route::get('provider/categories', [JoiningController::class, 'categories'])->name('api.provider.categories');
+    Route::post('provider/categories/requests', [JoiningController::class, 'request'])->middleware('throttle:5,1,api-provider-category-request')->name('api.provider.categories.request');
+    Route::get('provider/profile', [JoiningController::class, 'show'])->name('api.provider.profile');
+    Route::put('provider/profile/category', [JoiningController::class, 'choose'])->middleware('throttle:30,1,api-provider-profile')->name('api.provider.profile.category');
+    Route::put('provider/profile/fields', [JoiningController::class, 'fields'])->middleware('throttle:30,1,api-provider-profile')->name('api.provider.profile.fields');
     // CMAs for my listings and my public page (B10.2b).
     Route::get('listings/{listing}/cma', [CmaController::class, 'show'])->whereUuid('listing')->middleware('throttle:30,1,api-listing-cma')->name('api.listings.cma');
     Route::get('listings/page', [CmaController::class, 'page'])->name('api.listings.page');

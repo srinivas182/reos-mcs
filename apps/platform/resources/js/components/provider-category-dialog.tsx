@@ -13,11 +13,20 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { nativeSelect } from '@/lib/tenants';
 import { store, update } from '@/routes/provider-categories';
 
 export type Tier = 'basic' | 'pro' | 'premium';
+export type FieldType = 'text' | 'list' | 'yes_no';
+export type LicenceKind = 'nmls' | 'trec_inspector' | 'tdi';
+
+/** A profile field providers fill in when joining (B15.1). */
+export type ProfileField = {
+    key: string;
+    label: string;
+    type: FieldType;
+    options: string[];
+};
 export type CategoryStatus = 'live' | 'draft' | 'requested' | 'retired';
 
 export type ProviderCategoryRow = {
@@ -26,18 +35,22 @@ export type ProviderCategoryRow = {
     name: string;
     description: string | null;
     licence_check: string | null;
+    licence_kind: LicenceKind | null;
     verification: string | null;
-    profile_fields: string[];
+    profile_fields: ProfileField[];
     special_permissions: string | null;
     areas_on_pro: number;
     status: CategoryStatus;
     requests: number;
+    request_notes: string[];
     providers: number;
     prices: { state: string; tier: Tier; monthly: number }[];
 };
 
 export type CategoryOptions = {
     tiers: Tier[];
+    field_types: FieldType[];
+    licence_kinds: LicenceKind[];
     statuses: CategoryStatus[];
     states: { code: string; name: string }[];
 };
@@ -114,7 +127,7 @@ function CategoryForm({
         name: category?.name ?? '',
         licence_check: category?.licence_check ?? '',
         verification: category?.verification ?? '',
-        profile_fields: (category?.profile_fields ?? []).join('\n'),
+        licence_kind: category?.licence_kind ?? '',
         special_permissions: category?.special_permissions ?? '',
         areas_on_pro: String(category?.areas_on_pro ?? 3),
         status: category?.status ?? 'draft',
@@ -133,12 +146,35 @@ function CategoryForm({
                 ]),
             ),
     );
+    const [fields, setFields] = useState<
+        { label: string; type: FieldType; options: string }[]
+    >(() =>
+        (category?.profile_fields ?? []).map((f) => ({
+            label: f.label,
+            type: f.type,
+            options: f.options.join(', '),
+        })),
+    );
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [processing, setProcessing] = useState(false);
 
     const submit = () => {
         const payload = {
             ...draft,
+            licence_kind: draft.licence_kind === '' ? null : draft.licence_kind,
+            profile_fields: fields
+                .filter((f) => f.label.trim() !== '')
+                .map((f) => ({
+                    label: f.label.trim(),
+                    type: f.type,
+                    options:
+                        f.type === 'list'
+                            ? f.options
+                                  .split(',')
+                                  .map((o) => o.trim())
+                                  .filter((o) => o !== '')
+                            : [],
+                })),
             areas_on_pro: Number(draft.areas_on_pro),
             prices: Object.entries(prices).flatMap(([code, tiers]) =>
                 Object.entries(tiers)
@@ -165,7 +201,11 @@ function CategoryForm({
         }
     };
 
-    const field = (key: keyof typeof draft, label: string, max = 200) => (
+    const field = (
+        key: Exclude<keyof typeof draft, 'licence_kind' | 'status'>,
+        label: string,
+        max = 200,
+    ) => (
         <div className="grid gap-2">
             <Label htmlFor={`category-${key}`}>{label}</Label>
             <Input
@@ -199,18 +239,146 @@ function CategoryForm({
                 )}
             </div>
             <div className="grid gap-2">
-                <Label htmlFor="category-fields">
-                    {t('providerCategories.fields.profileFields')}
+                <Label htmlFor="category-licence-kind">
+                    {t('providerCategories.fields.licenceKind')}
                 </Label>
-                <Textarea
-                    id="category-fields"
-                    rows={3}
-                    value={draft.profile_fields}
+                <select
+                    id="category-licence-kind"
+                    className={nativeSelect}
+                    value={draft.licence_kind}
                     onChange={(e) =>
-                        setDraft({ ...draft, profile_fields: e.target.value })
+                        setDraft({
+                            ...draft,
+                            licence_kind: e.target.value as LicenceKind | '',
+                        })
                     }
-                />
+                >
+                    <option value="">
+                        {t('providerCategories.licenceKinds.none')}
+                    </option>
+                    {options.licence_kinds.map((k) => (
+                        <option key={k} value={k}>
+                            {t(`providerCategories.licenceKinds.${k}`)}
+                        </option>
+                    ))}
+                </select>
+                <InputError message={errors.licence_kind} />
             </div>
+            <fieldset className="space-y-3 rounded-reos-md border border-border p-3">
+                <legend className="px-1 font-medium">
+                    {t('providerCategories.fields.profileFields')}
+                </legend>
+                {fields.length === 0 ? (
+                    <p className="text-base text-muted-foreground">
+                        {t('providerCategories.fields.noFields')}
+                    </p>
+                ) : null}
+                {fields.map((f, i) => {
+                    const n = i + 1;
+                    const set = (patch: Partial<typeof f>) =>
+                        setFields(
+                            fields.map((x, j) =>
+                                j === i ? { ...x, ...patch } : x,
+                            ),
+                        );
+
+                    return (
+                        <div
+                            key={i}
+                            className="grid gap-2 rounded-reos-md bg-muted/40 p-3 sm:grid-cols-[1fr_auto]"
+                        >
+                            <div className="grid gap-2">
+                                <Label htmlFor={`category-field-${i}`}>
+                                    {t('providerCategories.fields.fieldLabel', {
+                                        n,
+                                    })}
+                                </Label>
+                                <Input
+                                    id={`category-field-${i}`}
+                                    value={f.label}
+                                    maxLength={80}
+                                    onChange={(e) =>
+                                        set({ label: e.target.value })
+                                    }
+                                />
+                            </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor={`category-field-type-${i}`}>
+                                    {t('providerCategories.fields.fieldType', {
+                                        n,
+                                    })}
+                                </Label>
+                                <select
+                                    id={`category-field-type-${i}`}
+                                    className={nativeSelect}
+                                    value={f.type}
+                                    onChange={(e) =>
+                                        set({
+                                            type: e.target.value as FieldType,
+                                        })
+                                    }
+                                >
+                                    {options.field_types.map((type) => (
+                                        <option key={type} value={type}>
+                                            {t(
+                                                `providerCategories.fieldTypes.${type}`,
+                                            )}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            {f.type === 'list' ? (
+                                <div className="grid gap-2 sm:col-span-2">
+                                    <Label
+                                        htmlFor={`category-field-options-${i}`}
+                                    >
+                                        {t(
+                                            'providerCategories.fields.fieldOptions',
+                                            { n },
+                                        )}
+                                    </Label>
+                                    <Input
+                                        id={`category-field-options-${i}`}
+                                        value={f.options}
+                                        onChange={(e) =>
+                                            set({ options: e.target.value })
+                                        }
+                                    />
+                                </div>
+                            ) : null}
+                            <Button
+                                type="button"
+                                variant="outline"
+                                className="sm:col-span-2 sm:justify-self-start"
+                                onClick={() =>
+                                    setFields(fields.filter((_, j) => j !== i))
+                                }
+                            >
+                                {t('providerCategories.fields.removeField', {
+                                    n,
+                                })}
+                            </Button>
+                            <InputError
+                                message={errors[`profile_fields.${i}.label`]}
+                            />
+                        </div>
+                    );
+                })}
+                {fields.length < 20 ? (
+                    <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() =>
+                            setFields([
+                                ...fields,
+                                { label: '', type: 'text', options: '' },
+                            ])
+                        }
+                    >
+                        {t('providerCategories.fields.addField')}
+                    </Button>
+                ) : null}
+            </fieldset>
             {field(
                 'special_permissions',
                 t('providerCategories.fields.permissions'),

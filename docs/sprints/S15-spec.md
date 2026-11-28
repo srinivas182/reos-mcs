@@ -139,6 +139,23 @@
 - Request a new category from onboarding into the admin's queue (the category is "requested", with a count).
 - Profile field types: text, list and yes/no.
 - **Done when:** the admin adds a new category without code and a provider can join it.
+- **As built, B15.1** (ADR 0073):
+  - **Data:**
+    - `provider_categories.licence_kind`: nmls, trec_inspector, tdi, or empty for business details and an ID, set from the old text.
+    - Typed `profile_fields` (`{key, label, type, options}`), converted from plain labels.
+    - `provider_category_requests`: one per person, with a note.
+    - `provider_profiles`: the chosen category and its answers.
+  - **Services:**
+    - `App\ProviderNetwork\ProviderJoining`: categories (the grid with prices in the state), request, profile, choose and answer (checked by type).
+    - `ProviderCategories::fields`: keys from labels.
+  - **Routes:**
+    - API: `GET /api/v1/provider/categories`, `POST /api/v1/provider/categories/requests`, `GET /api/v1/provider/profile`, `PUT /api/v1/provider/profile/category` and `PUT /api/v1/provider/profile/fields`.
+    - Web: the same actions, and `/provider/join`.
+  - **Web:**
+    - Screen 68: the category dialog edits fields as rows (label, type, values) and sets the licence step. The side panel shows each field's type and what requesting providers wrote, and the providers count is real.
+    - Join the provider network (`category-step`): the grid, the fields and Request a category.
+  - **Phone:** Me → Join the provider network (`provider/join`), with the same steps.
+  - **Done when:** a Pest test has the super admin add "Home stager" with a text, list and yes/no field and Texas prices. Dana Brooks sees it with its prices and licence step, chooses it, and is refused a value outside the list, a word for yes/no and an empty text before her answers save. Requests count once per person and show in the admin's queue with the note.
 
 ### B15.2 Provider onboarding (Team B)
 

@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
-import { ArrowLeftRight, Bell, Camera, Building2, Compass, DoorOpen, Download, Gift, GraduationCap, IdCard, Languages, Map, MapPin, Megaphone, Plug, ShieldCheck, Users, Wallet } from 'lucide-react-native';
+import { ArrowLeftRight, Bell, Camera, Building2, Compass, DoorOpen, Download, Gift, GraduationCap, IdCard, Languages, Map, MapPin, Megaphone, Plug, ShieldCheck, Users, Wallet, Wrench } from 'lucide-react-native';
 import { useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -99,6 +99,8 @@ export default function MeScreen() {
         {current?.role === 'agent' ? <MenuRow icon={MapPin} title={t('leads.farm.title')} onPress={() => router.push('/farming')} /> : null}
         {/* Your brokerage (A15.1, broker journey screens 1–4): setup, agents, seats. Anyone else can set one up. */}
         <MenuRow icon={Building2} title={current?.role === 'broker' ? t('brokerage.setup.title') : t('brokerage.verify.title')} onPress={() => router.push(current?.role === 'broker' ? '/brokerage' : '/brokerage/verify')} />
+        {/* Join the provider network (B15.1, provider screen 2): categories from the admin's settings. */}
+        {current?.role === 'provider' ? null : <MenuRow icon={Wrench} title={t('providers.join.title')} onPress={() => router.push('/provider/join')} />}
         {/* My posts and results (B11, screen 169). */}
         {current?.role === 'agent' ? <MenuRow icon={Megaphone} title={t('social.posts.title')} onPress={() => router.push('/social')} /> : null}
         {current?.role === 'agent' ? <MenuRow icon={Camera} title={t('studio.brand.title')} onPress={() => router.push('/social/brand')} /> : null}
