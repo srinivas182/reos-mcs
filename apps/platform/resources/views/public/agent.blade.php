@@ -106,6 +106,47 @@
         </dl>
     </section>
 
+    <section id="contact" aria-labelledby="agent-contact" class="space-y-4">
+        <h2 id="agent-contact" class="text-xl font-semibold">{{ __('leads.page.title', ['name' => $page['name']]) }}</h2>
+        @if (session('lead_sent'))
+            <p role="status" class="rounded-reos-lg bg-reos-tone-success-bg p-5 text-base text-reos-tone-success-fg">{{ __('leads.page.thanks', ['name' => $page['name']]) }}</p>
+        @else
+            <form method="POST" action="{{ route('agent-pages.contact', $page['handle']) }}" class="grid gap-4 rounded-reos-lg border border-border bg-card p-5 sm:grid-cols-2">
+                @csrf
+                @if ($errors->any())
+                    <p role="alert" class="rounded-reos-md bg-reos-tone-danger-bg p-3 text-base text-reos-tone-danger-fg sm:col-span-2">{{ $errors->first() }}</p>
+                @endif
+                <div class="hidden" aria-hidden="true"><label for="website">Website</label><input id="website" name="website" tabindex="-1" autocomplete="off"></div>
+                <div class="space-y-2 sm:col-span-2">
+                    <label for="lead-name" class="text-base font-medium">{{ __('leads.form.name') }}</label>
+                    <input id="lead-name" name="name" required minlength="2" maxlength="120" autocomplete="name" value="{{ old('name') }}" class="h-12 w-full rounded-reos-md border border-input bg-background px-3 text-base">
+                </div>
+                <div class="space-y-2">
+                    <label for="lead-email" class="text-base font-medium">{{ __('leads.form.email') }}</label>
+                    <input id="lead-email" name="email" type="email" maxlength="160" autocomplete="email" value="{{ old('email') }}" class="h-12 w-full rounded-reos-md border border-input bg-background px-3 text-base">
+                </div>
+                <div class="space-y-2">
+                    <label for="lead-phone" class="text-base font-medium">{{ __('leads.form.phone') }}</label>
+                    <input id="lead-phone" name="phone" type="tel" maxlength="30" autocomplete="tel" value="{{ old('phone') }}" class="h-12 w-full rounded-reos-md border border-input bg-background px-3 text-base">
+                </div>
+                <div class="space-y-2 sm:col-span-2">
+                    <label for="lead-message" class="text-base font-medium">{{ __('leads.form.message') }}</label>
+                    <textarea id="lead-message" name="message" required rows="4" maxlength="1500" class="w-full rounded-reos-md border border-input bg-background p-3 text-base">{{ old('message') }}</textarea>
+                </div>
+                <label class="flex min-h-12 items-start gap-3 text-base sm:col-span-2">
+                    <input type="hidden" name="has_agent" value="0">
+                    <input type="checkbox" name="has_agent" value="1" class="mt-1 size-5">
+                    <span>{{ __('leads.form.hasAgent') }}</span>
+                </label>
+                <label class="flex min-h-12 items-start gap-3 text-base sm:col-span-2">
+                    <input type="checkbox" name="consent" value="1" required class="mt-1 size-5">
+                    <span>{{ __('leads.form.consent', ['agent' => $page['name']]) }}</span>
+                </label>
+                <button type="submit" class="inline-flex min-h-12 items-center justify-center rounded-reos-md bg-primary px-5 text-base font-semibold text-primary-foreground sm:col-span-2 sm:justify-self-start">{{ __('leads.page.send') }}</button>
+            </form>
+        @endif
+    </section>
+
     <footer class="flex flex-wrap gap-x-6 gap-y-2 border-t border-border pt-6 text-base">
         <a class="underline" href="{{ \App\Compliance\TexasAdRules::IABS }}" rel="noopener">{{ __('listings.public.iabs') }}</a>
         <a class="underline" href="{{ \App\Compliance\TexasAdRules::CPN }}" rel="noopener">{{ __('listings.public.cpn') }}</a>

@@ -95,7 +95,8 @@
     "complianceLog": "Compliance log",
     "candidateStudio": "Candidate studio",
     "rolePlay": "Role-play",
-    "videoPractice": "Video practice"
+    "videoPractice": "Video practice",
+    "openHouses": "Open houses"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -5631,7 +5632,8 @@
       "post_approval": "Post approvals",
       "post_decision": "Your broker's decisions on posts",
       "celebration": "Celebration posts",
-      "agent_feedback": "Feedback from agents"
+      "agent_feedback": "Feedback from agents",
+      "new_lead": "New leads"
     },
     "digest": {
       "subject": {
@@ -10433,6 +10435,92 @@
       "noneHint": "Add a client to share the deal with them.",
       "en": "English",
       "es": "Spanish"
+    }
+  },
+  "leads": {
+    "openHouse": {
+      "title": "Open house: {{address}}",
+      "purpose": "Sign in to the open house hosted by {{agent}}.",
+      "welcome": "Welcome to the open house",
+      "hostedBy": "Hosted by {{agent}}",
+      "thanks": "Thank you for signing in. Enjoy the home!",
+      "signIn": "Sign in",
+      "note": "Signed in at the open house at {{address}} on {{date}}. {{agent}} {{approved}} Timeline: {{timeline}}.",
+      "hasAgent": "Already working with an agent.",
+      "noAgent": "Not working with an agent.",
+      "approved": "Pre-approved for a loan.",
+      "notApproved": "Not pre-approved yet.",
+      "draft": "Hi {{name}}, thanks for visiting {{address}} today. Do you have any questions about the home, or would you like the details of similar homes nearby? {{agent}}",
+      "tag": "Open house",
+      "pageTitle": "Open houses",
+      "pagePurpose": "Start sign-in for an open house: visitors scan the QR code or sign in on your phone, and each lands in your contacts with a follow-up.",
+      "start": "Start sign-in",
+      "address": "Address",
+      "city": "City",
+      "startsAt": "Starts",
+      "endsAt": "Ends",
+      "open": "Sign-in open",
+      "closed": "Sign-in closed",
+      "visits_one": "{{count}} visitor",
+      "visits_other": "{{count}} visitors",
+      "qrAlt": "QR code to sign in at {{address}}",
+      "link": "Sign-in link",
+      "visitors": "Who signed in",
+      "none": "No open houses yet",
+      "noneHint": "Start sign-in before your next open house.",
+      "noVisits": "Nobody has signed in yet.",
+      "kiosk": "Sign-in on this phone",
+      "kioskHint": "Hand your phone to visitors. Sign-ins are saved on the phone and sent when it's online.",
+      "waiting_one": "{{count}} sign-in waiting to send",
+      "waiting_other": "{{count}} sign-ins waiting to send",
+      "next": "Next visitor",
+      "saved": "Thanks! Saved.",
+      "withAgent": "Has an agent",
+      "preApproved": "Pre-approved",
+      "openContact": "Open contact",
+      "startNow": "Sign-in opens now and closes three hours after.",
+      "sendNow": "Send now",
+      "allSent": "All sign-ins sent.",
+      "done": "Done"
+    },
+    "page": {
+      "title": "Ask {{name}} a question",
+      "send": "Send",
+      "thanks": "Thank you. {{name}} will get back to you soon.",
+      "note": "Wrote from your page: “{{message}}”",
+      "draft": "Hi {{name}}, thanks for your message. I'd be glad to help. When is a good time to talk? {{agent}}",
+      "tag": "Agent page"
+    },
+    "form": {
+      "name": "Your name",
+      "email": "Email",
+      "phone": "Phone",
+      "oneOf": "An email or a phone number, so the agent can reach you.",
+      "timeline": "When are you hoping to move?",
+      "choose": "Choose one",
+      "hasAgent": "I'm already working with a real estate agent",
+      "preApproved": "I'm pre-approved for a loan",
+      "consent": "{{agent}} may contact me about this home and similar homes. I can ask them to stop at any time.",
+      "message": "Your question"
+    },
+    "timelines": {
+      "now": "Now",
+      "3_months": "In 3 months",
+      "6_months": "In 6 months",
+      "later": "Later",
+      "just_looking": "Just looking"
+    },
+    "followUp": {
+      "draft": "Suggested first message: {{draft}}",
+      "hasAgent": "They're working with another agent: send only what they asked for. Suggested message: {{draft}}",
+      "task": "Follow up with {{name}}",
+      "taskHasAgent": "Send {{name}} what they asked for"
+    },
+    "notify": {
+      "open_house": "{{name}} signed in at your open house",
+      "page": "{{name}} wrote from your page",
+      "body": "They're in your contacts with a follow-up for tomorrow.",
+      "open": "Open contact"
     }
   }
 }

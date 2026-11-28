@@ -36871,6 +36871,388 @@
                 }
             }
         },
+        "/open-houses": {
+            "get": {
+                "operationId": "open-houses.index",
+                "description": "Newest first, with the sign-in link and QR code, whether sign-in is open (an hour before to six hours after), and how many signed in.",
+                "summary": "My open houses",
+                "tags": [
+                    "OpenHouse"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string"
+                                                    },
+                                                    "address": {
+                                                        "type": "string"
+                                                    },
+                                                    "city": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "starts_at": {
+                                                        "type": "string"
+                                                    },
+                                                    "ends_at": {
+                                                        "type": "string"
+                                                    },
+                                                    "open": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "url": {
+                                                        "type": "string"
+                                                    },
+                                                    "qr_url": {
+                                                        "type": "string"
+                                                    },
+                                                    "visits": {
+                                                        "type": "integer"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "address",
+                                                    "city",
+                                                    "starts_at",
+                                                    "ends_at",
+                                                    "open",
+                                                    "url",
+                                                    "qr_url",
+                                                    "visits"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "open-houses.store",
+                "summary": "Start an open house",
+                "tags": [
+                    "OpenHouse"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/OpenHouseRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "address": {
+                                                    "type": "string"
+                                                },
+                                                "city": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "starts_at": {
+                                                    "type": "string"
+                                                },
+                                                "ends_at": {
+                                                    "type": "string"
+                                                },
+                                                "open": {
+                                                    "type": "boolean"
+                                                },
+                                                "url": {
+                                                    "type": "string"
+                                                },
+                                                "qr_url": {
+                                                    "type": "string"
+                                                },
+                                                "visits": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "address",
+                                                "city",
+                                                "starts_at",
+                                                "ends_at",
+                                                "open",
+                                                "url",
+                                                "qr_url",
+                                                "visits"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/open-houses/{openHouse}/visits": {
+            "get": {
+                "operationId": "open-houses.visits",
+                "summary": "Who signed in",
+                "tags": [
+                    "OpenHouse"
+                ],
+                "parameters": [
+                    {
+                        "name": "openHouse",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string"
+                                                    },
+                                                    "name": {
+                                                        "type": "string"
+                                                    },
+                                                    "email": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "phone": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "has_agent": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "pre_approved": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "timeline": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ],
+                                                        "enum": [
+                                                            "now",
+                                                            "3_months",
+                                                            "6_months",
+                                                            "later",
+                                                            "just_looking",
+                                                            null
+                                                        ]
+                                                    },
+                                                    "source": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "qr",
+                                                            "kiosk"
+                                                        ]
+                                                    },
+                                                    "signed_in_at": {
+                                                        "type": "string"
+                                                    },
+                                                    "contact": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "name",
+                                                    "email",
+                                                    "phone",
+                                                    "has_agent",
+                                                    "pre_approved",
+                                                    "timeline",
+                                                    "source",
+                                                    "signed_in_at",
+                                                    "contact"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "open-houses.sync",
+                "description": "Sign-ins made on my phone or tablet in kiosk mode, possibly offline. Each lands once, by its `client_id`, in my CRM with a follow-up.",
+                "summary": "Send kiosk sign-ins",
+                "tags": [
+                    "OpenHouse"
+                ],
+                "parameters": [
+                    {
+                        "name": "openHouse",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SyncVisitsRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "added": {
+                                                    "type": "integer"
+                                                },
+                                                "duplicates": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "required": [
+                                                "added",
+                                                "duplicates"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
         "/licence-journey/news": {
             "post": {
                 "operationId": "licence.news",
@@ -63074,6 +63456,38 @@
                 ],
                 "title": "OnboardingResource"
             },
+            "OpenHouseRequest": {
+                "type": "object",
+                "description": "An open house to run sign-in for (B14.3a).",
+                "properties": {
+                    "address": {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 160
+                    },
+                    "city": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 80
+                    },
+                    "starts_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "ends_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "address",
+                    "starts_at",
+                    "ends_at"
+                ],
+                "title": "OpenHouseRequest"
+            },
             "OrganisationType": {
                 "type": "string",
                 "description": "Kinds of organisation (tenant) a role can belong to (A3.2, A4.1).\n| |\n|---|\n| `platform` <br/> REOS itself: super admins, and people who joined on their own. |\n| `brokerage` <br/>  |\n| `school` <br/>  |\n| `association` <br/>  |\n| `provider_business` <br/> A lender, inspector, title company or other service business. |\n| `team` <br/> A team inside a brokerage (its parent); it inherits the brokerage's plan. |",
@@ -64567,6 +64981,91 @@
                     "not_planned"
                 ],
                 "title": "StateStatus"
+            },
+            "SyncVisitsRequest": {
+                "type": "object",
+                "description": "Sign-ins from kiosk mode on the agent's phone or tablet, possibly made offline (B14.3a).",
+                "properties": {
+                    "visits": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "client_id": {
+                                    "type": "string",
+                                    "maxLength": 64
+                                },
+                                "name": {
+                                    "type": "string",
+                                    "minLength": 2,
+                                    "maxLength": 120
+                                },
+                                "email": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ],
+                                    "format": "email",
+                                    "maxLength": 160
+                                },
+                                "phone": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ],
+                                    "pattern": "^\\+?[0-9 ().-]{7,30}$"
+                                },
+                                "has_agent": {
+                                    "type": "boolean"
+                                },
+                                "pre_approved": {
+                                    "type": "boolean"
+                                },
+                                "timeline": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ],
+                                    "enum": [
+                                        "now",
+                                        "3_months",
+                                        "6_months",
+                                        "later",
+                                        "just_looking",
+                                        null
+                                    ]
+                                },
+                                "consent": {
+                                    "enum": [
+                                        "yes",
+                                        "on",
+                                        "1",
+                                        1,
+                                        "true",
+                                        true
+                                    ]
+                                },
+                                "signed_in_at": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ],
+                                    "format": "date-time"
+                                }
+                            },
+                            "required": [
+                                "client_id",
+                                "name"
+                            ]
+                        },
+                        "minItems": 1,
+                        "maxItems": 200
+                    }
+                },
+                "required": [
+                    "visits"
+                ],
+                "title": "SyncVisitsRequest"
             },
             "TextNumberRequest": {
                 "type": "object",

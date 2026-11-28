@@ -79,6 +79,8 @@ enum NotificationKind: string
     case Mentoring = 'mentoring';
     /** Another agent rated you after a closing (A13.3b). */
     case AgentFeedback = 'agent_feedback';
+    /** Someone signed in at an open house or wrote from the agent's page (B14.3a). */
+    case NewLead = 'new_lead';
 
     public const INBOX = 'inbox';
 
@@ -138,7 +140,7 @@ enum NotificationKind: string
             self::SessionBooked, self::SessionStarting, self::ClassCheck, self::ClassReport, self::ExamReminder, self::PassNews, self::BrokerOffer, self::LicenceFound, self::CeRenewal, self::StateRulesChanged, self::StateWentLive, self::WeeklyReport, self::Challenge, self::StudentQuestion, self::InstructorAnswer, self::Mentoring => 'learning',
             self::Invitation, self::SeatsRequested, self::BrokerAsked, self::SupportAccess, self::ApprovalExpiring, self::AvatarConsentEnded, self::ContentReview, self::PolicyQuestion, self::PostApproval => 'organisation',
             self::IntegrationPaused, self::FlagRolledBack, self::ConnectionNeedsReconnect => 'tools',
-            self::DealDeadline, self::SignatureCompleted, self::MorningBrief, self::PolicyAnswer, self::ContractReview, self::PostDecision, self::Celebration, self::AgentFeedback => 'deals',
+            self::DealDeadline, self::SignatureCompleted, self::MorningBrief, self::PolicyAnswer, self::ContractReview, self::PostDecision, self::Celebration, self::AgentFeedback, self::NewLead => 'deals',
         };
     }
 
