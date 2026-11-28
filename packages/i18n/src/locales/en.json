@@ -105,7 +105,8 @@
     "oversight": "Agents and deals",
     "ceCompliance": "CE compliance",
     "brokerageReports": "Reports",
-    "agentsInMyAreas": "Agents in my areas"
+    "agentsInMyAreas": "Agents in my areas",
+    "providerRequests": "Provider requests"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -2382,7 +2383,12 @@
         "sponsorship.confirmed": "Sponsorship confirmed by TREC",
         "announcement.reminded": "Reminded people about an announcement",
         "provider.request_sent": "Sent a request to connect",
-        "provider.request_withdrawn": "Withdrew a request to connect"
+        "provider.request_withdrawn": "Withdrew a request to connect",
+        "provider.request_accepted": "Accepted a request to connect",
+        "provider.request_declined": "Declined a request to connect",
+        "provider.contacts_shared": "Shared contacts with a connection",
+        "provider.contacts_unshared": "Stopped sharing contacts with a connection",
+        "provider.blocked": "Blocked a connection"
       }
     }
   },
@@ -8973,6 +8979,54 @@
         "title": "{{provider}} would like to connect",
         "body": "A verified {{category}} provider in your area. Accept to talk, or decline. The request expires in {{days}} days."
       }
+    },
+    "network": {
+      "hello": "Hi, this is {{name}}. I accepted your request to connect.",
+      "notify": {
+        "accepted": "{{name}} accepted your request to connect",
+        "acceptedBody": "You can message each other now. Phone and email show once you both press Share.",
+        "declined": "{{name}} declined your request to connect"
+      },
+      "title": "Provider requests",
+      "purpose": "Verified lenders, inspectors and other providers who asked to connect. You choose who to talk to.",
+      "pending": "Waiting for your answer",
+      "pendingEmpty": "No requests waiting",
+      "pendingEmptyHint": "When a verified provider in your area asks to connect, it shows here for 14 days.",
+      "accept": "Accept",
+      "acceptFor": "Accept {{name}}",
+      "decline": "Decline",
+      "declineFor": "Decline {{name}}",
+      "declineBlock": "Decline and block",
+      "declineBlockFor": "Decline and block {{name}}",
+      "accepted": "Connected with {{name}}. Your chat is in Messages.",
+      "declined": "Declined. {{name}} won't see why.",
+      "connections": "Connections",
+      "connectionsEmpty": "No connections yet",
+      "connectionsEmptyHint": "Accept a request to start a private chat. Contacts stay private until you both share.",
+      "share": "Share my phone and email",
+      "unshare": "Stop sharing",
+      "waitingThem": "You shared. {{name}} hasn't shared yet, so neither of you sees the other's contacts.",
+      "waitingMe": "{{name}} shared. Press Share to see each other's phone and email.",
+      "notShared": "Contacts are private until you both press Share.",
+      "contacts": "Contacts",
+      "email": "Email: {{email}}",
+      "phone": "Phone: {{phone}}",
+      "message": "Message",
+      "messageFor": "Message {{name}}",
+      "block": "Block",
+      "blockFor": "Block {{name}}",
+      "blocked": "Blocked. No more messages or requests either way.",
+      "report": "To report something, open the chat and choose Report.",
+      "connectedOn": "Connected {{date}}",
+      "preferences": {
+        "title": "Requests from providers",
+        "all": "Let verified providers in my area ask to connect",
+        "categories": "Categories",
+        "categoriesHint": "Turn off any category you don't want to hear from.",
+        "save": "Save",
+        "saved": "Saved."
+      },
+      "connectionsTitle": "My connections"
     }
   },
   "certificates": {

@@ -1,9 +1,9 @@
 import { router, useFocusEffect } from 'expo-router';
-import { Send, UserRound, Users } from 'lucide-react-native';
+import { Handshake, Send, UserRound, Users } from 'lucide-react-native';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { askToConnect, LEVELS, loadAgentsInArea, loadSentRequests, usageShare, withdrawRequest, type AgentLevel, type AgentsInArea, type AreaAgent, type SentRequest } from '@/lib/providers';
+import { askToConnect, LEVELS, loadAgentsInArea, loadProviderConnections, loadSentRequests, usageShare, withdrawRequest, type AgentLevel, type AgentsInArea, type AreaAgent, type ProviderConnection, type SentRequest } from '@/lib/providers';
 import { Button, Callout, EmptyState, Icon, ListRow, PillGroup, ProgressBar, Screen, SectionTitle, Sheet, Text, TextField, TitleBar } from '@/ui';
 
 const STATUSES = ['pending', 'accepted', 'declined', 'expired', 'withdrawn'] as const;
@@ -18,6 +18,7 @@ export default function AgentsInAreaScreen() {
   const [level, setLevel] = useState<AgentLevel | 'all'>('all');
   const [view, setView] = useState<AgentsInArea | null>(null);
   const [sent, setSent] = useState<SentRequest[]>([]);
+  const [connections, setConnections] = useState<ProviderConnection[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [asking, setAsking] = useState<AreaAgent | null>(null);
   const [note, setNote] = useState('');
@@ -29,6 +30,7 @@ export default function AgentsInAreaScreen() {
       .then(setView)
       .catch((e: Error) => setError(e.message));
     void loadSentRequests().then(setSent);
+    void loadProviderConnections().then(setConnections);
   }, [level]);
 
   useFocusEffect(load);
@@ -76,6 +78,17 @@ export default function AgentsInAreaScreen() {
               title={a.brokerage ? `${a.name} · ${a.brokerage}` : a.name}
               subtitle={[levelName(a.level), t('providers.agents.sides', { count: a.sides }), a.cities.join(', '), a.request && !a.can_request ? status(a.request.status) : null].filter(Boolean).join(' · ')}
               onPress={a.can_request && view.usage.left > 0 ? () => setAsking(a) : undefined}
+            />
+          ))}
+          {connections.length > 0 ? <SectionTitle>{t('providers.network.connectionsTitle')}</SectionTitle> : null}
+          {connections.map((c) => (
+            <ListRow
+              key={c.id}
+              icon={Handshake}
+              tone={c.contacts ? 'success' : 'info'}
+              title={c.with}
+              subtitle={c.blocked ? t('providers.network.blocked') : c.contacts ? t('providers.network.contacts') : t('providers.network.notShared')}
+              onPress={() => router.push({ pathname: '/provider-connection/[id]', params: { id: c.id } })}
             />
           ))}
           <SectionTitle>{t('providers.agents.sentTitle')}</SectionTitle>

@@ -105,7 +105,8 @@
     "oversight": "Agentes y operaciones",
     "ceCompliance": "Cumplimiento de educación continua",
     "brokerageReports": "Informes",
-    "agentsInMyAreas": "Agentes en mis zonas"
+    "agentsInMyAreas": "Agentes en mis zonas",
+    "providerRequests": "Solicitudes de proveedores"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -2382,7 +2383,12 @@
         "sponsorship.confirmed": "TREC confirmó el patrocinio",
         "announcement.reminded": "Recordó un anuncio a quienes no lo leyeron",
         "provider.request_sent": "Envió una solicitud de contacto",
-        "provider.request_withdrawn": "Retiró una solicitud de contacto"
+        "provider.request_withdrawn": "Retiró una solicitud de contacto",
+        "provider.request_accepted": "Aceptó una solicitud de contacto",
+        "provider.request_declined": "Rechazó una solicitud de contacto",
+        "provider.contacts_shared": "Compartió sus contactos con una conexión",
+        "provider.contacts_unshared": "Dejó de compartir sus contactos con una conexión",
+        "provider.blocked": "Bloqueó una conexión"
       }
     }
   },
@@ -8973,6 +8979,54 @@
         "title": "{{provider}} quiere ponerse en contacto",
         "body": "Un proveedor verificado de {{category}} en su zona. Acepte para conversar o rechace. La solicitud vence en {{days}} días."
       }
+    },
+    "network": {
+      "hello": "Hola, soy {{name}}. Acepté su solicitud de contacto.",
+      "notify": {
+        "accepted": "{{name}} aceptó su solicitud de contacto",
+        "acceptedBody": "Ya pueden enviarse mensajes. El teléfono y el correo aparecen cuando ambos pulsen Compartir.",
+        "declined": "{{name}} rechazó su solicitud de contacto"
+      },
+      "title": "Solicitudes de proveedores",
+      "purpose": "Prestamistas, inspectores y otros proveedores verificados que pidieron contacto. Usted decide con quién hablar.",
+      "pending": "Esperan su respuesta",
+      "pendingEmpty": "No hay solicitudes en espera",
+      "pendingEmptyHint": "Cuando un proveedor verificado de su zona le pida contacto, aparecerá aquí durante 14 días.",
+      "accept": "Aceptar",
+      "acceptFor": "Aceptar a {{name}}",
+      "decline": "Rechazar",
+      "declineFor": "Rechazar a {{name}}",
+      "declineBlock": "Rechazar y bloquear",
+      "declineBlockFor": "Rechazar y bloquear a {{name}}",
+      "accepted": "Conectado con {{name}}. Su conversación está en Mensajes.",
+      "declined": "Rechazada. {{name}} no verá el motivo.",
+      "connections": "Conexiones",
+      "connectionsEmpty": "Aún no hay conexiones",
+      "connectionsEmptyHint": "Acepte una solicitud para iniciar una conversación privada. Los contactos quedan privados hasta que ambos los compartan.",
+      "share": "Compartir mi teléfono y correo",
+      "unshare": "Dejar de compartir",
+      "waitingThem": "Usted compartió. {{name}} aún no ha compartido, así que ninguno ve los contactos del otro.",
+      "waitingMe": "{{name}} compartió. Pulse Compartir para ver el teléfono y el correo de ambos.",
+      "notShared": "Los contactos son privados hasta que ambos pulsen Compartir.",
+      "contacts": "Contactos",
+      "email": "Correo: {{email}}",
+      "phone": "Teléfono: {{phone}}",
+      "message": "Enviar mensaje",
+      "messageFor": "Enviar mensaje a {{name}}",
+      "block": "Bloquear",
+      "blockFor": "Bloquear a {{name}}",
+      "blocked": "Bloqueado. No habrá más mensajes ni solicitudes en ninguna dirección.",
+      "report": "Para reportar algo, abra la conversación y elija Reportar.",
+      "connectedOn": "Conectado el {{date}}",
+      "preferences": {
+        "title": "Solicitudes de proveedores",
+        "all": "Permitir que los proveedores verificados de mi zona pidan contacto",
+        "categories": "Categorías",
+        "categoriesHint": "Desactive las categorías de las que no quiera recibir solicitudes.",
+        "save": "Guardar",
+        "saved": "Guardado."
+      },
+      "connectionsTitle": "Mis conexiones"
     }
   },
   "certificates": {

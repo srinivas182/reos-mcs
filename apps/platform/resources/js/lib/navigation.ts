@@ -3,6 +3,7 @@ import type { LucideIcon } from 'lucide-react';
 import {
     BookOpen,
     ChartColumn,
+    Inbox,
     CalendarDays,
     Building2,
     CreditCard,
@@ -96,6 +97,7 @@ import { index as brokerVirtualBroker } from '@/routes/organisation/virtual-brok
 import { index as approvalsIndex } from '@/routes/approvals';
 import { index as ceComplianceIndex } from '@/routes/ce-compliance';
 import { index as providerAgents } from '@/routes/provider-agents';
+import { index as providerNetworkIndex } from '@/routes/provider-network';
 import { index as reportsIndex } from '@/routes/reports';
 import { index as oversightIndex } from '@/routes/oversight';
 import { index as policiesIndex } from '@/routes/policies';
@@ -160,6 +162,7 @@ export type NavLabel =
     | 'ceCompliance'
     | 'brokerageReports'
     | 'agentsInMyAreas'
+    | 'providerRequests'
     | 'providerJoin'
     | 'serviceProviders'
     | 'profile'
@@ -328,6 +331,13 @@ export function roleNavigation(
             item('podAndChallenges', Trophy, podIndex(), '/pod'),
             // Verified providers (B15.3): licence checked, areas and services.
             item('serviceProviders', Handshake, providersIndex(), '/providers'),
+            // Requests from providers, connections and my choices (B16.2).
+            item(
+                'providerRequests',
+                Inbox,
+                providerNetworkIndex(),
+                '/providers/requests',
+            ),
             // Daily goals, points and rewards (A13.3a, screens 111 and 112).
             item('goalsAndRewards', Gift, rewardsIndex(), '/rewards'),
             // Feedback from agents after verified closings (A13.3b, screen 125).

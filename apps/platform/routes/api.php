@@ -82,6 +82,7 @@ use App\Http\Controllers\Api\Privacy\ConsentController;
 use App\Http\Controllers\Api\Providers\AgentsInAreaController;
 use App\Http\Controllers\Api\Providers\JoiningController;
 use App\Http\Controllers\Api\Providers\ProviderLicenceController;
+use App\Http\Controllers\Api\Providers\ProviderNetworkController;
 use App\Http\Controllers\Api\Providers\ProviderOnboardingController;
 use App\Http\Controllers\Api\Providers\ProviderProfileController;
 use App\Http\Controllers\Api\Providers\ProvidersController;
@@ -502,6 +503,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('provider/requests', [AgentsInAreaController::class, 'requests'])->name('api.provider.requests');
     Route::post('provider/requests', [AgentsInAreaController::class, 'send'])->middleware('throttle:20,1,api-provider-requests')->name('api.provider.requests.store');
     Route::post('provider/requests/{providerRequest}/withdraw', [AgentsInAreaController::class, 'withdraw'])->whereUuid('providerRequest')->middleware('throttle:20,1,api-provider-requests')->name('api.provider.requests.withdraw');
+    // The private network (B16.2): the agent's answer, connections with mutual contact sharing, block, and opt-outs.
+    Route::get('me/provider-requests', [ProviderNetworkController::class, 'mine'])->name('api.provider-network.mine');
+    Route::post('me/provider-requests/{providerRequest}/accept', [ProviderNetworkController::class, 'accept'])->whereUuid('providerRequest')->middleware('throttle:30,1,api-provider-network')->name('api.provider-network.accept');
+    Route::post('me/provider-requests/{providerRequest}/decline', [ProviderNetworkController::class, 'decline'])->whereUuid('providerRequest')->middleware('throttle:30,1,api-provider-network')->name('api.provider-network.decline');
+    Route::put('me/provider-preferences', [ProviderNetworkController::class, 'preferences'])->middleware('throttle:30,1,api-provider-network')->name('api.provider-network.preferences');
+    Route::get('provider/connections', [ProviderNetworkController::class, 'connections'])->name('api.provider-network.connections');
+    Route::get('provider-connections/{providerRequest}', [ProviderNetworkController::class, 'show'])->whereUuid('providerRequest')->name('api.provider-network.show');
+    Route::put('provider-connections/{providerRequest}/share', [ProviderNetworkController::class, 'share'])->whereUuid('providerRequest')->middleware('throttle:30,1,api-provider-network')->name('api.provider-network.share');
+    Route::post('provider-connections/{providerRequest}/block', [ProviderNetworkController::class, 'block'])->whereUuid('providerRequest')->middleware('throttle:30,1,api-provider-network')->name('api.provider-network.block');
     Route::get('providers', [ProvidersController::class, 'index'])->middleware('throttle:60,1,api-providers')->name('api.providers.index');
     Route::get('providers/{profile}', [ProvidersController::class, 'show'])->whereNumber('profile')->middleware('throttle:120,1,api-providers')->name('api.providers.show');
     // CMAs for my listings and my public page (B10.2b).

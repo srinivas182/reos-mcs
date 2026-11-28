@@ -175,6 +175,27 @@
 - **Block and report.**
 - **Agent opt-out**, from all providers and per category.
 - **Done when:** contacts show only after both agree.
+- **As built, B16.2** (ADR 0080):
+  - **Services:** `App\ProviderNetwork\ProviderConnections`:
+    - forAgent (waiting, connections, choices) and forProvider;
+    - accept (a private chat in Messages; `Relationships` now counts accepted connections) and decline, with an optional block;
+    - share and unshare: a per-connection `contact_sharing` consent. Contacts are returned only when both have shared, and never across a block;
+    - block;
+    - preferences: all providers, or per category (`provider_network`, subject `category:<key>`).
+
+    `AgentsInArea` now leaves out per-category opt-outs and blocks either way. Notifications: `ProviderRequestAnswered` (kind `provider_request`). `ProviderRequestReceived` now opens Provider requests.
+  - **Routes:**
+    - API: `GET /api/v1/me/provider-requests`, `POST …/{id}/accept`, `POST …/{id}/decline`, `PUT /api/v1/me/provider-preferences`, `GET /api/v1/provider/connections`, `GET /api/v1/provider-connections/{id}`, `PUT …/{id}/share` and `POST …/{id}/block`.
+    - Web: `/providers/requests`, and the same actions.
+  - **Web:**
+    - Provider requests (`providers/requests`, agent sidebar): waiting requests (Accept, Decline, Decline and block), connections (`ConnectionCard`: Share, Message, Block) and choices.
+    - The provider's connections on Agents in my areas.
+  - **Phone:** Me → Provider requests (`providers/requests`); a connection screen (`provider-connection/[id]`); and connections on the provider's Agents in my areas.
+  - **Done when:** a Pest test has James accept Maya's request, which opens their chat. James shares: neither side sees contacts. Maya shares: each sees the other's phone and email. James stops sharing: neither sees them again. A stranger gets 404. Other tests cover:
+    - decline and block, which stops requests and drops James from Maya's list;
+    - no contacts across a block, and a block ending the chat;
+    - opting out of all providers or only loan officers;
+    - the web page.
 
 ### B16.3 Agent directory (Team B)
 
