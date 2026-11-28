@@ -104,7 +104,8 @@
     "serviceProviders": "Proveedores de servicios",
     "oversight": "Agentes y operaciones",
     "ceCompliance": "Cumplimiento de educación continua",
-    "brokerageReports": "Informes"
+    "brokerageReports": "Informes",
+    "agentsInMyAreas": "Agentes en mis zonas"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -2379,7 +2380,9 @@
         "ce.course_assigned": "Se asignó un curso",
         "sponsorship.released": "Se liberó a un agente",
         "sponsorship.confirmed": "TREC confirmó el patrocinio",
-        "announcement.reminded": "Recordó un anuncio a quienes no lo leyeron"
+        "announcement.reminded": "Recordó un anuncio a quienes no lo leyeron",
+        "provider.request_sent": "Envió una solicitud de contacto",
+        "provider.request_withdrawn": "Retiró una solicitud de contacto"
       }
     }
   },
@@ -5406,7 +5409,7 @@
       },
       "provider_network": {
         "title": "Red de proveedores",
-        "body": "Los proveedores verificados (prestamistas, inspectores) pueden ver que usted es un prospecto y pedirle conectarse. Solo ven sus datos de contacto si usted acepta."
+        "body": "Los proveedores verificados (prestamistas, inspectores, títulos) de su zona pueden pedirle contacto. Solo verán sus datos de contacto si ambos están de acuerdo."
       },
       "recruiting": {
         "title": "Disponible para reclutamiento",
@@ -5720,7 +5723,8 @@
       "invite_reward": "Premios por invitaciones",
       "approval_overdue": "Aprobaciones que esperan demasiado",
       "course_assigned": "Cursos que asigna su correduría",
-      "sponsorship": "Cambios de patrocinio"
+      "sponsorship": "Cambios de patrocinio",
+      "provider_request": "Solicitudes de contacto de proveedores"
     },
     "digest": {
       "subject": {
@@ -8905,6 +8909,70 @@
       "sessions": "Sesiones con expertos",
       "about": "Acerca de",
       "licenceNumber": "Licencia {{number}}"
+    },
+    "agents": {
+      "title": "Agentes en mis zonas",
+      "purpose": "Agentes de REOS que trabajan en sus zonas de servicio, según su actividad. Pida contacto a quienes le interesen.",
+      "privacy": "Usted ve el nombre y la actividad de cada agente. Los datos de contacto se comparten solo cuando ambos están de acuerdo.",
+      "levels": {
+        "new": "Agente nuevo",
+        "active": "Activo",
+        "top": "Gran productor"
+      },
+      "filters": {
+        "level": "Actividad",
+        "area": "Zona",
+        "all": "Todos",
+        "allAreas": "Todas mis zonas"
+      },
+      "counts": "{{top}} grandes productores · {{active}} activos · {{new}} nuevos",
+      "sides_one": "{{count}} propiedad u operación en 12 meses",
+      "sides_other": "{{count}} propiedades y operaciones en 12 meses",
+      "ask": "Pedir contacto",
+      "askFor": "Pedir contacto a {{name}}",
+      "dialog": {
+        "title": "Pedir contacto a {{name}}",
+        "description": "{{name}} verá su perfil y su nota. Si acepta, podrán enviarse mensajes.",
+        "note": "Una nota breve (opcional)",
+        "noteHint": "Sin teléfonos, correos ni enlaces: los contactos se comparten cuando ambos estén de acuerdo.",
+        "send": "Enviar solicitud",
+        "cancel": "Cancelar"
+      },
+      "sent": "Solicitud enviada a {{name}}.",
+      "usage": "{{used}} de {{limit}} solicitudes usadas este mes · más el {{date}}",
+      "usageLeft_one": "Le queda {{count}} solicitud",
+      "usageLeft_other": "Le quedan {{count}} solicitudes",
+      "statuses": {
+        "pending": "En espera",
+        "accepted": "Conectado",
+        "declined": "Rechazada",
+        "expired": "Vencida",
+        "withdrawn": "Retirada"
+      },
+      "withdraw": "Retirar",
+      "withdrawFor": "Retirar la solicitud a {{name}}",
+      "withdrawn": "Solicitud retirada. Sigue contando para este mes.",
+      "expires": "Vence el {{date}}",
+      "sentOn": "Enviada el {{date}}",
+      "empty": "Aún no hay agentes en estas zonas",
+      "emptyHint": "Los agentes aparecen aquí cuando publican o cierran en sus zonas en REOS. Agregue zonas o cambie los filtros.",
+      "sentTitle": "Mis solicitudes",
+      "sentEmpty": "Aún no hay solicitudes",
+      "sentEmptyHint": "Las solicitudes que envíe aparecen aquí con su estado. Las que no se respondan vencen a los 14 días.",
+      "errors": {
+        "notLive": "Su perfil aún no está publicado. Primero termine de unirse.",
+        "contact": "No incluya teléfonos, correos ni enlaces. Los contactos se comparten cuando ambos estén de acuerdo.",
+        "declined": "Este agente rechazó su solicitud.",
+        "again": "Su última solicitud venció. Puede volver a pedir {{days}} días después del vencimiento.",
+        "already": "Ya tiene una solicitud en espera con este agente.",
+        "limit": "Ya usó sus {{limit}} solicitudes de este mes. Tendrá más el {{date}}, o puede cambiar a un plan mayor.",
+        "noPlan": "Elija un plan para enviar solicitudes.",
+        "notWaiting": "Esta solicitud ya no está en espera."
+      },
+      "notify": {
+        "title": "{{provider}} quiere ponerse en contacto",
+        "body": "Un proveedor verificado de {{category}} en su zona. Acepte para conversar o rechace. La solicitud vence en {{days}} días."
+      }
     }
   },
   "certificates": {

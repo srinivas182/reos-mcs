@@ -79,6 +79,7 @@ use App\Http\Controllers\Api\Practice\SpeedRoundController;
 use App\Http\Controllers\Api\Practice\StudyGroupController;
 use App\Http\Controllers\Api\Practice\TopicPlanController;
 use App\Http\Controllers\Api\Privacy\ConsentController;
+use App\Http\Controllers\Api\Providers\AgentsInAreaController;
 use App\Http\Controllers\Api\Providers\JoiningController;
 use App\Http\Controllers\Api\Providers\ProviderLicenceController;
 use App\Http\Controllers\Api\Providers\ProviderOnboardingController;
@@ -496,6 +497,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('provider/profile/builder', [ProviderProfileController::class, 'update'])->middleware('throttle:20,1,api-provider-profile-save')->name('api.provider.profile.builder.update');
     Route::post('provider/profile/bio', [ProviderProfileController::class, 'draft'])->middleware('throttle:10,1,api-provider-bio')->name('api.provider.profile.bio');
     Route::post('provider/profile/photo', [ProviderProfileController::class, 'photo'])->middleware('throttle:10,1,api-provider-photo')->name('api.provider.profile.photo');
+    // Agents in my areas and requests to connect (B16.1), limited per plan each month.
+    Route::get('provider/agents', [AgentsInAreaController::class, 'index'])->middleware('throttle:60,1,api-provider-agents')->name('api.provider.agents');
+    Route::get('provider/requests', [AgentsInAreaController::class, 'requests'])->name('api.provider.requests');
+    Route::post('provider/requests', [AgentsInAreaController::class, 'send'])->middleware('throttle:20,1,api-provider-requests')->name('api.provider.requests.store');
+    Route::post('provider/requests/{providerRequest}/withdraw', [AgentsInAreaController::class, 'withdraw'])->whereUuid('providerRequest')->middleware('throttle:20,1,api-provider-requests')->name('api.provider.requests.withdraw');
     Route::get('providers', [ProvidersController::class, 'index'])->middleware('throttle:60,1,api-providers')->name('api.providers.index');
     Route::get('providers/{profile}', [ProvidersController::class, 'show'])->whereNumber('profile')->middleware('throttle:120,1,api-providers')->name('api.providers.show');
     // CMAs for my listings and my public page (B10.2b).

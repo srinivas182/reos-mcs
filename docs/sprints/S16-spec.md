@@ -149,6 +149,24 @@
 - **Filters.**
 - **Requests to connect, limited per plan each month:** Listed 5, Pro 25, Partner 75.
 - **Done when:** a provider sends 3 requests and the limit is enforced.
+- **As built, B16.1** (ADR 0079):
+  - **Data:** `provider_requests` (between two people, so no tenant column).
+  - **Services:**
+    - `App\ProviderNetwork\AgentsInArea`: REOS agents in the provider's areas from their confirmed MLS listings and REOS deals in 12 months, by level (top producer 12+, new when first licensed in the last 12 months, active), with filters and the month's usage. The provider sees first name and initial only. Agents who turned the network off are left out.
+    - `App\ProviderNetwork\ProviderRequests`: send (the plan's limit under a lock; once at a time; declined is final; expired may be sent again after 30 days; no contact details in the note), withdraw, sent, and expire (`reos:providers:requests`, daily).
+    - `ProviderPlans::REQUESTS` (Listed 5, Pro 25, Partner 75); notification `ProviderRequestReceived` (kind `provider_request`).
+    - The provider-network consent is now on by default for agents (decision 4), and can be turned off in Settings › Privacy.
+  - **Routes:**
+    - API: `GET /api/v1/provider/agents?level=&area=`, `GET /api/v1/provider/requests`, `POST /api/v1/provider/requests` and `POST /api/v1/provider/requests/{id}/withdraw`.
+    - Web: `/provider/agents`, and the same two actions.
+  - **Web:** Agents in my areas (`provider/agents`, provider sidebar): usage, privacy line, level and area filters, agents with Ask to connect (a dialog with an optional note), and My requests with Withdraw.
+  - **Phone:** Me → Agents in my areas (`provider/agents`), with level pills, a request sheet and My requests.
+  - **Done when:** a Pest test has Maya Chen on Listed (5 a month) send 3 requests to Katy agents (3 used, 2 left). Two more go through, and the sixth is refused with "You've used all 5 requests for this month. More on December 1". Withdrawing doesn't give one back. On December 1 the month starts again. Other tests cover:
+    - levels and the first-name-only view;
+    - opted-out agents left out, and live providers only;
+    - one request at a time, a decline respected, and expiry after 14 days with another request allowed 30 days later;
+    - no contact details in the note, and nobody outside the provider's areas;
+    - the web page.
 
 ### B16.2 Private network (Team B)
 

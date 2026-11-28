@@ -1298,6 +1298,535 @@
                 }
             }
         },
+        "/provider/agents": {
+            "get": {
+                "operationId": "provider.agents",
+                "description": "REOS agents working in the provider's areas (MLS listings and REOS deals in 12 months), by level: new, active or top producer. First name and initial only; never contacts. With this month's requests used and left.",
+                "summary": "Agents in my areas",
+                "tags": [
+                    "AgentsInArea"
+                ],
+                "parameters": [
+                    {
+                        "name": "level",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ],
+                            "enum": [
+                                "new",
+                                "active",
+                                "top",
+                                null
+                            ]
+                        }
+                    },
+                    {
+                        "name": "area",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "integer",
+                                "null"
+                            ],
+                            "minimum": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "areas": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "label"
+                                                        ]
+                                                    }
+                                                },
+                                                "filters": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "level": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ],
+                                                            "enum": [
+                                                                "new",
+                                                                "active",
+                                                                "top",
+                                                                null
+                                                            ]
+                                                        },
+                                                        "area": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "level",
+                                                        "area"
+                                                    ]
+                                                },
+                                                "counts": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "new": {
+                                                            "type": "integer"
+                                                        },
+                                                        "active": {
+                                                            "type": "integer"
+                                                        },
+                                                        "top": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "new",
+                                                        "active",
+                                                        "top"
+                                                    ]
+                                                },
+                                                "agents": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "brokerage": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "level": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "new",
+                                                                    "active",
+                                                                    "top"
+                                                                ]
+                                                            },
+                                                            "sides": {
+                                                                "type": "integer"
+                                                            },
+                                                            "cities": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "request": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "status": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "sent_at": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "status",
+                                                                    "sent_at"
+                                                                ]
+                                                            },
+                                                            "can_request": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "name",
+                                                            "brokerage",
+                                                            "level",
+                                                            "sides",
+                                                            "cities",
+                                                            "request",
+                                                            "can_request"
+                                                        ]
+                                                    }
+                                                },
+                                                "usage": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "tier": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "limit": {
+                                                            "type": "integer"
+                                                        },
+                                                        "used": {
+                                                            "type": "integer"
+                                                        },
+                                                        "left": {
+                                                            "type": "integer"
+                                                        },
+                                                        "resets_on": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "tier",
+                                                        "limit",
+                                                        "used",
+                                                        "left",
+                                                        "resets_on"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "areas",
+                                                "filters",
+                                                "counts",
+                                                "agents",
+                                                "usage"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/provider/requests": {
+            "get": {
+                "operationId": "provider.requests",
+                "description": "The provider's requests, newest first: waiting, accepted, declined, expired or withdrawn.",
+                "summary": "My requests to connect",
+                "tags": [
+                    "AgentsInArea"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string"
+                                                    },
+                                                    "agent": {
+                                                        "type": "string"
+                                                    },
+                                                    "status": {
+                                                        "type": "string"
+                                                    },
+                                                    "message": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "sent_at": {
+                                                        "type": "string"
+                                                    },
+                                                    "expires_at": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "agent",
+                                                    "status",
+                                                    "message",
+                                                    "sent_at",
+                                                    "expires_at"
+                                                ]
+                                            }
+                                        },
+                                        "usage": {
+                                            "type": "object",
+                                            "properties": {
+                                                "tier": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "limit": {
+                                                    "type": "integer"
+                                                },
+                                                "used": {
+                                                    "type": "integer"
+                                                },
+                                                "left": {
+                                                    "type": "integer"
+                                                },
+                                                "resets_on": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "tier",
+                                                "limit",
+                                                "used",
+                                                "left",
+                                                "resets_on"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "usage"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "provider.requests.store",
+                "description": "Counts toward the plan's monthly limit (Listed 5, Pro 25, Partner 75). The note can't hold phone numbers, email addresses or links. 422 with `limit` when the month's requests are used.",
+                "summary": "Ask an agent to connect",
+                "tags": [
+                    "AgentsInArea"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SendRequestRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "status": {
+                                                    "type": "string"
+                                                },
+                                                "expires_at": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "status",
+                                                "expires_at"
+                                            ]
+                                        },
+                                        "usage": {
+                                            "type": "object",
+                                            "properties": {
+                                                "tier": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "limit": {
+                                                    "type": "integer"
+                                                },
+                                                "used": {
+                                                    "type": "integer"
+                                                },
+                                                "left": {
+                                                    "type": "integer"
+                                                },
+                                                "resets_on": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "tier",
+                                                "limit",
+                                                "used",
+                                                "left",
+                                                "resets_on"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "usage"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/provider/requests/{providerRequest}/withdraw": {
+            "post": {
+                "operationId": "provider.requests.withdraw",
+                "description": "It still counts toward the month.",
+                "summary": "Withdraw a waiting request",
+                "tags": [
+                    "AgentsInArea"
+                ],
+                "parameters": [
+                    {
+                        "name": "providerRequest",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "withdrawn": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "required": [
+                                        "withdrawn"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/announcements": {
             "get": {
                 "operationId": "announcements.index",
@@ -78298,6 +78827,27 @@
                     }
                 },
                 "title": "SendMessageRequest"
+            },
+            "SendRequestRequest": {
+                "type": "object",
+                "description": "A request to connect (B16.1): the agent, and an optional short note without contact details.",
+                "properties": {
+                    "agent_id": {
+                        "type": "integer",
+                        "minimum": 1
+                    },
+                    "message": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 500
+                    }
+                },
+                "required": [
+                    "agent_id"
+                ],
+                "title": "SendRequestRequest"
             },
             "ServiceAreaRequest": {
                 "type": "object",

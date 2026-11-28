@@ -95,6 +95,7 @@ import { index as contractReview } from '@/routes/contracts';
 import { index as brokerVirtualBroker } from '@/routes/organisation/virtual-broker';
 import { index as approvalsIndex } from '@/routes/approvals';
 import { index as ceComplianceIndex } from '@/routes/ce-compliance';
+import { index as providerAgents } from '@/routes/provider-agents';
 import { index as reportsIndex } from '@/routes/reports';
 import { index as oversightIndex } from '@/routes/oversight';
 import { index as policiesIndex } from '@/routes/policies';
@@ -158,6 +159,7 @@ export type NavLabel =
     | 'oversight'
     | 'ceCompliance'
     | 'brokerageReports'
+    | 'agentsInMyAreas'
     | 'providerJoin'
     | 'serviceProviders'
     | 'profile'
@@ -340,7 +342,13 @@ export function roleNavigation(
         ],
         provider: [
             home,
-            planned('agentsInMyAreas'),
+            // Agents in my areas and requests to connect (B16.1).
+            item(
+                'agentsInMyAreas',
+                Users,
+                providerAgents(),
+                '/provider/agents',
+            ),
             messages,
             // Joining and the profile agents see (B15.2 and B15.3, provider screens 1–7).
             item('providerJoin', ListChecks, providerJoin(), '/provider/join'),

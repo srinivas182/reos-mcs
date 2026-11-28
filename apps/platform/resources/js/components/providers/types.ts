@@ -157,3 +157,42 @@ export type ProfileBuilderData = {
     preview: ProviderCard | null;
     response_choices: number[];
 };
+
+/** Agents in my areas (B16.1). */
+export type AgentLevel = 'new' | 'active' | 'top';
+
+export type RequestUsage = {
+    tier: string | null;
+    limit: number;
+    used: number;
+    left: number;
+    resets_on: string;
+};
+
+export type AreaAgent = {
+    id: number;
+    name: string;
+    brokerage: string | null;
+    level: AgentLevel;
+    sides: number;
+    cities: string[];
+    request: { id: string; status: string; sent_at: string } | null;
+    can_request: boolean;
+};
+
+export type AgentsInAreaView = {
+    areas: { id: number; label: string }[];
+    filters: { level: AgentLevel | null; area: number | null };
+    counts: Record<AgentLevel, number>;
+    agents: AreaAgent[];
+    usage: RequestUsage;
+};
+
+export type SentRequest = {
+    id: string;
+    agent: string;
+    status: string;
+    message: string | null;
+    sent_at: string;
+    expires_at: string;
+};

@@ -201,3 +201,44 @@ export function splitList(text: string): string[] {
     .map((s) => s.trim())
     .filter((s) => s !== '');
 }
+
+export type AgentsInArea = Got<'/provider/agents'>['data'];
+export type AreaAgent = AgentsInArea['agents'][number];
+export type AgentLevel = AreaAgent['level'];
+export type RequestUsage = AgentsInArea['usage'];
+export type SentRequest = Got<'/provider/requests'>['data'][number];
+
+export const LEVELS: AgentLevel[] = ['top', 'active', 'new'];
+
+/** Agents in my areas (B16.1): by level, with this month's requests used and left. */
+export async function loadAgentsInArea(level: AgentLevel | null, area: number | null = null): Promise<AgentsInArea | null> {
+  const { data } = await api().GET('/provider/agents', { params: { query: { ...(level ? { level } : {}), ...(area ? { area } : {}) } } });
+
+  return data ? data.data : null;
+}
+
+export async function loadSentRequests(): Promise<SentRequest[]> {
+  const { data } = await api().GET('/provider/requests');
+
+  return data ? data.data : [];
+}
+
+/** Ask an agent to connect; counts toward the plan's monthly limit. */
+export async function askToConnect(agentId: number, message: string): Promise<{ id: string; usage: RequestUsage }> {
+  const { data, error } = await api().POST('/provider/requests', { body: { agent_id: agentId, message: message.trim() === '' ? null : message.trim() } });
+
+  return data ? { id: data.data.id, usage: data.usage } : fail(error);
+}
+
+export async function withdrawRequest(id: string): Promise<void> {
+  const { error } = await api().POST('/provider/requests/{providerRequest}/withdraw', { params: { path: { providerRequest: id } } });
+
+  if (error) {
+    fail(error);
+  }
+}
+
+/** The month's requests as a share, for the bar. */
+export function usageShare(usage: RequestUsage): number {
+  return usage.limit === 0 ? 1 : usage.used / usage.limit;
+}

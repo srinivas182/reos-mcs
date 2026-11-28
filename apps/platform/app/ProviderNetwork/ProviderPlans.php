@@ -24,11 +24,21 @@ use Illuminate\Support\Facades\DB;
  * - **Pro** (`pro`): the category's areas on Pro.
  * - **Partner** (`premium`): 10 areas.
  *
+ * Requests to connect each month (B16.1): Listed 5, Pro 25, Partner 75.
+ *
  * @phpstan-type Plan array{tier: 'basic'|'pro'|'premium', monthly: int, areas: int}
  */
 final readonly class ProviderPlans
 {
     public const PARTNER_AREAS = 10;
+
+    /** Requests to connect each month, by plan (B16.1, decision 3): Listed 5, Pro 25, Partner 75. */
+    public const REQUESTS = ['basic' => 5, 'pro' => 25, 'premium' => 75];
+
+    public static function requests(?string $tier): int
+    {
+        return $tier === null ? 0 : self::REQUESTS[$tier] ?? 0;
+    }
 
     public static function areas(ProviderCategory $category, string $tier): int
     {

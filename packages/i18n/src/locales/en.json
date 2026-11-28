@@ -104,7 +104,8 @@
     "serviceProviders": "Service providers",
     "oversight": "Agents and deals",
     "ceCompliance": "CE compliance",
-    "brokerageReports": "Reports"
+    "brokerageReports": "Reports",
+    "agentsInMyAreas": "Agents in my areas"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -2379,7 +2380,9 @@
         "ce.course_assigned": "Assigned a course",
         "sponsorship.released": "Released an agent",
         "sponsorship.confirmed": "Sponsorship confirmed by TREC",
-        "announcement.reminded": "Reminded people about an announcement"
+        "announcement.reminded": "Reminded people about an announcement",
+        "provider.request_sent": "Sent a request to connect",
+        "provider.request_withdrawn": "Withdrew a request to connect"
       }
     }
   },
@@ -5406,7 +5409,7 @@
       },
       "provider_network": {
         "title": "Provider network",
-        "body": "Verified providers (lenders, inspectors) can see that you're a prospect and ask to connect. They see your contact details only if you accept."
+        "body": "Verified providers (lenders, inspectors, title) in your area can ask to connect. They see your contact details only if you both agree."
       },
       "recruiting": {
         "title": "Open to recruiting",
@@ -5720,7 +5723,8 @@
       "invite_reward": "Invite rewards",
       "approval_overdue": "Approvals waiting too long",
       "course_assigned": "Courses your brokerage assigns",
-      "sponsorship": "Sponsorship changes"
+      "sponsorship": "Sponsorship changes",
+      "provider_request": "Requests to connect from providers"
     },
     "digest": {
       "subject": {
@@ -8905,6 +8909,70 @@
       "sessions": "Expert sessions",
       "about": "About",
       "licenceNumber": "License {{number}}"
+    },
+    "agents": {
+      "title": "Agents in my areas",
+      "purpose": "REOS agents working in your service areas, by how active they are. Ask the ones you'd like to work with to connect.",
+      "privacy": "You see first names and how active agents are. Contact details are shared only when you both agree.",
+      "levels": {
+        "new": "New agent",
+        "active": "Active",
+        "top": "Top producer"
+      },
+      "filters": {
+        "level": "Activity",
+        "area": "Area",
+        "all": "All",
+        "allAreas": "All my areas"
+      },
+      "counts": "{{top}} top producers · {{active}} active · {{new}} new",
+      "sides_one": "{{count}} listing or deal in 12 months",
+      "sides_other": "{{count}} listings and deals in 12 months",
+      "ask": "Ask to connect",
+      "askFor": "Ask to connect with {{name}}",
+      "dialog": {
+        "title": "Ask {{name}} to connect",
+        "description": "{{name}} sees your profile and your note. If they accept, you can message each other.",
+        "note": "A short note (optional)",
+        "noteHint": "No phone numbers, emails or links: you share contacts once you both agree.",
+        "send": "Send request",
+        "cancel": "Cancel"
+      },
+      "sent": "Request sent to {{name}}.",
+      "usage": "{{used}} of {{limit}} requests used this month · more on {{date}}",
+      "usageLeft_one": "{{count}} request left",
+      "usageLeft_other": "{{count}} requests left",
+      "statuses": {
+        "pending": "Waiting",
+        "accepted": "Connected",
+        "declined": "Declined",
+        "expired": "Expired",
+        "withdrawn": "Withdrawn"
+      },
+      "withdraw": "Withdraw",
+      "withdrawFor": "Withdraw the request to {{name}}",
+      "withdrawn": "Request withdrawn. It still counts toward this month.",
+      "expires": "Expires {{date}}",
+      "sentOn": "Sent {{date}}",
+      "empty": "No agents found in these areas yet",
+      "emptyHint": "Agents show here once they list or close in your areas on REOS. Add areas or change the filters.",
+      "sentTitle": "My requests",
+      "sentEmpty": "No requests yet",
+      "sentEmptyHint": "Requests you send show here with their status. Unanswered requests expire after 14 days.",
+      "errors": {
+        "notLive": "Your profile isn't live yet. Finish joining first.",
+        "contact": "Leave out phone numbers, emails and links. You share contacts once you both agree.",
+        "declined": "This agent declined your request.",
+        "again": "Your last request expired. You can ask again {{days}} days after it expired.",
+        "already": "You already have a request waiting with this agent.",
+        "limit": "You've used all {{limit}} requests for this month. More on {{date}}, or move to a bigger plan.",
+        "noPlan": "Choose a plan to send requests.",
+        "notWaiting": "This request isn't waiting any more."
+      },
+      "notify": {
+        "title": "{{provider}} would like to connect",
+        "body": "A verified {{category}} provider in your area. Accept to talk, or decline. The request expires in {{days}} days."
+      }
     }
   },
   "certificates": {

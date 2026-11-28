@@ -93,14 +93,13 @@ final readonly class ServiceAreas
         } elseif ($area->kind === 'zip') {
             $listings->where('postal_code', 'like', $area->postal_code.'%');
         } else {
-            $centre = DB::table('mls_listings')->where('postal_code', 'like', $area->postal_code.'%')->whereNotNull('latitude')
-                ->selectRaw('avg(latitude) as lat, avg(longitude) as lng')->first();
-            $lat = is_object($centre) && is_numeric($centre->lat ?? null) ? (float) $centre->lat : null;
-            $lng = is_object($centre) && is_numeric($centre->lng ?? null) ? (float) $centre->lng : null;
+            $centre = self::centre($area);
 
-            if ($lat === null || $lng === null) {
+            if ($centre === null) {
                 return 0;
             }
+
+            [$lat, $lng] = $centre;
 
             // A box around the ZIP code's centre narrows the listings; the distance in miles decides.
             $miles = (int) $area->radius_miles;
@@ -120,8 +119,23 @@ final readonly class ServiceAreas
         return (int) $listings->distinct()->count('list_agent_key');
     }
 
+    /**
+     * The middle of a radius area's ZIP code, from the MLS listings in it.
+     *
+     * @return array{0: float, 1: float}|null
+     */
+    public static function centre(ProviderServiceArea $area): ?array
+    {
+        $centre = DB::table('mls_listings')->where('postal_code', 'like', $area->postal_code.'%')->whereNotNull('latitude')
+            ->selectRaw('avg(latitude) as lat, avg(longitude) as lng')->first();
+        $lat = is_object($centre) && is_numeric($centre->lat ?? null) ? (float) $centre->lat : null;
+        $lng = is_object($centre) && is_numeric($centre->lng ?? null) ? (float) $centre->lng : null;
+
+        return $lat === null || $lng === null ? null : [$lat, $lng];
+    }
+
     /** Miles between two points (haversine). */
-    private static function miles(float $lat1, float $lng1, float $lat2, float $lng2): float
+    public static function miles(float $lat1, float $lng1, float $lat2, float $lng2): float
     {
         $a = sin(deg2rad($lat2 - $lat1) / 2) ** 2 + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * sin(deg2rad($lng2 - $lng1) / 2) ** 2;
 

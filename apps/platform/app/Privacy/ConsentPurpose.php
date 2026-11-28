@@ -66,12 +66,13 @@ enum ConsentPurpose: string
      * What the switch shows before the person has chosen. Only these may be
      * "on" without a record; everything else needs the person's yes.
      * Prospects (candidates) are in the provider network and not open to
-     * recruiting until they say so (S06 spec, A6.3).
+     * recruiting until they say so (S06 spec, A6.3). Agents are in the
+     * provider network too and can turn it off (S16 decision 4).
      */
     public function defaultFor(?Role $role): bool
     {
         return match ($this) {
-            self::ProviderNetwork => $role === Role::Candidate,
+            self::ProviderNetwork => $role === Role::Candidate || $role === Role::Agent,
             self::AiPersonalData => true,
             default => false,
         };
