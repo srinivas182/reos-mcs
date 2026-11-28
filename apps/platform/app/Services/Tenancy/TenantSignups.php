@@ -9,7 +9,9 @@ use App\Billing\Buyer;
 use App\Billing\ProductKind;
 use App\Billing\ProductStatus;
 use App\Enums\OrganisationType;
+use App\Models\BrokerVerification;
 use App\Models\Order;
+use App\Models\Organisation;
 use App\Models\Price;
 use App\Models\TenantSignup;
 use App\Models\User;
@@ -29,6 +31,10 @@ use Illuminate\Validation\ValidationException;
  * payment lands the tenant is created with the plan's seats, and the owner
  * becomes its broker or school admin. Associations join with the REOS team
  * (screen 59), as the public site says.
+ *
+ * A brokerage starts with its designated broker's TREC check (A15.1a,
+ * ADR 0069): the sign-up carries the verification, and the tenant keeps
+ * the TREC number, so one brokerage is on REOS once.
  */
 final readonly class TenantSignups
 {
@@ -55,10 +61,14 @@ final readonly class TenantSignups
     }
 
     /** @param  list<string>  $states */
-    public function start(User $owner, string $kind, string $name, array $states, Price $price): TenantSignup
+    public function start(User $owner, string $kind, string $name, array $states, Price $price, ?BrokerVerification $verification = null): TenantSignup
     {
         if (! $this->plans($kind, $price->state_code)->contains('id', $price->id) || ! in_array($price->state_code, $states, true)) {
             throw ValidationException::withMessages(['price' => __('signup.errors.plan')]);
+        }
+
+        if ($kind === 'brokerage') {
+            $this->checkVerification($owner, $verification, $states);
         }
 
         return TenantSignup::query()->create([
@@ -68,7 +78,29 @@ final readonly class TenantSignups
             'name' => $name,
             'states' => array_values(array_unique($states)),
             'price_id' => $price->id,
+            'broker_verification_id' => $verification?->id,
         ]);
+    }
+
+    /**
+     * A Texas brokerage needs its designated broker's own, fresh, unused
+     * TREC check, for a brokerage not already on REOS.
+     *
+     * @param  list<string>  $states
+     */
+    private function checkVerification(User $owner, ?BrokerVerification $verification, array $states): void
+    {
+        if ($verification === null || $verification->user_id !== $owner->id || $verification->used_at !== null || $verification->created_at?->lessThan(now()->subDay()) === true) {
+            throw ValidationException::withMessages(['verification' => __('brokerage.verify.needed')]);
+        }
+
+        if (! in_array('TX', $states, true)) {
+            throw ValidationException::withMessages(['states' => __('brokerage.verify.texas')]);
+        }
+
+        if (Organisation::query()->where('trec_number', $verification->brokerage_number)->exists()) {
+            throw ValidationException::withMessages(['verification' => __('brokerage.verify.claimed', ['name' => $verification->brokerage_name])]);
+        }
     }
 
     /** Links the checkout's order to the sign-up it pays for. */
@@ -99,6 +131,14 @@ final readonly class TenantSignups
                 ...($seats === null ? [] : ['seats' => $seats]),
             ], $owner);
             $this->memberships->grant($owner, self::TYPES[$kind]['role'], $tenant, $owner);
+
+            // The TREC brokerage this tenant stands for (A15.1a): claimed once.
+            $verification = $signup->broker_verification_id === null ? null : BrokerVerification::query()->find($signup->broker_verification_id);
+
+            if ($verification !== null) {
+                $tenant->forceFill(['trec_number' => $verification->brokerage_number])->save();
+                $verification->forceFill(['used_at' => now()])->save();
+            }
 
             $signup->forceFill(['status' => 'completed', 'created_organisation_id' => $tenant->id])->save();
             $this->audit->record('tenant.signed_up', 'tenant', (string) $tenant->id, ['order' => $order->uuid, 'product' => $order->product->key], $owner, $tenant->id);

@@ -14,6 +14,8 @@ import { EmptyState } from '@/components/empty-state';
 import { PageHeader } from '@/components/page-header';
 import { ApprovalsCard } from '@/components/approvals/approvals-card';
 import type { ApprovalSummary } from '@/components/approvals/types';
+import { SetupChecklist } from '@/components/brokerage/setup-checklist';
+import type { BrokerageSetupData } from '@/components/brokerage/types';
 import { TeachingCard } from '@/components/builder/teaching-card';
 import type { Teaching } from '@/components/builder/teaching-card';
 import { SessionCard } from '@/components/sessions/session-card';
@@ -65,6 +67,7 @@ export default function Dashboard({
     study = null,
     mode = null,
     agentToday = null,
+    brokerSetup = null,
 }: {
     today?: CalendarDay | null;
     ce?: CeRequirement | null;
@@ -73,6 +76,8 @@ export default function Dashboard({
     study?: StudyToday | null;
     mode?: ModeState | null;
     agentToday?: AgentTodayData | null;
+    /** The brokerage's setup checklist (brokers, A15.1a). */
+    brokerSetup?: BrokerageSetupData | null;
 }) {
     const { t } = useTranslation();
     const { auth, sessions } = usePage().props;
@@ -96,6 +101,9 @@ export default function Dashboard({
                             : undefined
                     }
                 />
+                {brokerSetup && brokerSetup.done < brokerSetup.total ? (
+                    <SetupChecklist setup={brokerSetup} />
+                ) : null}
                 {mode ? (
                     <ModeCard
                         mode={mode}

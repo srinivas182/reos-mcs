@@ -5104,6 +5104,247 @@
                 }
             }
         },
+        "/brokerage/verify/lookup": {
+            "post": {
+                "operationId": "brokerage.verify.lookup",
+                "description": "TREC's record for the licence (name, status, expiry), whether it's in my name, and the brokerages I'm the designated broker of, with the number of agents TREC lists under each.",
+                "summary": "Look up a broker licence",
+                "tags": [
+                    "BrokerVerification"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BrokerLicenceRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "licence": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "number": {
+                                                            "type": "string"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "status": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "active": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "expires_on": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "number",
+                                                        "name",
+                                                        "status",
+                                                        "active",
+                                                        "expires_on"
+                                                    ]
+                                                },
+                                                "name_matches": {
+                                                    "type": "boolean"
+                                                },
+                                                "brokerages": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "number": {
+                                                                "type": "string"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "kind": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "entity",
+                                                                    "individual"
+                                                                ]
+                                                            },
+                                                            "sponsored": {
+                                                                "type": "integer"
+                                                            },
+                                                            "on_reos": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "number",
+                                                            "name",
+                                                            "kind",
+                                                            "sponsored",
+                                                            "on_reos"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "licence",
+                                                "name_matches",
+                                                "brokerages"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/brokerage/verify/confirm": {
+            "post": {
+                "operationId": "brokerage.verify.confirm",
+                "description": "A designated broker gets a verification to start the brokerage with (valid for a day). An office admin or team leader gets none: the designated broker invites them.",
+                "summary": "Confirm the brokerage and my role",
+                "tags": [
+                    "BrokerVerification"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BrokerLicenceRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "verification": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "role": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "designated_broker",
+                                                        "office_admin",
+                                                        "team_leader"
+                                                    ]
+                                                },
+                                                "brokerage": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "sponsored": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "verification",
+                                                "role",
+                                                "brokerage",
+                                                "sponsored"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
         "/challenges": {
             "get": {
                 "operationId": "challenges.index",
@@ -5599,6 +5840,92 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/organisation/setup": {
+            "get": {
+                "operationId": "brokerage.setup",
+                "description": "Each step (TREC check, agents, seats, policy manual, advertising policy, mentors) with whether it's done and where to do it. For the brokerage's brokers only.",
+                "summary": "Setup checklist",
+                "tags": [
+                    "BrokerageSetup"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "trec_number": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "done": {
+                                                    "type": "integer"
+                                                },
+                                                "total": {
+                                                    "type": "integer"
+                                                },
+                                                "steps": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "key": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "verify",
+                                                                    "agents",
+                                                                    "seats",
+                                                                    "manual",
+                                                                    "advertising",
+                                                                    "mentors"
+                                                                ]
+                                                            },
+                                                            "done": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "href": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "key",
+                                                            "done",
+                                                            "href"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "trec_number",
+                                                "done",
+                                                "total",
+                                                "steps"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
                     },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"
@@ -62978,6 +63305,40 @@
                     "sections"
                 ],
                 "title": "BriefSettingsRequest"
+            },
+            "BrokerLicenceRequest": {
+                "type": "object",
+                "description": "A broker licence to check against TREC, and, to confirm, the brokerage and the person's role (A15.1a).",
+                "properties": {
+                    "licence": {
+                        "type": "string",
+                        "pattern": "^[0-9 \\-]{5,20}$",
+                        "maxLength": 20
+                    },
+                    "brokerage": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 20
+                    },
+                    "role": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "enum": [
+                            "designated_broker",
+                            "office_admin",
+                            "team_leader",
+                            null
+                        ]
+                    }
+                },
+                "required": [
+                    "licence"
+                ],
+                "title": "BrokerLicenceRequest"
             },
             "BrokerRole": {
                 "type": "string",

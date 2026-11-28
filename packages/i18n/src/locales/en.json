@@ -2344,7 +2344,8 @@
         "referral.sent": "Referral sent",
         "referral.accepted": "Referral accepted",
         "invite.claimed": "Invite recorded",
-        "farm.sent": "Market update sent"
+        "farm.sent": "Market update sent",
+        "brokerage.verified": "Brokerage verified with TREC"
       }
     }
   },
@@ -10698,6 +10699,61 @@
       "remove": "Remove area",
       "removed": "Area removed",
       "nextSend": "The next update can go on {{date}}."
+    }
+  },
+  "brokerage": {
+    "verify": {
+      "title": "Verify your brokerage",
+      "purpose": "Only the designated broker can set up a brokerage on REOS. We check your broker license against TREC's records.",
+      "licence": "Your TREC broker license number",
+      "lookup": "Check with TREC",
+      "checking": "Checking…",
+      "found": "TREC record found",
+      "status": "Status: {{status}}",
+      "active": "Active",
+      "inactive": "This broker license isn't active on TREC, so it can't set up a brokerage.",
+      "expires": "Expires {{date}}",
+      "nameOk": "The name on the license matches your account.",
+      "nameOther": "The name on this license is {{name}}, not the name on your account.",
+      "brokerages": "Brokerages you're the designated broker of",
+      "entity": "Business entity",
+      "individual": "Your own license (you sponsor agents yourself)",
+      "sponsored_one": "{{count}} agent sponsored on TREC",
+      "sponsored_other": "{{count}} agents sponsored on TREC",
+      "onReos": "Already on REOS",
+      "role": "Your role",
+      "roles": {
+        "designated_broker": "Designated broker",
+        "office_admin": "Office admin",
+        "team_leader": "Team leader"
+      },
+      "continue": "Continue",
+      "verified": "Verified: {{name}}, {{count}} agents on TREC.",
+      "change": "Check another license",
+      "askBroker": "Office admins and team leaders are invited by the designated broker. Ask {{brokerage}}'s designated broker to invite you from REOS.",
+      "notFound": "TREC has no license with that number. Check the number and try again.",
+      "notBroker": "That's not a broker license. Only a designated broker can set up a brokerage; ask yours to invite you.",
+      "otherName": "The name on this license is {{name}}. If that's you, update the name on your account, or contact REOS support to check it.",
+      "notYours": "TREC doesn't list you as the designated broker of that brokerage.",
+      "claimed": "{{name}} is already on REOS. Ask its designated broker to invite you.",
+      "needed": "Verify your brokerage with TREC first.",
+      "texas": "A brokerage verified with TREC includes Texas."
+    },
+    "setup": {
+      "title": "Set up your brokerage",
+      "progress": "{{done}} of {{total}} done",
+      "trec": "TREC license {{number}}",
+      "steps": {
+        "verify": "Verified with TREC",
+        "agents": "Bring in your agents",
+        "seats": "Choose who pays for seats",
+        "manual": "Upload your policy manual",
+        "advertising": "Set your advertising policy",
+        "mentors": "Add mentors"
+      },
+      "do": "Start",
+      "done": "Done",
+      "complete": "Your brokerage is set up."
     }
   }
 }
