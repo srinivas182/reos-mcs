@@ -2582,6 +2582,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/me/invite": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My invite link
+         * @description The link to share, the points for each person who gets licensed, and the people who joined through it.
+         */
+        get: operations["invite.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/me/invite/claim": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Enter who invited me
+         * @description For someone who signed up in the app: the code from the invite link, within 30 days of signing up and before getting licensed.
+         */
+        post: operations["invite.claim"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/learn/courses": {
         parameters: {
             query?: never;
@@ -4655,6 +4695,87 @@ export interface paths {
         get: operations["practice.readiness"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/referrals": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My referrals
+         * @description The clients I referred to other agents and the ones referred to me, newest first.
+         */
+        get: operations["referrals.index"];
+        put?: never;
+        /**
+         * Refer a client
+         * @description To an agent on REOS (they accept or decline in the app) or outside REOS (they get an email). The client must have agreed. The fee is what the two brokers agreed, paid broker to broker; REOS takes none.
+         */
+        post: operations["referrals.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/referrals/{referral}/accept": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Accept a referral
+         * @description The client lands in my CRM with a follow-up for tomorrow and a suggested first message.
+         */
+        post: operations["referrals.accept"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/referrals/{referral}/decline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Decline a referral */
+        post: operations["referrals.decline"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/referrals/{referral}/close": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Mark a referral closed
+         * @description The client bought or sold. Either agent can mark it.
+         */
+        post: operations["referrals.close"];
         delete?: never;
         options?: never;
         head?: never;
@@ -6978,6 +7099,13 @@ export interface components {
                 app_version?: string | null;
             };
         };
+        /**
+         * InviteCodeRequest
+         * @description The invite code someone who signed up in the app was given (B14.3b).
+         */
+        InviteCodeRequest: {
+            code: string;
+        };
         /** KnowledgeHitResource */
         KnowledgeHitResource: {
             passage_id: number;
@@ -7496,6 +7624,28 @@ export interface components {
          */
         RecordingAnswerRequest: {
             agreed: boolean;
+        };
+        /**
+         * ReferralRequest
+         * @description A client to refer to another agent (B14.3b). The client must have
+         *     agreed to be referred; the fee is what the two brokers agreed.
+         */
+        ReferralRequest: {
+            to_name: string;
+            /** Format: email */
+            to_email: string;
+            to_brokerage?: string | null;
+            client_name: string;
+            /** Format: email */
+            client_email?: string | null;
+            client_phone?: string | null;
+            /** @enum {string} */
+            kind: "buyer" | "seller";
+            area?: string | null;
+            note?: string | null;
+            fee_percent?: number | null;
+            /** @enum {unknown} */
+            client_agreed?: "yes" | "on" | "1" | 1 | "true" | true;
         };
         /**
          * RenewalRequest
@@ -8078,6 +8228,7 @@ export type SchemaHealthResource = components['schemas']['HealthResource'];
 export type SchemaHistoryRange = components['schemas']['HistoryRange'];
 export type SchemaIdentityProvider = components['schemas']['IdentityProvider'];
 export type SchemaIdentitySignInRequest = components['schemas']['IdentitySignInRequest'];
+export type SchemaInviteCodeRequest = components['schemas']['InviteCodeRequest'];
 export type SchemaKnowledgeHitResource = components['schemas']['KnowledgeHitResource'];
 export type SchemaLibraryGroup = components['schemas']['LibraryGroup'];
 export type SchemaLicenceResource = components['schemas']['LicenceResource'];
@@ -8114,6 +8265,7 @@ export type SchemaQuizTopic = components['schemas']['QuizTopic'];
 export type SchemaRateAgentRequest = components['schemas']['RateAgentRequest'];
 export type SchemaReadCertificateRequest = components['schemas']['ReadCertificateRequest'];
 export type SchemaRecordingAnswerRequest = components['schemas']['RecordingAnswerRequest'];
+export type SchemaReferralRequest = components['schemas']['ReferralRequest'];
 export type SchemaRenewalRequest = components['schemas']['RenewalRequest'];
 export type SchemaReportRequest = components['schemas']['ReportRequest'];
 export type SchemaReviewVideoRequest = components['schemas']['ReviewVideoRequest'];
@@ -16716,6 +16868,91 @@ export interface operations {
             };
         };
     };
+    "invite.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            code: string;
+                            link: string;
+                            points_each: number;
+                            earned: number;
+                            invited: {
+                                name: string;
+                                joined_at: string;
+                                licensed: boolean;
+                            }[];
+                            invited_by: string | null;
+                            can_claim: boolean;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "invite.claim": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InviteCodeRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            code: string;
+                            link: string;
+                            points_each: number;
+                            earned: number;
+                            invited: {
+                                name: string;
+                                joined_at: string;
+                                licensed: boolean;
+                            }[];
+                            invited_by: string | null;
+                            can_claim: boolean;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
     "learn.courses": {
         parameters: {
             query?: never;
@@ -22966,6 +23203,358 @@ export interface operations {
                 };
             };
             401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "referrals.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            sent: {
+                                id: string;
+                                /** @enum {string} */
+                                direction: "sent" | "received";
+                                /** @enum {string} */
+                                status: "sent" | "emailed" | "accepted" | "declined" | "closed";
+                                /** @enum {string} */
+                                kind: "buyer" | "seller";
+                                client: {
+                                    name: string;
+                                    email: string | null;
+                                    phone: string | null;
+                                };
+                                area: string | null;
+                                note: string | null;
+                                fee_percent: number | null;
+                                from: {
+                                    name: string;
+                                    broker: string | null;
+                                };
+                                to: {
+                                    name: string;
+                                    email: string;
+                                    broker: string | null;
+                                    on_reos: boolean;
+                                };
+                                contact: string | null;
+                                sent_at: string;
+                                answered_at: string | null;
+                                closed_at: string | null;
+                            }[];
+                            received: {
+                                id: string;
+                                /** @enum {string} */
+                                direction: "sent" | "received";
+                                /** @enum {string} */
+                                status: "sent" | "emailed" | "accepted" | "declined" | "closed";
+                                /** @enum {string} */
+                                kind: "buyer" | "seller";
+                                client: {
+                                    name: string;
+                                    email: string | null;
+                                    phone: string | null;
+                                };
+                                area: string | null;
+                                note: string | null;
+                                fee_percent: number | null;
+                                from: {
+                                    name: string;
+                                    broker: string | null;
+                                };
+                                to: {
+                                    name: string;
+                                    email: string;
+                                    broker: string | null;
+                                    on_reos: boolean;
+                                };
+                                contact: string | null;
+                                sent_at: string;
+                                answered_at: string | null;
+                                closed_at: string | null;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "referrals.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReferralRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            /** @enum {string} */
+                            direction: "sent" | "received";
+                            /** @enum {string} */
+                            status: "sent" | "emailed" | "accepted" | "declined" | "closed";
+                            /** @enum {string} */
+                            kind: "buyer" | "seller";
+                            client: {
+                                name: string;
+                                email: string | null;
+                                phone: string | null;
+                            };
+                            area: string | null;
+                            note: string | null;
+                            fee_percent: number | null;
+                            from: {
+                                name: string;
+                                broker: string | null;
+                            };
+                            to: {
+                                name: string;
+                                email: string;
+                                broker: string | null;
+                                on_reos: boolean;
+                            };
+                            contact: string | null;
+                            sent_at: string;
+                            answered_at: string | null;
+                            closed_at: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "referrals.accept": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                referral: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            /** @enum {string} */
+                            direction: "sent" | "received";
+                            /** @enum {string} */
+                            status: "sent" | "emailed" | "accepted" | "declined" | "closed";
+                            /** @enum {string} */
+                            kind: "buyer" | "seller";
+                            client: {
+                                name: string;
+                                email: string | null;
+                                phone: string | null;
+                            };
+                            area: string | null;
+                            note: string | null;
+                            fee_percent: number | null;
+                            from: {
+                                name: string;
+                                broker: string | null;
+                            };
+                            to: {
+                                name: string;
+                                email: string;
+                                broker: string | null;
+                                on_reos: boolean;
+                            };
+                            contact: string | null;
+                            sent_at: string;
+                            answered_at: string | null;
+                            closed_at: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "referrals.decline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                referral: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            /** @enum {string} */
+                            direction: "sent" | "received";
+                            /** @enum {string} */
+                            status: "sent" | "emailed" | "accepted" | "declined" | "closed";
+                            /** @enum {string} */
+                            kind: "buyer" | "seller";
+                            client: {
+                                name: string;
+                                email: string | null;
+                                phone: string | null;
+                            };
+                            area: string | null;
+                            note: string | null;
+                            fee_percent: number | null;
+                            from: {
+                                name: string;
+                                broker: string | null;
+                            };
+                            to: {
+                                name: string;
+                                email: string;
+                                broker: string | null;
+                                on_reos: boolean;
+                            };
+                            contact: string | null;
+                            sent_at: string;
+                            answered_at: string | null;
+                            closed_at: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "referrals.close": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                referral: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            /** @enum {string} */
+                            direction: "sent" | "received";
+                            /** @enum {string} */
+                            status: "sent" | "emailed" | "accepted" | "declined" | "closed";
+                            /** @enum {string} */
+                            kind: "buyer" | "seller";
+                            client: {
+                                name: string;
+                                email: string | null;
+                                phone: string | null;
+                            };
+                            area: string | null;
+                            note: string | null;
+                            fee_percent: number | null;
+                            from: {
+                                name: string;
+                                broker: string | null;
+                            };
+                            to: {
+                                name: string;
+                                email: string;
+                                broker: string | null;
+                                on_reos: boolean;
+                            };
+                            contact: string | null;
+                            sent_at: string;
+                            answered_at: string | null;
+                            closed_at: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
         };
     };
     "practice.reports.show": {

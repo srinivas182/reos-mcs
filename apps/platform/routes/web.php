@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\Deals\DealController;
 use App\Http\Controllers\Api\Deals\SignatureController;
 use App\Http\Controllers\Api\Instructor\QuestionController as InstructorQuestionController;
 use App\Http\Controllers\Api\Leads\OpenHouseController;
+use App\Http\Controllers\Api\Leads\ReferralController;
 use App\Http\Controllers\Api\Learn\PlayerController;
 use App\Http\Controllers\Api\Learn\QuestionReportController;
 use App\Http\Controllers\Api\Licence\LicenceJourneyController;
@@ -71,8 +72,10 @@ use App\Http\Controllers\Deals\DealsPageController;
 use App\Http\Controllers\Deals\SignaturePageController;
 use App\Http\Controllers\Feedback\AgentFeedbackPageController;
 use App\Http\Controllers\Instructor\QuestionsPageController;
+use App\Http\Controllers\Leads\JoinController;
 use App\Http\Controllers\Leads\OpenHousePageController;
 use App\Http\Controllers\Leads\PublicLeadsController;
+use App\Http\Controllers\Leads\ReferralPageController;
 use App\Http\Controllers\Learn\LearnController;
 use App\Http\Controllers\Learn\LessonMediaController;
 use App\Http\Controllers\LegalController;
@@ -178,6 +181,8 @@ Route::middleware('throttle:60,1,open-house')->group(function () {
     Route::post('open-house/{code}', [PublicLeadsController::class, 'signIn'])->where('code', '[A-Za-z2-9]{8}')->middleware('throttle:20,1,open-house-sign-in')->name('open-house.sign-in');
 });
 Route::post('agent/{handle}/contact', [PublicLeadsController::class, 'contact'])->where('handle', '[a-z0-9-]{1,80}')->middleware('throttle:5,1,agent-page-lead')->name('agent-pages.contact');
+// Invite and earn (B14.3b): the invite link remembers who invited a new person.
+Route::get('join/{code}', [JoinController::class, 'show'])->where('code', '[A-Za-z2-9]{8}')->middleware('throttle:30,1,join')->name('join.show');
 Route::get('sitemap.xml', [SitemapController::class, 'sitemap'])->middleware('throttle:30,1,sitemap')->name('sitemap');
 Route::get('robots.txt', [SitemapController::class, 'robots'])->middleware('throttle:30,1,sitemap')->name('robots');
 Route::get('reports/{share}', [SharedReportController::class, 'show'])->whereUuid('share')->middleware('throttle:60,1,shared-reports')->name('reports.shared');
@@ -313,6 +318,14 @@ Route::middleware(['auth', 'verified', EnsureOnboarded::class])->group(function 
     Route::get('open-houses', [OpenHousePageController::class, 'index'])->name('open-houses.index');
     Route::post('open-houses', [OpenHouseController::class, 'store'])->middleware('throttle:20,1,open-houses')->name('open-houses.store');
     Route::get('open-houses/{openHouse}/visits', [OpenHouseController::class, 'visits'])->whereUuid('openHouse')->name('open-houses.visits');
+    // Referrals and invites (B14.3b): refer a client to another agent; the page, and the same API for its actions.
+    Route::get('referrals', [ReferralPageController::class, 'index'])->name('referrals.index');
+    Route::post('referrals', [ReferralController::class, 'store'])->middleware('throttle:20,1,referrals')->name('referrals.store');
+    Route::middleware('throttle:30,1,referral-answers')->group(function () {
+        Route::post('referrals/{referral}/accept', [ReferralController::class, 'accept'])->whereUuid('referral')->name('referrals.accept');
+        Route::post('referrals/{referral}/decline', [ReferralController::class, 'decline'])->whereUuid('referral')->name('referrals.decline');
+        Route::post('referrals/{referral}/close', [ReferralController::class, 'close'])->whereUuid('referral')->name('referrals.close');
+    });
     // The client portal (B14.2): the deal panel shares the deal with a client.
     Route::get('deals/{deal}/portals', [ClientPortalController::class, 'index'])->whereUuid('deal')->name('deals.portals.index');
     Route::post('deals/{deal}/portals', [ClientPortalController::class, 'store'])->whereUuid('deal')->middleware('throttle:30,1,portals')->name('deals.portals.store');

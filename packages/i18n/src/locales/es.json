@@ -96,7 +96,8 @@
     "candidateStudio": "Estudio para candidatos",
     "rolePlay": "Juego de roles",
     "videoPractice": "Práctica en video",
-    "openHouses": "Casas abiertas"
+    "openHouses": "Casas abiertas",
+    "referrals": "Referencias"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -2338,7 +2339,10 @@
         "compliance_log.exported": "Registro de cumplimiento exportado",
         "agent.moved": "El agente se mudó a otra agencia o equipo",
         "portal.created": "Enlace de cliente creado",
-        "portal.revoked": "Enlace de cliente desactivado"
+        "portal.revoked": "Enlace de cliente desactivado",
+        "referral.sent": "Referencia enviada",
+        "referral.accepted": "Referencia aceptada",
+        "invite.claimed": "Invitación registrada"
       }
     }
   },
@@ -5633,7 +5637,9 @@
       "post_decision": "Decisiones de su bróker sobre publicaciones",
       "celebration": "Publicaciones de celebración",
       "agent_feedback": "Opiniones de agentes",
-      "new_lead": "Nuevos clientes potenciales"
+      "new_lead": "Nuevos clientes potenciales",
+      "referral": "Referencias",
+      "invite_reward": "Premios por invitaciones"
     },
     "digest": {
       "subject": {
@@ -10521,6 +10527,106 @@
       "page": "{{name}} le escribió desde su página",
       "body": "Ya está en sus contactos, con un seguimiento para mañana.",
       "open": "Abrir contacto"
+    },
+    "referrals": {
+      "self": "No puede referirse un cliente a usted mismo.",
+      "answered": "Esta referencia ya tiene respuesta.",
+      "notOpen": "Solo puede marcar como cerrada una referencia abierta.",
+      "kinds": {
+        "buyer": "Comprador",
+        "seller": "Vendedor"
+      },
+      "note": "Referido por {{agent}}: {{kind}} en {{area}}. Comisión por referencia {{fee}}, pagada de bróker a bróker al cierre.",
+      "noteFrom": "Su nota: “{{note}}”",
+      "draft": "Hola, {{name}}. {{from}} me contó que piensa mudarse y con gusto le ayudo. ¿Cuándo le queda bien que hablemos? {{agent}}",
+      "tag": "Referencia",
+      "notify": {
+        "received": "{{from}} le refirió un cliente",
+        "receivedBody": "{{client}}: acepte para agregarlo a sus contactos, o rechácelo.",
+        "accepted": "{{agent}} aceptó su referencia de {{client}}",
+        "declined": "{{agent}} rechazó su referencia de {{client}}",
+        "open": "Abrir referencias"
+      },
+      "mail": {
+        "subject": "{{from}} quiere referirle un cliente",
+        "greeting": "Hola, {{name}}:",
+        "body": "{{from}} ({{broker}}) quiere referirle un cliente: {{client}}, {{kind}} en {{area}}.",
+        "client": "Cómo comunicarse: {{contact}}",
+        "fee": "Comisión por referencia propuesta: {{fee}}, pagada de bróker a bróker al cierre, según acuerden sus brókers.",
+        "note": "Su nota: “{{note}}”",
+        "reply": "Responda a este correo para aceptar o hacer una pregunta. Enviado por REOS, que no cobra comisión por referencias."
+      },
+      "title": "Referencias e invitaciones",
+      "purpose": "Refiera clientes a agentes de otras zonas, responda las referencias que recibe e invite a otras personas a REOS.",
+      "send": "Referir un cliente",
+      "toName": "Nombre del agente",
+      "toEmail": "Correo del agente",
+      "toBrokerage": "Agencia del agente",
+      "clientName": "Nombre del cliente",
+      "clientEmail": "Correo del cliente",
+      "clientPhone": "Teléfono del cliente",
+      "kind": "Su cliente es",
+      "area": "Zona",
+      "areaHint": "Dónde quiere comprar o vender.",
+      "noteLabel": "Nota para el agente",
+      "fee": "Comisión por referencia (%)",
+      "feeHint": "Según acuerden sus brókers. Se paga de bróker a bróker al cierre; REOS no cobra comisión.",
+      "agreed": "Mi cliente aceptó que lo refiera",
+      "sent": "Referencias que envió",
+      "received": "Referencias para usted",
+      "none": "Aún no hay referencias",
+      "noneHint": "Cuando refiera un cliente, o le refieran uno, aparecerá aquí.",
+      "accept": "Aceptar",
+      "decline": "Rechazar",
+      "close": "Marcar como cerrada",
+      "openContact": "Abrir contacto",
+      "statuses": {
+        "sent": "Esperando respuesta",
+        "emailed": "Enviada por correo",
+        "accepted": "Aceptada",
+        "declined": "Rechazada",
+        "closed": "Cerrada"
+      },
+      "fromLine": "De {{name}}",
+      "toLine": "Para {{name}}",
+      "feeLine": "Comisión por referencia {{fee}} %",
+      "done": "Referencia enviada",
+      "acceptedToast": "Se agregó a sus contactos"
+    },
+    "invites": {
+      "cantClaim": "Ese código no se puede usar. Revíselo; también puede que ya sea tarde para indicar quién le invitó.",
+      "title": "Invite y gane",
+      "purpose": "Comparta su enlace. Cuando alguien que se unió con él obtenga su licencia, usted gana {{points}} puntos.",
+      "link": "Su enlace de invitación",
+      "codeLine": "Su código: {{code}}",
+      "earned": "Ganado: {{points}} puntos",
+      "invited": "Personas que invitó",
+      "noneInvited": "Todavía nadie se ha unido con su enlace.",
+      "noneHint": "Compártalo con alguien que esté pensando en una carrera en bienes raíces.",
+      "licensed": "Con licencia",
+      "notYet": "Aún sin licencia",
+      "joined": "Se unió el {{date}}",
+      "invitedBy": "Le invitó {{name}}",
+      "claimTitle": "¿Le invitaron?",
+      "claimHint": "Escriba el código de su enlace de invitación.",
+      "code": "Código de invitación",
+      "claim": "Guardar",
+      "claimed": "Guardado. ¡Gracias!",
+      "pointsNote": "Los puntos no tienen valor en efectivo y se usan dentro de REOS.",
+      "notify": {
+        "title": "{{name}} obtuvo su licencia: usted ganó {{points}} puntos",
+        "body": "Gracias por invitarle a REOS.",
+        "open": "Ver sus invitaciones"
+      },
+      "join": {
+        "title": "{{name}} le invitó a REOS",
+        "purpose": "Estudie para su licencia de bienes raíces y luego haga crecer su negocio, todo en un solo lugar.",
+        "create": "Crear una cuenta",
+        "app": "¿Usa la aplicación? Escriba este código en Yo, luego Referencias e invitaciones:",
+        "codeLabel": "Código de invitación",
+        "signedIn": "Ya tiene una cuenta.",
+        "open": "Abrir REOS"
+      }
     }
   }
 }

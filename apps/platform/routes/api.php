@@ -31,7 +31,9 @@ use App\Http\Controllers\Api\Deals\SignatureController;
 use App\Http\Controllers\Api\Feedback\AgentFeedbackController;
 use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\Instructor\QuestionController as InstructorQuestionController;
+use App\Http\Controllers\Api\Leads\InviteController;
 use App\Http\Controllers\Api\Leads\OpenHouseController;
+use App\Http\Controllers\Api\Leads\ReferralController;
 use App\Http\Controllers\Api\Learn\LearnController;
 use App\Http\Controllers\Api\Learn\OfflineController;
 use App\Http\Controllers\Api\Learn\PlayerController;
@@ -562,6 +564,17 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('open-houses', [OpenHouseController::class, 'store'])->middleware('throttle:20,1,api-open-houses')->name('api.open-houses.store');
     Route::get('open-houses/{openHouse}/visits', [OpenHouseController::class, 'visits'])->whereUuid('openHouse')->name('api.open-houses.visits');
     Route::post('open-houses/{openHouse}/visits', [OpenHouseController::class, 'sync'])->whereUuid('openHouse')->middleware('throttle:30,1,api-open-houses-sync')->name('api.open-houses.sync');
+    // Referrals between agents (B14.3b): between brokers; REOS takes no fee.
+    Route::get('referrals', [ReferralController::class, 'index'])->name('api.referrals.index');
+    Route::post('referrals', [ReferralController::class, 'store'])->middleware('throttle:20,1,api-referrals')->name('api.referrals.store');
+    Route::middleware('throttle:30,1,api-referral-answers')->group(function () {
+        Route::post('referrals/{referral}/accept', [ReferralController::class, 'accept'])->whereUuid('referral')->name('api.referrals.accept');
+        Route::post('referrals/{referral}/decline', [ReferralController::class, 'decline'])->whereUuid('referral')->name('api.referrals.decline');
+        Route::post('referrals/{referral}/close', [ReferralController::class, 'close'])->whereUuid('referral')->name('api.referrals.close');
+    });
+    // Invite and earn (B14.3b): my link, and who invited me.
+    Route::get('me/invite', [InviteController::class, 'show'])->name('api.invite.show');
+    Route::post('me/invite/claim', [InviteController::class, 'claim'])->middleware('throttle:5,1,api-invite-claim')->name('api.invite.claim');
     // The client portal (B14.2): share the deal with a client through their own link.
     Route::get('deals/{deal}/portals', [ClientPortalController::class, 'index'])->whereUuid('deal')->name('api.deals.portals.index');
     Route::post('deals/{deal}/portals', [ClientPortalController::class, 'store'])->whereUuid('deal')->middleware('throttle:30,1,api-portals')->name('api.deals.portals.store');

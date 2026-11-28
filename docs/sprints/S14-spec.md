@@ -238,6 +238,24 @@
     - Me → Open houses: start at the door (from now, for three hours), the QR code and share sheet, visitors.
     - Kiosk sign-in: saved on the phone (MMKV) and sent when online, with "Send now" for any still waiting.
   - **Done when:** a Pest test signs Rosa in by QR and finds her contact in Maria's CRM, with the visit note, the suggested message, the "Follow up with Rosa" to-do and the notification. Kiosk sign-ins sent twice are added once.
+- **As built, B14.3b** (ADR 0067):
+  - **Data:**
+    - `referrals`: from, to (on REOS or by email), both brokers, client, kind, area, note, fee percent and status. Exempt from row-level security because it spans tenants; access is checked in `Referrals`.
+    - `users.invite_code`, `invited_by_id` and `invited_at`.
+  - **Services:**
+    - `App\Leads\Referrals`: list, send (in-app notification, or `ReferralEmail` with reply-to), accept (into the CRM through `Leads::add`, tag "Referral"), decline, close.
+    - `App\Leads\Invites`:
+      - summary;
+      - claim (from the join link at web sign-up, or the code typed within 30 days);
+      - licensed (2,500 points once, through `Points::award`, at most 25 a year), called from `Licences::add` (verified) and `Licences::approve`.
+  - **Routes:**
+    - API: `GET` and `POST /api/v1/referrals`, `POST /api/v1/referrals/{id}/accept|decline|close`, `GET /api/v1/me/invite`, `POST /api/v1/me/invite/claim`.
+    - Web: `/referrals` (with the same actions) and the public `/join/{code}`.
+  - **Web:** "Referrals" in the agent sidebar, with the refer form (client agreement required), received and sent lists, and "Invite and earn".
+  - **Phone:**
+    - Me → Referrals and invites: answer and close referrals, share the invite link, enter who invited you.
+    - Refer a client.
+  - **Done when:** a Pest test has Maria refer Elena to Dev at another brokerage. Dev accepts, and Elena is in his CRM with the referral note (fee 25%, broker to broker) and a follow-up. An agent outside REOS gets the email. Ana joins through Maria's link and gets licensed, and Maria earns 2,500 points once.
 
 ## 4. Definition of done (whole sprint)
 

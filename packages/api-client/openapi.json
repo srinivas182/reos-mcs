@@ -25456,6 +25456,212 @@
                 "security": []
             }
         },
+        "/me/invite": {
+            "get": {
+                "operationId": "invite.show",
+                "description": "The link to share, the points for each person who gets licensed, and the people who joined through it.",
+                "summary": "My invite link",
+                "tags": [
+                    "Invite"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "code": {
+                                                    "type": "string"
+                                                },
+                                                "link": {
+                                                    "type": "string"
+                                                },
+                                                "points_each": {
+                                                    "type": "integer"
+                                                },
+                                                "earned": {
+                                                    "type": "integer"
+                                                },
+                                                "invited": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "joined_at": {
+                                                                "type": "string"
+                                                            },
+                                                            "licensed": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "name",
+                                                            "joined_at",
+                                                            "licensed"
+                                                        ]
+                                                    }
+                                                },
+                                                "invited_by": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "can_claim": {
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "required": [
+                                                "code",
+                                                "link",
+                                                "points_each",
+                                                "earned",
+                                                "invited",
+                                                "invited_by",
+                                                "can_claim"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/me/invite/claim": {
+            "post": {
+                "operationId": "invite.claim",
+                "description": "For someone who signed up in the app: the code from the invite link, within 30 days of signing up and before getting licensed.",
+                "summary": "Enter who invited me",
+                "tags": [
+                    "Invite"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/InviteCodeRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "code": {
+                                                    "type": "string"
+                                                },
+                                                "link": {
+                                                    "type": "string"
+                                                },
+                                                "points_each": {
+                                                    "type": "integer"
+                                                },
+                                                "earned": {
+                                                    "type": "integer"
+                                                },
+                                                "invited": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "joined_at": {
+                                                                "type": "string"
+                                                            },
+                                                            "licensed": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "name",
+                                                            "joined_at",
+                                                            "licensed"
+                                                        ]
+                                                    }
+                                                },
+                                                "invited_by": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "can_claim": {
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "required": [
+                                                "code",
+                                                "link",
+                                                "points_each",
+                                                "earned",
+                                                "invited",
+                                                "invited_by",
+                                                "can_claim"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
         "/learn/courses": {
             "get": {
                 "operationId": "learn.courses",
@@ -43969,6 +44175,1223 @@
                 }
             }
         },
+        "/referrals": {
+            "get": {
+                "operationId": "referrals.index",
+                "description": "The clients I referred to other agents and the ones referred to me, newest first.",
+                "summary": "My referrals",
+                "tags": [
+                    "Referral"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "sent": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "direction": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "sent",
+                                                                    "received"
+                                                                ]
+                                                            },
+                                                            "status": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "sent",
+                                                                    "emailed",
+                                                                    "accepted",
+                                                                    "declined",
+                                                                    "closed"
+                                                                ]
+                                                            },
+                                                            "kind": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "buyer",
+                                                                    "seller"
+                                                                ]
+                                                            },
+                                                            "client": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "email": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "phone": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "name",
+                                                                    "email",
+                                                                    "phone"
+                                                                ]
+                                                            },
+                                                            "area": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "note": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "fee_percent": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "from": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "broker": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "name",
+                                                                    "broker"
+                                                                ]
+                                                            },
+                                                            "to": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "email": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "broker": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "on_reos": {
+                                                                        "type": "boolean"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "name",
+                                                                    "email",
+                                                                    "broker",
+                                                                    "on_reos"
+                                                                ]
+                                                            },
+                                                            "contact": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "sent_at": {
+                                                                "type": "string"
+                                                            },
+                                                            "answered_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "closed_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "direction",
+                                                            "status",
+                                                            "kind",
+                                                            "client",
+                                                            "area",
+                                                            "note",
+                                                            "fee_percent",
+                                                            "from",
+                                                            "to",
+                                                            "contact",
+                                                            "sent_at",
+                                                            "answered_at",
+                                                            "closed_at"
+                                                        ]
+                                                    }
+                                                },
+                                                "received": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "direction": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "sent",
+                                                                    "received"
+                                                                ]
+                                                            },
+                                                            "status": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "sent",
+                                                                    "emailed",
+                                                                    "accepted",
+                                                                    "declined",
+                                                                    "closed"
+                                                                ]
+                                                            },
+                                                            "kind": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "buyer",
+                                                                    "seller"
+                                                                ]
+                                                            },
+                                                            "client": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "email": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "phone": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "name",
+                                                                    "email",
+                                                                    "phone"
+                                                                ]
+                                                            },
+                                                            "area": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "note": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "fee_percent": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "from": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "broker": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "name",
+                                                                    "broker"
+                                                                ]
+                                                            },
+                                                            "to": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "email": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "broker": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "on_reos": {
+                                                                        "type": "boolean"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "name",
+                                                                    "email",
+                                                                    "broker",
+                                                                    "on_reos"
+                                                                ]
+                                                            },
+                                                            "contact": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "sent_at": {
+                                                                "type": "string"
+                                                            },
+                                                            "answered_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "closed_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "direction",
+                                                            "status",
+                                                            "kind",
+                                                            "client",
+                                                            "area",
+                                                            "note",
+                                                            "fee_percent",
+                                                            "from",
+                                                            "to",
+                                                            "contact",
+                                                            "sent_at",
+                                                            "answered_at",
+                                                            "closed_at"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "sent",
+                                                "received"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "referrals.store",
+                "description": "To an agent on REOS (they accept or decline in the app) or outside REOS (they get an email). The client must have agreed. The fee is what the two brokers agreed, paid broker to broker; REOS takes none.",
+                "summary": "Refer a client",
+                "tags": [
+                    "Referral"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ReferralRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "direction": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "sent",
+                                                        "received"
+                                                    ]
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "sent",
+                                                        "emailed",
+                                                        "accepted",
+                                                        "declined",
+                                                        "closed"
+                                                    ]
+                                                },
+                                                "kind": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "buyer",
+                                                        "seller"
+                                                    ]
+                                                },
+                                                "client": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "email": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "phone": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "name",
+                                                        "email",
+                                                        "phone"
+                                                    ]
+                                                },
+                                                "area": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "note": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "fee_percent": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "from": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "broker": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "name",
+                                                        "broker"
+                                                    ]
+                                                },
+                                                "to": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "email": {
+                                                            "type": "string"
+                                                        },
+                                                        "broker": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "on_reos": {
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "name",
+                                                        "email",
+                                                        "broker",
+                                                        "on_reos"
+                                                    ]
+                                                },
+                                                "contact": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "sent_at": {
+                                                    "type": "string"
+                                                },
+                                                "answered_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "closed_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "direction",
+                                                "status",
+                                                "kind",
+                                                "client",
+                                                "area",
+                                                "note",
+                                                "fee_percent",
+                                                "from",
+                                                "to",
+                                                "contact",
+                                                "sent_at",
+                                                "answered_at",
+                                                "closed_at"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/referrals/{referral}/accept": {
+            "post": {
+                "operationId": "referrals.accept",
+                "description": "The client lands in my CRM with a follow-up for tomorrow and a suggested first message.",
+                "summary": "Accept a referral",
+                "tags": [
+                    "Referral"
+                ],
+                "parameters": [
+                    {
+                        "name": "referral",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "direction": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "sent",
+                                                        "received"
+                                                    ]
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "sent",
+                                                        "emailed",
+                                                        "accepted",
+                                                        "declined",
+                                                        "closed"
+                                                    ]
+                                                },
+                                                "kind": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "buyer",
+                                                        "seller"
+                                                    ]
+                                                },
+                                                "client": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "email": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "phone": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "name",
+                                                        "email",
+                                                        "phone"
+                                                    ]
+                                                },
+                                                "area": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "note": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "fee_percent": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "from": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "broker": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "name",
+                                                        "broker"
+                                                    ]
+                                                },
+                                                "to": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "email": {
+                                                            "type": "string"
+                                                        },
+                                                        "broker": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "on_reos": {
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "name",
+                                                        "email",
+                                                        "broker",
+                                                        "on_reos"
+                                                    ]
+                                                },
+                                                "contact": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "sent_at": {
+                                                    "type": "string"
+                                                },
+                                                "answered_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "closed_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "direction",
+                                                "status",
+                                                "kind",
+                                                "client",
+                                                "area",
+                                                "note",
+                                                "fee_percent",
+                                                "from",
+                                                "to",
+                                                "contact",
+                                                "sent_at",
+                                                "answered_at",
+                                                "closed_at"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/referrals/{referral}/decline": {
+            "post": {
+                "operationId": "referrals.decline",
+                "summary": "Decline a referral",
+                "tags": [
+                    "Referral"
+                ],
+                "parameters": [
+                    {
+                        "name": "referral",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "direction": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "sent",
+                                                        "received"
+                                                    ]
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "sent",
+                                                        "emailed",
+                                                        "accepted",
+                                                        "declined",
+                                                        "closed"
+                                                    ]
+                                                },
+                                                "kind": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "buyer",
+                                                        "seller"
+                                                    ]
+                                                },
+                                                "client": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "email": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "phone": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "name",
+                                                        "email",
+                                                        "phone"
+                                                    ]
+                                                },
+                                                "area": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "note": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "fee_percent": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "from": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "broker": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "name",
+                                                        "broker"
+                                                    ]
+                                                },
+                                                "to": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "email": {
+                                                            "type": "string"
+                                                        },
+                                                        "broker": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "on_reos": {
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "name",
+                                                        "email",
+                                                        "broker",
+                                                        "on_reos"
+                                                    ]
+                                                },
+                                                "contact": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "sent_at": {
+                                                    "type": "string"
+                                                },
+                                                "answered_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "closed_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "direction",
+                                                "status",
+                                                "kind",
+                                                "client",
+                                                "area",
+                                                "note",
+                                                "fee_percent",
+                                                "from",
+                                                "to",
+                                                "contact",
+                                                "sent_at",
+                                                "answered_at",
+                                                "closed_at"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/referrals/{referral}/close": {
+            "post": {
+                "operationId": "referrals.close",
+                "description": "The client bought or sold. Either agent can mark it.",
+                "summary": "Mark a referral closed",
+                "tags": [
+                    "Referral"
+                ],
+                "parameters": [
+                    {
+                        "name": "referral",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "direction": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "sent",
+                                                        "received"
+                                                    ]
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "sent",
+                                                        "emailed",
+                                                        "accepted",
+                                                        "declined",
+                                                        "closed"
+                                                    ]
+                                                },
+                                                "kind": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "buyer",
+                                                        "seller"
+                                                    ]
+                                                },
+                                                "client": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "email": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "phone": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "name",
+                                                        "email",
+                                                        "phone"
+                                                    ]
+                                                },
+                                                "area": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "note": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "fee_percent": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "from": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "broker": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "name",
+                                                        "broker"
+                                                    ]
+                                                },
+                                                "to": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "email": {
+                                                            "type": "string"
+                                                        },
+                                                        "broker": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "on_reos": {
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "name",
+                                                        "email",
+                                                        "broker",
+                                                        "on_reos"
+                                                    ]
+                                                },
+                                                "contact": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "sent_at": {
+                                                    "type": "string"
+                                                },
+                                                "answered_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "closed_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "direction",
+                                                "status",
+                                                "kind",
+                                                "client",
+                                                "area",
+                                                "note",
+                                                "fee_percent",
+                                                "from",
+                                                "to",
+                                                "contact",
+                                                "sent_at",
+                                                "answered_at",
+                                                "closed_at"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/practice/reports/weekly": {
             "get": {
                 "operationId": "practice.reports.show",
@@ -62398,6 +63821,21 @@
                 ],
                 "title": "IdentitySignInRequest"
             },
+            "InviteCodeRequest": {
+                "type": "object",
+                "description": "The invite code someone who signed up in the app was given (B14.3b).",
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "minLength": 8,
+                        "maxLength": 8
+                    }
+                },
+                "required": [
+                    "code"
+                ],
+                "title": "InviteCodeRequest"
+            },
             "KnowledgeHitResource": {
                 "type": "object",
                 "properties": {
@@ -64058,6 +65496,95 @@
                     "agreed"
                 ],
                 "title": "RecordingAnswerRequest"
+            },
+            "ReferralRequest": {
+                "type": "object",
+                "description": "A client to refer to another agent (B14.3b). The client must have\nagreed to be referred; the fee is what the two brokers agreed.",
+                "properties": {
+                    "to_name": {
+                        "type": "string",
+                        "minLength": 2,
+                        "maxLength": 120
+                    },
+                    "to_email": {
+                        "type": "string",
+                        "format": "email",
+                        "maxLength": 160
+                    },
+                    "to_brokerage": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 160
+                    },
+                    "client_name": {
+                        "type": "string",
+                        "minLength": 2,
+                        "maxLength": 120
+                    },
+                    "client_email": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "email",
+                        "maxLength": 160
+                    },
+                    "client_phone": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 30
+                    },
+                    "kind": {
+                        "type": "string",
+                        "enum": [
+                            "buyer",
+                            "seller"
+                        ]
+                    },
+                    "area": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 120
+                    },
+                    "note": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 1000
+                    },
+                    "fee_percent": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "minimum": 0,
+                        "maximum": 50
+                    },
+                    "client_agreed": {
+                        "enum": [
+                            "yes",
+                            "on",
+                            "1",
+                            1,
+                            "true",
+                            true
+                        ]
+                    }
+                },
+                "required": [
+                    "to_name",
+                    "to_email",
+                    "client_name",
+                    "kind"
+                ],
+                "title": "ReferralRequest"
             },
             "RenewalRequest": {
                 "type": "object",

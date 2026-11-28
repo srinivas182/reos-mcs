@@ -96,7 +96,8 @@
     "candidateStudio": "Candidate studio",
     "rolePlay": "Role-play",
     "videoPractice": "Video practice",
-    "openHouses": "Open houses"
+    "openHouses": "Open houses",
+    "referrals": "Referrals"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -2338,7 +2339,10 @@
         "compliance_log.exported": "Compliance log exported",
         "agent.moved": "Agent moved to another brokerage or team",
         "portal.created": "Client link created",
-        "portal.revoked": "Client link turned off"
+        "portal.revoked": "Client link turned off",
+        "referral.sent": "Referral sent",
+        "referral.accepted": "Referral accepted",
+        "invite.claimed": "Invite recorded"
       }
     }
   },
@@ -5633,7 +5637,9 @@
       "post_decision": "Your broker's decisions on posts",
       "celebration": "Celebration posts",
       "agent_feedback": "Feedback from agents",
-      "new_lead": "New leads"
+      "new_lead": "New leads",
+      "referral": "Referrals",
+      "invite_reward": "Invite rewards"
     },
     "digest": {
       "subject": {
@@ -10521,6 +10527,106 @@
       "page": "{{name}} wrote from your page",
       "body": "They're in your contacts with a follow-up for tomorrow.",
       "open": "Open contact"
+    },
+    "referrals": {
+      "self": "You can't refer a client to yourself.",
+      "answered": "This referral was already answered.",
+      "notOpen": "Only an open referral can be marked closed.",
+      "kinds": {
+        "buyer": "Buyer",
+        "seller": "Seller"
+      },
+      "note": "Referred by {{agent}}: {{kind}} in {{area}}. Referral fee {{fee}}, paid broker to broker at closing.",
+      "noteFrom": "Their note: “{{note}}”",
+      "draft": "Hi {{name}}, {{from}} told me you're planning a move, and I'd be glad to help. When is a good time to talk? {{agent}}",
+      "tag": "Referral",
+      "notify": {
+        "received": "{{from}} referred a client to you",
+        "receivedBody": "{{client}}: accept to add them to your contacts, or decline.",
+        "accepted": "{{agent}} accepted your referral of {{client}}",
+        "declined": "{{agent}} declined your referral of {{client}}",
+        "open": "Open referrals"
+      },
+      "mail": {
+        "subject": "{{from}} would like to refer a client to you",
+        "greeting": "Hello {{name}},",
+        "body": "{{from}} ({{broker}}) would like to refer a client to you: {{client}}, a {{kind}} in {{area}}.",
+        "client": "How to reach them: {{contact}}",
+        "fee": "Proposed referral fee: {{fee}}, paid broker to broker at closing, as your brokers agree.",
+        "note": "Their note: “{{note}}”",
+        "reply": "Reply to this email to accept or to ask a question. Sent through REOS, which takes no referral fee."
+      },
+      "title": "Referrals and invites",
+      "purpose": "Refer clients to agents in other areas, answer referrals sent to you, and invite people to REOS.",
+      "send": "Refer a client",
+      "toName": "Agent's name",
+      "toEmail": "Agent's email",
+      "toBrokerage": "Agent's brokerage",
+      "clientName": "Client's name",
+      "clientEmail": "Client's email",
+      "clientPhone": "Client's phone",
+      "kind": "Your client is a",
+      "area": "Area",
+      "areaHint": "Where they want to buy or sell.",
+      "noteLabel": "Note for the agent",
+      "fee": "Referral fee (%)",
+      "feeHint": "As your brokers agree. Paid broker to broker at closing; REOS takes no fee.",
+      "agreed": "My client agreed to be referred",
+      "sent": "Referrals you sent",
+      "received": "Referrals to you",
+      "none": "No referrals yet",
+      "noneHint": "When you refer a client, or one is referred to you, it shows here.",
+      "accept": "Accept",
+      "decline": "Decline",
+      "close": "Mark closed",
+      "openContact": "Open contact",
+      "statuses": {
+        "sent": "Waiting for an answer",
+        "emailed": "Sent by email",
+        "accepted": "Accepted",
+        "declined": "Declined",
+        "closed": "Closed"
+      },
+      "fromLine": "From {{name}}",
+      "toLine": "To {{name}}",
+      "feeLine": "Referral fee {{fee}}%",
+      "done": "Referral sent",
+      "acceptedToast": "Added to your contacts"
+    },
+    "invites": {
+      "cantClaim": "That code can't be used. Check it, or it may be too late to add who invited you.",
+      "title": "Invite and earn",
+      "purpose": "Share your link. When someone who joined through it gets their license, you earn {{points}} points.",
+      "link": "Your invite link",
+      "codeLine": "Your code: {{code}}",
+      "earned": "Earned: {{points}} points",
+      "invited": "People you invited",
+      "noneInvited": "Nobody has joined through your link yet.",
+      "noneHint": "Share it with someone who's thinking about a career in real estate.",
+      "licensed": "Licensed",
+      "notYet": "Not licensed yet",
+      "joined": "Joined {{date}}",
+      "invitedBy": "Invited by {{name}}",
+      "claimTitle": "Were you invited?",
+      "claimHint": "Enter the code from your invite link.",
+      "code": "Invite code",
+      "claim": "Save",
+      "claimed": "Saved. Thanks!",
+      "pointsNote": "Points have no cash value and are spent inside REOS.",
+      "notify": {
+        "title": "{{name}} got their license: you earned {{points}} points",
+        "body": "Thanks for inviting them to REOS.",
+        "open": "See your invites"
+      },
+      "join": {
+        "title": "{{name}} invited you to REOS",
+        "purpose": "Study for your real estate license, then grow your business, all in one place.",
+        "create": "Create an account",
+        "app": "Using the app? Enter this code under Me, then Referrals and invites:",
+        "codeLabel": "Invite code",
+        "signedIn": "You already have an account.",
+        "open": "Open REOS"
+      }
     }
   }
 }
