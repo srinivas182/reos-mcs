@@ -49357,6 +49357,1090 @@
                 }
             }
         },
+        "/me/provider-requests": {
+            "get": {
+                "operationId": "provider-network.mine",
+                "description": "Waiting requests from verified providers, my connections, and my choices (all providers, and per category).",
+                "summary": "My provider requests (agent)",
+                "tags": [
+                    "ProviderNetwork"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "pending": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string"
+                                                    },
+                                                    "provider": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "category": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "photo_url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "name",
+                                                            "category",
+                                                            "photo_url"
+                                                        ]
+                                                    },
+                                                    "message": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "sent_at": {
+                                                        "type": "string"
+                                                    },
+                                                    "expires_at": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "provider",
+                                                    "message",
+                                                    "sent_at",
+                                                    "expires_at"
+                                                ]
+                                            }
+                                        },
+                                        "connections": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string"
+                                                    },
+                                                    "side": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "agent",
+                                                            "provider"
+                                                        ]
+                                                    },
+                                                    "with": {
+                                                        "type": "string"
+                                                    },
+                                                    "provider": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "category": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "photo_url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "name",
+                                                            "category",
+                                                            "photo_url"
+                                                        ]
+                                                    },
+                                                    "connected_at": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "i_shared": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "they_shared": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "contacts": {
+                                                        "type": [
+                                                            "object",
+                                                            "null"
+                                                        ],
+                                                        "properties": {
+                                                            "email": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "phone": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "email",
+                                                            "phone"
+                                                        ]
+                                                    },
+                                                    "conversation": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "blocked": {
+                                                        "type": "boolean"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "side",
+                                                    "with",
+                                                    "provider",
+                                                    "connected_at",
+                                                    "i_shared",
+                                                    "they_shared",
+                                                    "contacts",
+                                                    "conversation",
+                                                    "blocked"
+                                                ]
+                                            }
+                                        },
+                                        "preferences": {
+                                            "type": "object",
+                                            "properties": {
+                                                "all": {
+                                                    "type": "boolean"
+                                                },
+                                                "categories": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "key": {
+                                                                "type": "string"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "on": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "key",
+                                                            "name",
+                                                            "on"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "all",
+                                                "categories"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "pending",
+                                        "connections",
+                                        "preferences"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/me/provider-requests/{providerRequest}/accept": {
+            "post": {
+                "operationId": "provider-network.accept",
+                "description": "Opens a private chat with the provider in Messages. Contacts stay private until both press Share.",
+                "summary": "Accept a provider's request",
+                "tags": [
+                    "ProviderNetwork"
+                ],
+                "parameters": [
+                    {
+                        "name": "providerRequest",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "side": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "agent",
+                                                        "provider"
+                                                    ]
+                                                },
+                                                "with": {
+                                                    "type": "string"
+                                                },
+                                                "provider": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "category": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "photo_url": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "name",
+                                                        "category",
+                                                        "photo_url"
+                                                    ]
+                                                },
+                                                "connected_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "i_shared": {
+                                                    "type": "boolean"
+                                                },
+                                                "they_shared": {
+                                                    "type": "boolean"
+                                                },
+                                                "contacts": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "email": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "phone": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "email",
+                                                        "phone"
+                                                    ]
+                                                },
+                                                "conversation": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "blocked": {
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "side",
+                                                "with",
+                                                "provider",
+                                                "connected_at",
+                                                "i_shared",
+                                                "they_shared",
+                                                "contacts",
+                                                "conversation",
+                                                "blocked"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/me/provider-requests/{providerRequest}/decline": {
+            "post": {
+                "operationId": "provider-network.decline",
+                "description": "With `block`, the provider can't ask again or message. The provider is told only that it was declined.",
+                "summary": "Decline a provider's request",
+                "tags": [
+                    "ProviderNetwork"
+                ],
+                "parameters": [
+                    {
+                        "name": "providerRequest",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DeclineProviderRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "declined": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "required": [
+                                        "declined"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/me/provider-preferences": {
+            "put": {
+                "operationId": "provider-network.preferences",
+                "description": "Turn requests off altogether, or for some categories.",
+                "summary": "My choices about provider requests",
+                "tags": [
+                    "ProviderNetwork"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProviderPreferencesRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "all": {
+                                                    "type": "boolean"
+                                                },
+                                                "categories": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "key": {
+                                                                "type": "string"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "on": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "key",
+                                                            "name",
+                                                            "on"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "all",
+                                                "categories"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/provider/connections": {
+            "get": {
+                "operationId": "provider-network.connections",
+                "description": "Agents who accepted my requests, with contact sharing and the chat.",
+                "summary": "My connections (provider)",
+                "tags": [
+                    "ProviderNetwork"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string"
+                                                    },
+                                                    "side": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "agent",
+                                                            "provider"
+                                                        ]
+                                                    },
+                                                    "with": {
+                                                        "type": "string"
+                                                    },
+                                                    "provider": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "category": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "photo_url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "name",
+                                                            "category",
+                                                            "photo_url"
+                                                        ]
+                                                    },
+                                                    "connected_at": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "i_shared": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "they_shared": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "contacts": {
+                                                        "type": [
+                                                            "object",
+                                                            "null"
+                                                        ],
+                                                        "properties": {
+                                                            "email": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "phone": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "email",
+                                                            "phone"
+                                                        ]
+                                                    },
+                                                    "conversation": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "blocked": {
+                                                        "type": "boolean"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "side",
+                                                    "with",
+                                                    "provider",
+                                                    "connected_at",
+                                                    "i_shared",
+                                                    "they_shared",
+                                                    "contacts",
+                                                    "conversation",
+                                                    "blocked"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/provider-connections/{providerRequest}": {
+            "get": {
+                "operationId": "provider-network.show",
+                "description": "For either side. `contacts` is set only when both have shared, and never across a block.",
+                "summary": "A connection",
+                "tags": [
+                    "ProviderNetwork"
+                ],
+                "parameters": [
+                    {
+                        "name": "providerRequest",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "side": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "agent",
+                                                        "provider"
+                                                    ]
+                                                },
+                                                "with": {
+                                                    "type": "string"
+                                                },
+                                                "provider": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "category": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "photo_url": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "name",
+                                                        "category",
+                                                        "photo_url"
+                                                    ]
+                                                },
+                                                "connected_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "i_shared": {
+                                                    "type": "boolean"
+                                                },
+                                                "they_shared": {
+                                                    "type": "boolean"
+                                                },
+                                                "contacts": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "email": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "phone": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "email",
+                                                        "phone"
+                                                    ]
+                                                },
+                                                "conversation": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "blocked": {
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "side",
+                                                "with",
+                                                "provider",
+                                                "connected_at",
+                                                "i_shared",
+                                                "they_shared",
+                                                "contacts",
+                                                "conversation",
+                                                "blocked"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/provider-connections/{providerRequest}/share": {
+            "put": {
+                "operationId": "provider-network.share",
+                "description": "`share: true` shares my phone and email with the other side once they share too; `false` stops sharing.",
+                "summary": "Share my contacts on a connection",
+                "tags": [
+                    "ProviderNetwork"
+                ],
+                "parameters": [
+                    {
+                        "name": "providerRequest",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ShareContactsRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "side": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "agent",
+                                                        "provider"
+                                                    ]
+                                                },
+                                                "with": {
+                                                    "type": "string"
+                                                },
+                                                "provider": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "category": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "photo_url": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "name",
+                                                        "category",
+                                                        "photo_url"
+                                                    ]
+                                                },
+                                                "connected_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "i_shared": {
+                                                    "type": "boolean"
+                                                },
+                                                "they_shared": {
+                                                    "type": "boolean"
+                                                },
+                                                "contacts": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "email": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "phone": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "email",
+                                                        "phone"
+                                                    ]
+                                                },
+                                                "conversation": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "blocked": {
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "side",
+                                                "with",
+                                                "provider",
+                                                "connected_at",
+                                                "i_shared",
+                                                "they_shared",
+                                                "contacts",
+                                                "conversation",
+                                                "blocked"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/provider-connections/{providerRequest}/block": {
+            "post": {
+                "operationId": "provider-network.block",
+                "description": "No more messages or requests either way.",
+                "summary": "Block the other side of a connection",
+                "tags": [
+                    "ProviderNetwork"
+                ],
+                "parameters": [
+                    {
+                        "name": "providerRequest",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "blocked": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "required": [
+                                        "blocked"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/provider/join": {
             "get": {
                 "operationId": "provider.join",
@@ -75754,6 +76838,16 @@
                 ],
                 "title": "DealRequest"
             },
+            "DeclineProviderRequest": {
+                "type": "object",
+                "description": "Decline a provider's request (B16.2), and block them if asked.",
+                "properties": {
+                    "block": {
+                        "type": "boolean"
+                    }
+                },
+                "title": "DeclineProviderRequest"
+            },
             "DefaultCrmRequest": {
                 "type": "object",
                 "description": "Where new contacts go (screen 24): one of your CRMs, or none (they stay in REOS).",
@@ -77843,6 +78937,27 @@
                 ],
                 "title": "ProviderLicenceRequest"
             },
+            "ProviderPreferencesRequest": {
+                "type": "object",
+                "description": "Requests from providers (B16.2): on or off altogether, and the categories turned off.",
+                "properties": {
+                    "all": {
+                        "type": "boolean"
+                    },
+                    "off": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "maxItems": 50
+                    }
+                },
+                "required": [
+                    "all",
+                    "off"
+                ],
+                "title": "ProviderPreferencesRequest"
+            },
             "PushDeviceRequest": {
                 "type": "object",
                 "description": "A phone turning on push notifications (B6.2b).",
@@ -78975,6 +80090,19 @@
                     "active"
                 ],
                 "title": "SessionOfferRequest"
+            },
+            "ShareContactsRequest": {
+                "type": "object",
+                "description": "Share, or stop sharing, my phone and email on a connection (B16.2).",
+                "properties": {
+                    "share": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "share"
+                ],
+                "title": "ShareContactsRequest"
             },
             "ShareRequest": {
                 "type": "object",

@@ -196,3 +196,43 @@ export type SentRequest = {
     sent_at: string;
     expires_at: string;
 };
+
+/** The private network (B16.2). */
+export type NetworkCard = {
+    id: number;
+    name: string;
+    category: string | null;
+    photo_url: string | null;
+};
+
+export type ProviderConnection = {
+    id: string;
+    side: 'agent' | 'provider';
+    with: string;
+    provider: NetworkCard;
+    connected_at: string | null;
+    i_shared: boolean;
+    they_shared: boolean;
+    contacts: { email: string | null; phone: string | null } | null;
+    conversation: string | null;
+    blocked: boolean;
+};
+
+export type PendingProviderRequest = {
+    id: string;
+    provider: NetworkCard;
+    message: string | null;
+    sent_at: string;
+    expires_at: string;
+};
+
+export type ProviderPreferences = {
+    all: boolean;
+    categories: { key: string; name: string; on: boolean }[];
+};
+
+export type AgentNetwork = {
+    pending: PendingProviderRequest[];
+    connections: ProviderConnection[];
+    preferences: ProviderPreferences;
+};

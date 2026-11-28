@@ -242,3 +242,73 @@ export async function withdrawRequest(id: string): Promise<void> {
 export function usageShare(usage: RequestUsage): number {
   return usage.limit === 0 ? 1 : usage.used / usage.limit;
 }
+
+type Put<P extends keyof paths> = paths[P] extends { put: { responses: { 200: { content: { 'application/json': infer B } } } } } ? B : never;
+
+export type AgentNetwork = Got<'/me/provider-requests'>;
+export type PendingRequest = AgentNetwork['pending'][number];
+export type ProviderConnection = AgentNetwork['connections'][number];
+export type ProviderPreferences = AgentNetwork['preferences'];
+
+/** The agent's provider requests, connections and choices (B16.2). */
+export async function loadNetwork(): Promise<AgentNetwork | null> {
+  const { data } = await api().GET('/me/provider-requests');
+
+  return data ?? null;
+}
+
+/** Accept: opens a private chat with the provider. */
+export async function acceptRequest(id: string): Promise<ProviderConnection> {
+  const { data, error } = await api().POST('/me/provider-requests/{providerRequest}/accept', { params: { path: { providerRequest: id } } });
+
+  return data ? data.data : fail(error);
+}
+
+export async function declineRequest(id: string, block: boolean): Promise<void> {
+  const { error } = await api().POST('/me/provider-requests/{providerRequest}/decline', { params: { path: { providerRequest: id } }, body: { block } });
+
+  if (error) {
+    fail(error);
+  }
+}
+
+export async function loadConnection(id: string): Promise<ProviderConnection | null> {
+  const { data } = await api().GET('/provider-connections/{providerRequest}', { params: { path: { providerRequest: id } } });
+
+  return data ? data.data : null;
+}
+
+export async function loadProviderConnections(): Promise<ProviderConnection[]> {
+  const { data } = await api().GET('/provider/connections');
+
+  return data ? data.data : [];
+}
+
+/** Share (or stop sharing) my phone and email; they show only when both have shared. */
+export async function shareContacts(id: string, share: boolean): Promise<ProviderConnection> {
+  const { data, error } = await api().PUT('/provider-connections/{providerRequest}/share', { params: { path: { providerRequest: id } }, body: { share } });
+
+  return data ? data.data : fail(error);
+}
+
+export async function blockConnection(id: string): Promise<void> {
+  const { error } = await api().POST('/provider-connections/{providerRequest}/block', { params: { path: { providerRequest: id } } });
+
+  if (error) {
+    fail(error);
+  }
+}
+
+export async function savePreferences(all: boolean, off: string[]): Promise<Put<'/me/provider-preferences'>['data']> {
+  const { data, error } = await api().PUT('/me/provider-preferences', { body: { all, off } });
+
+  return data ? data.data : fail(error);
+}
+
+/** Which sharing message to show on a connection. */
+export function sharingState(c: ProviderConnection): 'both' | 'waiting_them' | 'waiting_me' | 'none' {
+  if (c.contacts) return 'both';
+  if (c.i_shared) return 'waiting_them';
+
+  return c.they_shared ? 'waiting_me' : 'none';
+}

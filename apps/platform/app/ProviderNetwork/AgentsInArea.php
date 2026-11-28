@@ -6,6 +6,7 @@ namespace App\ProviderNetwork;
 
 use App\Authorization\Role;
 use App\Enums\OrganisationType;
+use App\Messaging\Safety;
 use App\Models\Deal;
 use App\Models\Licence;
 use App\Models\MlsMemberLink;
@@ -33,8 +34,9 @@ use Illuminate\Validation\ValidationException;
  * - **What the provider sees:** first name and initial, brokerage, level,
  *   the cities and how many in 12 months. Never contacts, clients or
  *   deals (contacts come only when both share, B16.2).
- * - **Who's left out:** agents who turned the provider network off
- *   (Settings › Privacy), and people without an agent role.
+ * - **Who's left out:** agents who turned the provider network off, for
+ *   all providers or the provider's category (B16.2), anyone blocked
+ *   either way, and people without an agent role.
  *
  * @phpstan-type Level 'new'|'active'|'top'
  * @phpstan-type AgentRow array{id: int, name: string, brokerage: string|null, level: Level, sides: int, cities: list<string>, request: array{id: string, status: string, sent_at: string}|null, can_request: bool}
@@ -57,6 +59,7 @@ final readonly class AgentsInArea
         private ProviderOnboarding $onboarding,
         private Memberships $memberships,
         private Tenancy $tenancy,
+        private Safety $safety,
     ) {}
 
     /**
@@ -188,7 +191,12 @@ final readonly class AgentsInArea
         $agentIds = DB::table('model_has_roles')->join('roles', 'roles.id', '=', 'model_has_roles.role_id')->where('roles.name', Role::Agent->value)
             ->where('model_has_roles.model_type', (new User)->getMorphClass())->whereIn('model_has_roles.model_id', array_keys($work))->distinct()->pluck('model_has_roles.model_id');
         $agents = User::query()->whereIn('id', $agentIds)->get(['id', 'name']);
-        $optedOut = $this->optedOut(array_values($agents->map(static fn (User $u): int => $u->id)->all()));
+        $optedOut = $this->optedOut(array_values($agents->map(static fn (User $u): int => $u->id)->all()), $profile->category?->key);
+
+        // Blocked either way (B16.2): not shown, and can't be asked.
+        foreach ($this->safety->blockedWith($profile->user_id) as $id) {
+            $optedOut[$id] = true;
+        }
         $firstLicensed = Licence::query()->whereIn('user_id', $agents->pluck('id'))->groupBy('user_id')->selectRaw('user_id, min(licensed_on) as first')->pluck('first', 'user_id');
         $requests = ProviderRequest::query()->where('provider_profile_id', $profile->id)->whereIn('agent_id', $agents->pluck('id'))->orderBy('id')->get()->keyBy('agent_id');
         $rows = [];
@@ -263,15 +271,18 @@ final readonly class AgentsInArea
     }
 
     /**
-     * People whose latest provider-network choice is off.
+     * People whose latest provider-network choice is off, for all providers
+     * or for this category (B16.2).
      *
      * @param  list<int>  $ids
      * @return array<int, true>
      */
-    private function optedOut(array $ids): array
+    private function optedOut(array $ids, ?string $category): array
     {
-        $latest = DB::table('consent_records')->whereIn('user_id', $ids)->where('purpose', 'provider_network')->whereNull('subject')
-            ->orderBy('user_id')->orderByDesc('id')->get(['user_id', 'granted'])->unique('user_id');
+        $subjects = $category === null ? [] : ['category:'.$category];
+        $latest = DB::table('consent_records')->whereIn('user_id', $ids)->where('purpose', 'provider_network')
+            ->where(static fn ($q) => $q->whereNull('subject')->orWhereIn('subject', $subjects))
+            ->orderBy('user_id')->orderByDesc('id')->get(['user_id', 'subject', 'granted'])->unique(static fn (object $r): string => $r->user_id.'|'.($r->subject ?? ''));
         $out = [];
 
         foreach ($latest as $row) {

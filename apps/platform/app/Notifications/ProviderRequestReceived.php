@@ -12,7 +12,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 
 /**
  * A verified provider asks to connect (B16.1). It names the business and
- * the category; the agent decides whether to talk (B16.2).
+ * the category; the agent accepts or declines in Provider requests (B16.2).
  */
 final class ProviderRequestReceived extends CentreNotification
 {
@@ -30,12 +30,12 @@ final class ProviderRequestReceived extends CentreNotification
         $title = __('providers.agents.notify.title', ['provider' => $name]);
         $body = __('providers.agents.notify.body', ['category' => $this->profile->category->name ?? '', 'days' => 14]);
 
-        return ['title' => is_string($title) ? $title : '', 'body' => is_string($body) ? $body : null, 'url' => url('/messages')];
+        return ['title' => is_string($title) ? $title : '', 'body' => is_string($body) ? $body : null, 'url' => url('/providers/requests')];
     }
 
     public function appPath(): string
     {
-        return '/messages';
+        return '/providers/requests';
     }
 
     public function toMail(object $notifiable): MailMessage

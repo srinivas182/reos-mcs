@@ -5232,6 +5232,166 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/me/provider-requests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My provider requests (agent)
+         * @description Waiting requests from verified providers, my connections, and my choices (all providers, and per category).
+         */
+        get: operations["provider-network.mine"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/me/provider-requests/{providerRequest}/accept": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Accept a provider's request
+         * @description Opens a private chat with the provider in Messages. Contacts stay private until both press Share.
+         */
+        post: operations["provider-network.accept"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/me/provider-requests/{providerRequest}/decline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Decline a provider's request
+         * @description With `block`, the provider can't ask again or message. The provider is told only that it was declined.
+         */
+        post: operations["provider-network.decline"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/me/provider-preferences": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * My choices about provider requests
+         * @description Turn requests off altogether, or for some categories.
+         */
+        put: operations["provider-network.preferences"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/provider/connections": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My connections (provider)
+         * @description Agents who accepted my requests, with contact sharing and the chat.
+         */
+        get: operations["provider-network.connections"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/provider-connections/{providerRequest}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A connection
+         * @description For either side. `contacts` is set only when both have shared, and never across a block.
+         */
+        get: operations["provider-network.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/provider-connections/{providerRequest}/share": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Share my contacts on a connection
+         * @description `share: true` shares my phone and email with the other side once they share too; `false` stops sharing.
+         */
+        put: operations["provider-network.share"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/provider-connections/{providerRequest}/block": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Block the other side of a connection
+         * @description No more messages or requests either way.
+         */
+        post: operations["provider-network.block"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/provider/join": {
         parameters: {
             query?: never;
@@ -8145,6 +8305,13 @@ export interface components {
             }[];
         };
         /**
+         * DeclineProviderRequest
+         * @description Decline a provider's request (B16.2), and block them if asked.
+         */
+        DeclineProviderRequest: {
+            block?: boolean;
+        };
+        /**
          * DefaultCrmRequest
          * @description Where new contacts go (screen 24): one of your CRMs, or none (they stay in REOS).
          */
@@ -8812,6 +8979,14 @@ export interface components {
             number: string;
         };
         /**
+         * ProviderPreferencesRequest
+         * @description Requests from providers (B16.2): on or off altogether, and the categories turned off.
+         */
+        ProviderPreferencesRequest: {
+            all: boolean;
+            off: string[];
+        };
+        /**
          * PushDeviceRequest
          * @description A phone turning on push notifications (B6.2b).
          */
@@ -9220,6 +9395,13 @@ export interface components {
             active: boolean;
         };
         /**
+         * ShareContactsRequest
+         * @description Share, or stop sharing, my phone and email on a connection (B16.2).
+         */
+        ShareContactsRequest: {
+            share: boolean;
+        };
+        /**
          * ShareRequest
          * @description A quick action in the room (B6.3b): share a lesson, or send practice questions on a topic.
          */
@@ -9550,6 +9732,7 @@ export type SchemaContractQuestionRequest = components['schemas']['ContractQuest
 export type SchemaCreatePortalRequest = components['schemas']['CreatePortalRequest'];
 export type SchemaDealFileRequest = components['schemas']['DealFileRequest'];
 export type SchemaDealRequest = components['schemas']['DealRequest'];
+export type SchemaDeclineProviderRequest = components['schemas']['DeclineProviderRequest'];
 export type SchemaDefaultCrmRequest = components['schemas']['DefaultCrmRequest'];
 export type SchemaDeviceResource = components['schemas']['DeviceResource'];
 export type SchemaDutiesRequest = components['schemas']['DutiesRequest'];
@@ -9599,6 +9782,7 @@ export type SchemaProfileFieldsRequest = components['schemas']['ProfileFieldsReq
 export type SchemaProfilePhotoRequest = components['schemas']['ProfilePhotoRequest'];
 export type SchemaProfileRequest = components['schemas']['ProfileRequest'];
 export type SchemaProviderLicenceRequest = components['schemas']['ProviderLicenceRequest'];
+export type SchemaProviderPreferencesRequest = components['schemas']['ProviderPreferencesRequest'];
 export type SchemaPushDeviceRequest = components['schemas']['PushDeviceRequest'];
 export type SchemaQuizAttemptRequest = components['schemas']['QuizAttemptRequest'];
 export type SchemaQuizQuestionResource = components['schemas']['QuizQuestionResource'];
@@ -9629,6 +9813,7 @@ export type SchemaSendRequestRequest = components['schemas']['SendRequestRequest
 export type SchemaServiceAreaRequest = components['schemas']['ServiceAreaRequest'];
 export type SchemaSessionNotesRequest = components['schemas']['SessionNotesRequest'];
 export type SchemaSessionOfferRequest = components['schemas']['SessionOfferRequest'];
+export type SchemaShareContactsRequest = components['schemas']['ShareContactsRequest'];
 export type SchemaShareRequest = components['schemas']['ShareRequest'];
 export type SchemaSignInResource = components['schemas']['SignInResource'];
 export type SchemaStartConnectionRequest = components['schemas']['StartConnectionRequest'];
@@ -26242,6 +26427,394 @@ export interface operations {
             };
             401: components["responses"]["AuthenticationException"];
             422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "provider-network.mine": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        pending: {
+                            id: string;
+                            provider: {
+                                id: number;
+                                name: string;
+                                category: string | null;
+                                photo_url: string | null;
+                            };
+                            message: string | null;
+                            sent_at: string;
+                            expires_at: string;
+                        }[];
+                        connections: {
+                            id: string;
+                            /** @enum {string} */
+                            side: "agent" | "provider";
+                            with: string;
+                            provider: {
+                                id: number;
+                                name: string;
+                                category: string | null;
+                                photo_url: string | null;
+                            };
+                            connected_at: string | null;
+                            i_shared: boolean;
+                            they_shared: boolean;
+                            contacts: {
+                                email: string | null;
+                                phone: string | null;
+                            } | null;
+                            conversation: string | null;
+                            blocked: boolean;
+                        }[];
+                        preferences: {
+                            all: boolean;
+                            categories: {
+                                key: string;
+                                name: string;
+                                on: boolean;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "provider-network.accept": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerRequest: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            /** @enum {string} */
+                            side: "agent" | "provider";
+                            with: string;
+                            provider: {
+                                id: number;
+                                name: string;
+                                category: string | null;
+                                photo_url: string | null;
+                            };
+                            connected_at: string | null;
+                            i_shared: boolean;
+                            they_shared: boolean;
+                            contacts: {
+                                email: string | null;
+                                phone: string | null;
+                            } | null;
+                            conversation: string | null;
+                            blocked: boolean;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "provider-network.decline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerRequest: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["DeclineProviderRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        declined: boolean;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "provider-network.preferences": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProviderPreferencesRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            all: boolean;
+                            categories: {
+                                key: string;
+                                name: string;
+                                on: boolean;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "provider-network.connections": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            /** @enum {string} */
+                            side: "agent" | "provider";
+                            with: string;
+                            provider: {
+                                id: number;
+                                name: string;
+                                category: string | null;
+                                photo_url: string | null;
+                            };
+                            connected_at: string | null;
+                            i_shared: boolean;
+                            they_shared: boolean;
+                            contacts: {
+                                email: string | null;
+                                phone: string | null;
+                            } | null;
+                            conversation: string | null;
+                            blocked: boolean;
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "provider-network.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerRequest: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            /** @enum {string} */
+                            side: "agent" | "provider";
+                            with: string;
+                            provider: {
+                                id: number;
+                                name: string;
+                                category: string | null;
+                                photo_url: string | null;
+                            };
+                            connected_at: string | null;
+                            i_shared: boolean;
+                            they_shared: boolean;
+                            contacts: {
+                                email: string | null;
+                                phone: string | null;
+                            } | null;
+                            conversation: string | null;
+                            blocked: boolean;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "provider-network.share": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerRequest: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ShareContactsRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            /** @enum {string} */
+                            side: "agent" | "provider";
+                            with: string;
+                            provider: {
+                                id: number;
+                                name: string;
+                                category: string | null;
+                                photo_url: string | null;
+                            };
+                            connected_at: string | null;
+                            i_shared: boolean;
+                            they_shared: boolean;
+                            contacts: {
+                                email: string | null;
+                                phone: string | null;
+                            } | null;
+                            conversation: string | null;
+                            blocked: boolean;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "provider-network.block": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerRequest: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        blocked: boolean;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
             /** @description Too many requests */
             429: {
                 headers: {

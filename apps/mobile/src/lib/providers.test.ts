@@ -1,4 +1,8 @@
 import {
+  declineRequest,
+  sharingState,
+  shareContacts,
+  type ProviderConnection,
   askToConnect,
   loadAgentsInArea,
   usageShare,
@@ -123,5 +127,23 @@ describe('agents in my areas on the phone (B16.1)', () => {
     mockApi.POST.mockResolvedValueOnce({ error: { errors: { limit: ["You've used all 5 requests for this month."] } } });
     await expect(askToConnect(12, '')).rejects.toThrow("You've used all 5 requests for this month.");
     expect(usageShare({ tier: 'basic', limit: 5, used: 4, left: 1, resets_on: '2026-12-01' })).toBeCloseTo(0.8);
+  });
+});
+
+describe('the private network on the phone (B16.2)', () => {
+  it('shares contacts and knows whose turn it is', async () => {
+    const base = { id: 'c-1', i_shared: false, they_shared: false, contacts: null } as unknown as ProviderConnection;
+    expect(sharingState(base)).toBe('none');
+    expect(sharingState({ ...base, they_shared: true })).toBe('waiting_me');
+    expect(sharingState({ ...base, i_shared: true })).toBe('waiting_them');
+    expect(sharingState({ ...base, i_shared: true, they_shared: true, contacts: { email: 'maya@chenlending.example', phone: null } })).toBe('both');
+
+    mockApi.PUT.mockResolvedValueOnce({ data: { data: { ...base, i_shared: true } } });
+    await expect(shareContacts('c-1', true)).resolves.toMatchObject({ i_shared: true });
+    expect(mockApi.PUT).toHaveBeenLastCalledWith('/provider-connections/{providerRequest}/share', { params: { path: { providerRequest: 'c-1' } }, body: { share: true } });
+
+    mockApi.POST.mockResolvedValueOnce({ data: { declined: true } });
+    await declineRequest('r-1', true);
+    expect(mockApi.POST).toHaveBeenLastCalledWith('/me/provider-requests/{providerRequest}/decline', { params: { path: { providerRequest: 'r-1' } }, body: { block: true } });
   });
 });

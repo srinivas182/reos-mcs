@@ -9,6 +9,7 @@ use App\Authorization\Role;
 use App\Enums\OrganisationType;
 use App\Models\Organisation;
 use App\Models\PodMember;
+use App\Models\ProviderRequest;
 use App\Models\User;
 use App\Services\Authorization\ActiveRole;
 use App\Services\Authorization\Memberships;
@@ -21,7 +22,7 @@ use Illuminate\Support\Facades\DB;
  * team; school admins and instructors with their students and each other;
  * mentors with their mentees (agents or students); association admins with
  * each other (members get announcements). Providers join once an agent
- * accepts their request (provider app). REOS support works as the tenant's
+ * accepts their request to connect (B16.2). REOS support works as the tenant's
  * admin only during a support session the owner approved (A4.1c).
  */
 final readonly class Relationships
@@ -95,6 +96,12 @@ final readonly class Relationships
             foreach (PodMember::query()->whereIn('pod_id', $pods)->whereNull('left_at')->where('user_id', '!=', $user->id)->with('pod')->get() as $member) {
                 $found[$member->user_id] ??= ['role' => Role::Agent, 'organisation' => $member->pod->name];
             }
+        }
+
+        // A provider and an agent who accepted their request to connect (B16.2).
+        foreach (ProviderRequest::query()->where('status', ProviderRequest::ACCEPTED)->where(static fn ($q) => $q->where('agent_id', $user->id)->orWhere('provider_id', $user->id))->limit(500)->get(['agent_id', 'provider_id']) as $connection) {
+            $agentSide = $connection->agent_id === $user->id;
+            $found[$agentSide ? $connection->provider_id : $connection->agent_id] ??= ['role' => $agentSide ? Role::Provider : Role::Agent, 'organisation' => ''];
         }
 
         // Blocked either way: not offered (B6.1b).
