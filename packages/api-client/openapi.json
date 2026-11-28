@@ -16714,7 +16714,8 @@
                                             "video",
                                             "page",
                                             "email",
-                                            "text"
+                                            "text",
+                                            "newsletter"
                                         ]
                                     },
                                     "text": {
@@ -16879,7 +16880,8 @@
                                             "video",
                                             "page",
                                             "email",
-                                            "text"
+                                            "text",
+                                            "newsletter"
                                         ]
                                     },
                                     "text": {
@@ -24829,6 +24831,798 @@
                     }
                 },
                 "security": []
+            }
+        },
+        "/farm-areas": {
+            "get": {
+                "operationId": "farm.index",
+                "summary": "My farm areas",
+                "tags": [
+                    "Farm"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string"
+                                                    },
+                                                    "name": {
+                                                        "type": "string"
+                                                    },
+                                                    "city": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "postal_code": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "tag": {
+                                                        "type": "string"
+                                                    },
+                                                    "mailing_address": {
+                                                        "type": "string"
+                                                    },
+                                                    "recipients": {
+                                                        "type": "integer"
+                                                    },
+                                                    "last_sent_at": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "name",
+                                                    "city",
+                                                    "postal_code",
+                                                    "tag",
+                                                    "mailing_address",
+                                                    "recipients",
+                                                    "last_sent_at"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "farm.store",
+                "description": "A city or a ZIP code in my MLS, the tag of the contacts who get its update, and my postal address for the emails.",
+                "summary": "Add a farm area",
+                "tags": [
+                    "Farm"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/FarmAreaRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "name": {
+                                                    "type": "string"
+                                                },
+                                                "city": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "postal_code": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "tag": {
+                                                    "type": "string"
+                                                },
+                                                "mailing_address": {
+                                                    "type": "string"
+                                                },
+                                                "recipients": {
+                                                    "type": "integer"
+                                                },
+                                                "last_sent_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "name",
+                                                "city",
+                                                "postal_code",
+                                                "tag",
+                                                "mailing_address",
+                                                "recipients",
+                                                "last_sent_at"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/farm-areas/{area}": {
+            "delete": {
+                "operationId": "farm.destroy",
+                "summary": "Remove a farm area",
+                "tags": [
+                    "Farm"
+                ],
+                "parameters": [
+                    {
+                        "name": "area",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/farm-areas/{area}/draft": {
+            "get": {
+                "operationId": "farm.draft",
+                "description": "The area's figures from my MLS over the last three months (sale prices only where the MLS allows them publicly), a draft in my language, and the compliance check.",
+                "summary": "This month's update",
+                "tags": [
+                    "Farm"
+                ],
+                "parameters": [
+                    {
+                        "name": "area",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "area": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "string"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "city": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "postal_code": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "tag": {
+                                                            "type": "string"
+                                                        },
+                                                        "mailing_address": {
+                                                            "type": "string"
+                                                        },
+                                                        "recipients": {
+                                                            "type": "integer"
+                                                        },
+                                                        "last_sent_at": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "name",
+                                                        "city",
+                                                        "postal_code",
+                                                        "tag",
+                                                        "mailing_address",
+                                                        "recipients",
+                                                        "last_sent_at"
+                                                    ]
+                                                },
+                                                "stats": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "active": {
+                                                            "type": "integer"
+                                                        },
+                                                        "pending": {
+                                                            "type": "integer"
+                                                        },
+                                                        "new_listings": {
+                                                            "type": "integer"
+                                                        },
+                                                        "sold": {
+                                                            "type": "integer"
+                                                        },
+                                                        "median_price": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "median_days": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "median_sold_price": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "months_supply": {
+                                                            "type": [
+                                                                "number",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "from": {
+                                                            "type": "string"
+                                                        },
+                                                        "to": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "active",
+                                                        "pending",
+                                                        "new_listings",
+                                                        "sold",
+                                                        "median_price",
+                                                        "median_days",
+                                                        "median_sold_price",
+                                                        "months_supply",
+                                                        "from",
+                                                        "to"
+                                                    ]
+                                                },
+                                                "subject": {
+                                                    "type": "string"
+                                                },
+                                                "body": {
+                                                    "type": "string"
+                                                },
+                                                "attribution": {
+                                                    "type": "string"
+                                                },
+                                                "check": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ok": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "issues": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "code": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "broker",
+                                                                            "broker_size",
+                                                                            "team_name",
+                                                                            "links",
+                                                                            "claims",
+                                                                            "title",
+                                                                            "fair_housing",
+                                                                            "unclear",
+                                                                            "banned",
+                                                                            "unlicensed"
+                                                                        ]
+                                                                    },
+                                                                    "severity": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "block",
+                                                                            "warn"
+                                                                        ]
+                                                                    },
+                                                                    "phrase": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "fix": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "reason": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "citation": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "url": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "source": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "rule",
+                                                                            "claude"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "code",
+                                                                    "severity",
+                                                                    "phrase",
+                                                                    "fix",
+                                                                    "reason",
+                                                                    "citation",
+                                                                    "url",
+                                                                    "source"
+                                                                ]
+                                                            }
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ok",
+                                                        "issues"
+                                                    ]
+                                                },
+                                                "can_send": {
+                                                    "type": "boolean"
+                                                },
+                                                "next_send_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "area",
+                                                "stats",
+                                                "subject",
+                                                "body",
+                                                "attribution",
+                                                "check",
+                                                "can_send",
+                                                "next_send_at"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/farm-areas/{area}/send": {
+            "post": {
+                "operationId": "farm.send",
+                "description": "To my contacts with the area's tag, less anyone who unsubscribed. Refused when the compliance check blocks it, or within a week of the last update.",
+                "summary": "Send the update",
+                "tags": [
+                    "Farm"
+                ],
+                "parameters": [
+                    {
+                        "name": "area",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/FarmSendRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "area": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "string"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "city": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "postal_code": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "tag": {
+                                                            "type": "string"
+                                                        },
+                                                        "mailing_address": {
+                                                            "type": "string"
+                                                        },
+                                                        "recipients": {
+                                                            "type": "integer"
+                                                        },
+                                                        "last_sent_at": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "name",
+                                                        "city",
+                                                        "postal_code",
+                                                        "tag",
+                                                        "mailing_address",
+                                                        "recipients",
+                                                        "last_sent_at"
+                                                    ]
+                                                },
+                                                "stats": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "active": {
+                                                            "type": "integer"
+                                                        },
+                                                        "pending": {
+                                                            "type": "integer"
+                                                        },
+                                                        "new_listings": {
+                                                            "type": "integer"
+                                                        },
+                                                        "sold": {
+                                                            "type": "integer"
+                                                        },
+                                                        "median_price": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "median_days": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "median_sold_price": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "months_supply": {
+                                                            "type": [
+                                                                "number",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "from": {
+                                                            "type": "string"
+                                                        },
+                                                        "to": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "active",
+                                                        "pending",
+                                                        "new_listings",
+                                                        "sold",
+                                                        "median_price",
+                                                        "median_days",
+                                                        "median_sold_price",
+                                                        "months_supply",
+                                                        "from",
+                                                        "to"
+                                                    ]
+                                                },
+                                                "subject": {
+                                                    "type": "string"
+                                                },
+                                                "body": {
+                                                    "type": "string"
+                                                },
+                                                "attribution": {
+                                                    "type": "string"
+                                                },
+                                                "check": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ok": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "issues": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "code": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "broker",
+                                                                            "broker_size",
+                                                                            "team_name",
+                                                                            "links",
+                                                                            "claims",
+                                                                            "title",
+                                                                            "fair_housing",
+                                                                            "unclear",
+                                                                            "banned",
+                                                                            "unlicensed"
+                                                                        ]
+                                                                    },
+                                                                    "severity": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "block",
+                                                                            "warn"
+                                                                        ]
+                                                                    },
+                                                                    "phrase": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "fix": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "reason": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "citation": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "url": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "source": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "rule",
+                                                                            "claude"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "code",
+                                                                    "severity",
+                                                                    "phrase",
+                                                                    "fix",
+                                                                    "reason",
+                                                                    "citation",
+                                                                    "url",
+                                                                    "source"
+                                                                ]
+                                                            }
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ok",
+                                                        "issues"
+                                                    ]
+                                                },
+                                                "can_send": {
+                                                    "type": "boolean"
+                                                },
+                                                "next_send_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "area",
+                                                "stats",
+                                                "subject",
+                                                "body",
+                                                "attribution",
+                                                "check",
+                                                "can_send",
+                                                "next_send_at"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
             }
         },
         "/practice/flashcards": {
@@ -63581,6 +64375,68 @@
                     "device"
                 ],
                 "title": "ExchangeSignInRequest"
+            },
+            "FarmAreaRequest": {
+                "type": "object",
+                "description": "An area to farm (B14.3c): a city or a ZIP code, the contacts' tag, and the sender's postal address.",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "minLength": 2,
+                        "maxLength": 80
+                    },
+                    "city": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 80
+                    },
+                    "postal_code": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "pattern": "^\\d{5}$"
+                    },
+                    "tag": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 60
+                    },
+                    "mailing_address": {
+                        "type": "string",
+                        "minLength": 10,
+                        "maxLength": 200
+                    }
+                },
+                "required": [
+                    "name",
+                    "tag",
+                    "mailing_address"
+                ],
+                "title": "FarmAreaRequest"
+            },
+            "FarmSendRequest": {
+                "type": "object",
+                "description": "The market update as the agent approved it (B14.3c).",
+                "properties": {
+                    "subject": {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 160
+                    },
+                    "body": {
+                        "type": "string",
+                        "minLength": 20,
+                        "maxLength": 5000
+                    }
+                },
+                "required": [
+                    "subject",
+                    "body"
+                ],
+                "title": "FarmSendRequest"
             },
             "FinishSpeedRoundRequest": {
                 "type": "object",

@@ -97,7 +97,8 @@
     "rolePlay": "Role-play",
     "videoPractice": "Video practice",
     "openHouses": "Open houses",
-    "referrals": "Referrals"
+    "referrals": "Referrals",
+    "farming": "Farming"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -2342,7 +2343,8 @@
         "portal.revoked": "Client link turned off",
         "referral.sent": "Referral sent",
         "referral.accepted": "Referral accepted",
-        "invite.claimed": "Invite recorded"
+        "invite.claimed": "Invite recorded",
+        "farm.sent": "Market update sent"
       }
     }
   },
@@ -3341,7 +3343,8 @@
         "video": "Video",
         "page": "Public page",
         "email": "Email",
-        "text": "Text"
+        "text": "Text",
+        "newsletter": "Market update email"
       },
       "actions": {
         "checked": "Checked, passed",
@@ -10627,6 +10630,74 @@
         "signedIn": "You already have an account.",
         "open": "Open REOS"
       }
+    },
+    "farm": {
+      "blocked": "The update can't be sent until the compliance issues are fixed.",
+      "tooSoon": "An update for this area went out recently. The next one can go on {{date}}.",
+      "nobody": "No contacts have the tag “{{tag}}” and an email address yet.",
+      "noMls": "Link your MLS membership under My listings first; the figures come from your MLS.",
+      "attribution": "Based on information from {{mls}} for {{area}}, {{from}} to {{to}}. Not guaranteed.",
+      "draft": {
+        "subject": "{{area}} market update, {{month}}",
+        "intro": "Here's how the {{area}} housing market looked over the last three months.",
+        "active": "{{count}} homes for sale, at a median asking price of {{price}}.",
+        "new": "{{count}} new listings came on the market.",
+        "sold": "{{count}} homes sold.",
+        "soldPrice": "{{count}} homes sold, at a median price of {{price}}.",
+        "days": "Homes for sale have been on the market a median of {{days}} days.",
+        "supply": "There are {{months}} months of supply at the current pace of sales.",
+        "close": "Thinking about buying or selling in {{area}}? Reply to this email and I'll walk you through what these numbers mean for your home."
+      },
+      "mail": {
+        "sender": "Sent by {{agent}}, {{broker}}, {{address}}.",
+        "why": "You're getting this because you're one of {{agent}}'s contacts.",
+        "unsubscribe": "Unsubscribe"
+      },
+      "unsubscribe": {
+        "title": "Market updates from {{agent}}",
+        "purpose": "Stop getting market updates from {{agent}}?",
+        "confirm": "Unsubscribe",
+        "done": "Done. You won't get market updates from {{agent}} again."
+      },
+      "title": "Farming",
+      "purpose": "Send a monthly market update for each area you farm, from your MLS figures and checked for compliance before it goes out.",
+      "add": "Add an area",
+      "name": "Area name",
+      "nameHint": "As your contacts know it, such as Cinco Ranch.",
+      "city": "City",
+      "postalCode": "ZIP code",
+      "placeHint": "A city or a ZIP code in your MLS.",
+      "tag": "Contacts tag",
+      "tagHint": "Contacts with this tag get the update.",
+      "address": "Your mailing address",
+      "addressHint": "Required in every marketing email.",
+      "none": "No farm areas yet",
+      "noneHint": "Add the neighborhood you want to be known for.",
+      "recipients_one": "{{count}} contact",
+      "recipients_other": "{{count}} contacts",
+      "lastSent": "Last sent {{date}}",
+      "neverSent": "Not sent yet",
+      "preview": "This month's update",
+      "subject": "Subject",
+      "body": "Message",
+      "stats": {
+        "active": "For sale",
+        "pending": "Under contract",
+        "new": "New listings",
+        "sold": "Sold",
+        "medianPrice": "Median asking price",
+        "medianDays": "Median days on market",
+        "medianSold": "Median sale price",
+        "supply": "Months of supply"
+      },
+      "soldHidden": "Sale prices aren't shown: your MLS doesn't allow them in public material.",
+      "checkOk": "Passes the compliance check.",
+      "checkIssues": "Fix these before sending:",
+      "send": "Send to {{count}} contacts",
+      "sent": "Market update sent",
+      "remove": "Remove area",
+      "removed": "Area removed",
+      "nextSend": "The next update can go on {{date}}."
     }
   }
 }

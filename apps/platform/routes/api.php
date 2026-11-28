@@ -31,6 +31,7 @@ use App\Http\Controllers\Api\Deals\SignatureController;
 use App\Http\Controllers\Api\Feedback\AgentFeedbackController;
 use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\Instructor\QuestionController as InstructorQuestionController;
+use App\Http\Controllers\Api\Leads\FarmController;
 use App\Http\Controllers\Api\Leads\InviteController;
 use App\Http\Controllers\Api\Leads\OpenHouseController;
 use App\Http\Controllers\Api\Leads\ReferralController;
@@ -575,6 +576,12 @@ Route::middleware('auth:sanctum')->group(function () {
     // Invite and earn (B14.3b): my link, and who invited me.
     Route::get('me/invite', [InviteController::class, 'show'])->name('api.invite.show');
     Route::post('me/invite/claim', [InviteController::class, 'claim'])->middleware('throttle:5,1,api-invite-claim')->name('api.invite.claim');
+    // Farming market updates (B14.3c): MLS figures for an area, checked by the compliance engine, to tagged contacts.
+    Route::get('farm-areas', [FarmController::class, 'index'])->name('api.farm.index');
+    Route::post('farm-areas', [FarmController::class, 'store'])->middleware('throttle:20,1,api-farming')->name('api.farm.store');
+    Route::delete('farm-areas/{area}', [FarmController::class, 'destroy'])->whereUuid('area')->name('api.farm.destroy');
+    Route::get('farm-areas/{area}/draft', [FarmController::class, 'draft'])->whereUuid('area')->middleware('throttle:30,1,api-farming-draft')->name('api.farm.draft');
+    Route::post('farm-areas/{area}/send', [FarmController::class, 'send'])->whereUuid('area')->middleware('throttle:5,1,api-farming-send')->name('api.farm.send');
     // The client portal (B14.2): share the deal with a client through their own link.
     Route::get('deals/{deal}/portals', [ClientPortalController::class, 'index'])->whereUuid('deal')->name('api.deals.portals.index');
     Route::post('deals/{deal}/portals', [ClientPortalController::class, 'store'])->whereUuid('deal')->middleware('throttle:30,1,api-portals')->name('api.deals.portals.store');
